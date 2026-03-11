@@ -20,7 +20,7 @@
     }
 
     * { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
+    html, body { height:100%; overflow:hidden; }
 
     body {
       background: #cfc0ae;
@@ -30,6 +30,14 @@
       justify-content: center;
     }
 
+    #scroll-container {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+    }
+
     .phone-wrap {
       width: 100%;
       max-width: 430px;
@@ -37,6 +45,7 @@
       min-height: 100vh;
       overflow: hidden;
       position: relative;
+      margin: 0 auto;
     }
 
     /* ===== MUSIC BTN ===== */
@@ -60,7 +69,9 @@
     /* ===== HERO ===== */
     .hero {
       position:relative;
-      height:100vh; min-height:620px;
+      height:100vh;
+      height:100svh;
+      min-height:620px;
       overflow:hidden;
     }
     .hero-bg {
@@ -97,7 +108,7 @@
       font-family:'Nunito',sans-serif; font-weight:600;
     }
     .hero-names {
-      font-family:'Lora',serif; font-size:50px; font-weight:600;
+      font-family:'Lora',serif; font-size:36px; font-weight:600;
       line-height:1.12; letter-spacing:-0.5px;
       opacity:0; animation: fadeUp 1s 0.65s forwards;
     }
@@ -211,6 +222,7 @@
       color:var(--soil); margin-bottom:26px; line-height:1.35;
     }
     .section-title em { font-style:italic; color:var(--bark); }
+    .section-title lt { font-style:italic; color:var(--cream); }
 
     /* ===== INFO BLOCK ===== */
     .info-block {
@@ -313,6 +325,28 @@
       margin-top:14px;
     }
     .map-wrap iframe { width:100%; height:100%; border:0; display:block; }
+    
+    .parking-grid{
+      display:flex;
+      gap:16px;
+      margin-top:16px;
+    }
+
+    .parking-body p{
+      font-size: 12px;
+    }
+
+    .parking-item{
+      max-width: 175px;
+      flex:1;
+    }
+
+    .map-wrap iframe{
+      width:100%;
+      height:200px;
+      border:0;
+      border-radius:10px;
+    }
 
     /* ===== PHOTO GRID ===== */
     .photo-grid-block {
@@ -337,17 +371,18 @@
 
     /* ===== TIMELINE (inside info-card) ===== */
     .timeline-card {
-      margin-top:14px;
+      margin:10px 0px 10px;
       position:relative;
     }
-    .timeline-card::before {
-      content:''; position:absolute; left:19px; top:6px; bottom:6px;
-      width:1.5px;
+    .tl-item { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; position:relative; }
+    .tl-item:last-child { margin-bottom:0; }
+    .tl-item:not(:last-child)::before {
+      content:''; position:absolute;
+      left:19px; top:38px;
+      width:1.5px; height:calc(100% - 18px);
       background:linear-gradient(to bottom,var(--tan),var(--moss));
       opacity:0.35;
     }
-    .tl-item { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
-    .tl-item:last-child { margin-bottom:0; }
     .tl-dot {
       width:38px; height:38px;
       background:var(--cream);
@@ -475,6 +510,7 @@
 
   <button class="music-btn" id="musicBtn">♫</button>
 
+  <div id="scroll-container">
   <div class="phone-wrap">
 
     <!-- ===== HERO ===== -->
@@ -556,19 +592,30 @@
             <div class="cal-day">4</div>
             <div class="cal-day sun">5</div>
             <div class="cal-day sun">6</div>
-            <div class="cal-day">7</div><div class="cal-day">8</div>
-            <div class="cal-day">9</div><div class="cal-day">10</div>
-            <div class="cal-day">11</div><div class="cal-day sun">12</div>
+            <div class="cal-day">7</div>
+            <div class="cal-day">8</div>
+            <div class="cal-day">9</div>
+            <div class="cal-day">10</div>
+            <div class="cal-day">11</div>
+            <div class="cal-day sun">12</div>
             <div class="cal-day sun">13</div>
-            <div class="cal-day">14</div><div class="cal-day">15</div>
-            <div class="cal-day">16</div><div class="cal-day">17</div>
-            <div class="cal-day">18</div><div class="cal-day sun">19</div>
+            <div class="cal-day">14</div>
+            <div class="cal-day">15</div>
+            <div class="cal-day">16</div>
+            <div class="cal-day">17</div>
+            <div class="cal-day">18</div>
+            <div class="cal-day sun">19</div>
             <div class="cal-day sun">20</div>
-            <div class="cal-day">21</div><div class="cal-day">22</div>
-            <div class="cal-day">23</div><div class="cal-day">24</div>
-            <div class="cal-day sun">25</div><div class="cal-day sun">26</div>
-            <div class="cal-day sun"><div class="cal-day highlight">27</div></div>
-            <div class="cal-day sun">28</div><div class="cal-day">29</div>
+            <div class="cal-day">21</div>
+            <div class="cal-day">22</div>
+            <div class="cal-day">23</div>
+            <div class="cal-day">24</div>
+            <div class="cal-day sun">25</div>
+            <div class="cal-day sun">26</div>
+            <div class="cal-day sun">
+            <div class="cal-day highlight">27</div></div>
+            <div class="cal-day sun">28</div>
+            <div class="cal-day">29</div>
             <div class="cal-day">30</div>
             <div class="cal-day empty">-</div>
             <div class="cal-day empty">-</div>
@@ -586,38 +633,19 @@
         <div class="info-body" style="padding-left:50px; margin-top:8px;">
           <div class="timeline-card">
             <div class="tl-item">
-              <div class="tl-dot">🌿</div>
-              <div class="tl-content">
-                <strong>17:00</strong>
-                <p>賓客入場、迎賓茶點時間</p>
-              </div>
-            </div>
-            <div class="tl-item">
               <div class="tl-dot">💐</div>
               <div class="tl-content">
-                <strong>18:00</strong>
-                <p>婚禮儀式正式開始</p>
-              </div>
-            </div>
-            <div class="tl-item">
-              <div class="tl-dot">🍽️</div>
-              <div class="tl-content">
-                <strong>18:30</strong>
-                <p>美式晚宴開席、酒水暢飲</p>
+                <strong>17:00</strong>
+                <p>賓客入場、迎賓簽到</p>
+                <p style="font-size:13px;color:var(--stone);">Guest Arrival & Registration</p>
               </div>
             </div>
             <div class="tl-item">
               <div class="tl-dot">🥂</div>
               <div class="tl-content">
-                <strong>19:45</strong>
-                <p>香檳慶賀、與賓客合影留念</p>
-              </div>
-            </div>
-            <div class="tl-item">
-              <div class="tl-dot">🎇</div>
-              <div class="tl-content">
-                <strong>20:00</strong>
-                <p>戶外活動節目</p>
+                <strong>18:00</strong>
+                <p>婚禮晚宴正式開始</p>
+                <p style="font-size:13px;color:var(--stone);">Wedding Ceremony</p>
               </div>
             </div>
           </div>
@@ -633,6 +661,7 @@
         <div class="info-body">
           <p style="font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;color:var(--bark);margin-bottom:4px;">CHALET V</p>
           <p>104 臺北市中山區植福路 8 號 1F</p>
+          <p style="font-size:13px;color:var(--stone);">No. 8, Zhifu Rd., Zhongshan Dist., Taipei</p>
           <p style="font-size:13px;color:var(--stone);">（典華幸福大樓側邊木門處）</p>
         </div>
         <div class="map-wrap" style="margin:12px 0 0;">
@@ -647,29 +676,37 @@
           <span class="info-label">Transit · 交通</span>
         </div>
         <div class="info-body">
-          <p>捷運大直站，步行 2 分鐘可達</p>
+          <p>捷運劍南路站，3號出口步行 2 分鐘</p>
+          <p style="font-size:13px;color:var(--stone);">Jiannan Rd. Station(Exit 3), 2-min walk</p>
         </div>
       </div>
 
-      
       <div class="info-card">
         <div class="info-card-header">
           <div class="info-icon">🚗</div>
           <span class="info-label">Parking · 停車</span>
         </div>
-        <br>
-        <div class="info-body" style="padding-left: 0px;">
-          <p>📍USPACE大直典華停車場</p>
-        </div>
-        <div class="map-wrap" style="margin:12px 0 0;">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.5353286253426!2d121.55505520000001!3d25.083733899999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442adb8e219d2a3%3A0xd67f4c3f69a28ec3!2zVVNQQUNF5aSn55u05YW46I-v5YGc6LuK5aC0!5e0!3m2!1szh-TW!2stw!4v1773216238950!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-        </div>
-        <br>
-        <div class="info-body" style="padding-left: 0px;">
-          <p>📍台灣聯通停車場-敬業場</p>
-        </div>
-        <div class="map-wrap" style="margin:12px 0 0;">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.545711241007!2d121.55430609999999!3d25.0833822!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442ad00093fe697%3A0xe424a28c0c1a3886!2z5Y-w54Gj6IGv6YCa5YGc6LuK5aC0LeaVrOalreWgtA!5e0!3m2!1szh-TW!2stw!4v1773216206836!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+
+        <div class="parking-grid">
+
+          <div class="parking-item">
+            <div class="parking-body">
+              <p>📍USPACE大直典華停車場</p>
+            </div>
+            <div class="map-wrap">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.5353286253426!2d121.55505520000001!3d25.083733899999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442adb8e219d2a3%3A0xd67f4c3f69a28ec3!2zVVNQQUNF5aSn55u05YW46I-v5YGc6LuK5aC0!5e0!3m2!1szh-TW!2stw!4v1773216238950!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+
+          <div class="parking-item">
+            <div class="parking-body">
+              <p>📍台灣聯通停車場-敬業場</p>
+            </div>
+            <div class="map-wrap">
+              <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.545711241007!2d121.55430609999999!3d25.0833822!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442ad00093fe697%3A0xe424a28c0c1a3886!2z5Y-w54Gj6IGv6YCa5YGc6LuK5aC0LeaVrOalreWgtA!5e0!3m2!1szh-TW!2stw!4v1773216206836!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -677,7 +714,7 @@
     <!-- ===== PHOTO GRID ===== -->
     <section class="photo-grid-block reveal">
       <div class="section-eyebrow">Moments</div>
-      <div class="section-title" style="margin-bottom:24px;"><em>珍貴的回憶</em></div>
+      <div class="section-title" style="margin-bottom:24px;"><lt>拾光片刻</lt></div>
       <div class="grid-2">
         <div class="g-img tall">
           <img src="Pic/photo-grid.jpg" alt="wedding">
@@ -694,7 +731,7 @@
     <!-- ===== RSVP FORM ===== -->
     <section class="form-block reveal">
       <div class="section-eyebrow">RSVP</div>
-      <div class="section-title"><em>賓客回覆</em></div>
+      <div class="section-title"><lt>賓客回覆</lt></div>
       <form id="guestForm">
         <div class="form-field">
           <label>Your Name · 姓名</label>
@@ -736,6 +773,7 @@
 
   </div>
 
+  </div><!-- /scroll-container -->
   <div class="toast" id="toast">✓ 回覆已送出，感謝您！</div>
 
     <script>
@@ -776,25 +814,18 @@
     document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
     /* ===== MUSIC ===== */
-    const bgMusic = document.getElementById('bgMusic');
+    const bgMusic  = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicBtn');
     let musicOn    = false;
     let userPaused = false;
-    let audioReady = false;
-    const musicBtn = document.getElementById('musicBtn');
-
-    bgMusic.addEventListener('canplaythrough', () => { audioReady = true; }, { once: true });
 
     function playMusic() {
-      if (musicOn || userPaused || !audioReady) return;
+      if (musicOn || userPaused) return;
       bgMusic.play().then(() => {
         musicOn = true;
         musicBtn.textContent = '♫';
       }).catch(() => {});
     }
-
-    ['scroll', 'touchstart', 'touchmove', 'pointerdown'].forEach(evt => {
-      window.addEventListener(evt, playMusic, { passive: true });
-    });
 
     musicBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -884,6 +915,7 @@
 
     /* ===== AUTO-SCROLL ===== */
     const SCROLL_SPEED = 25;
+    const scrollEl = document.getElementById('scroll-container');
     let autoScrolling = false;
     let rafId = null;
     let idleTimer = null;
@@ -900,10 +932,10 @@
           scrollAccum += (ts - lastTs) / 1000 * SCROLL_SPEED;
           if (scrollAccum >= 1) {
             const px = Math.floor(scrollAccum);
-            window.scrollBy(0, px);
+            scrollEl.scrollTop += px;
             scrollAccum -= px;
           }
-          if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+          if (scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 4) {
             autoScrolling = false;
             return;
           }
@@ -926,7 +958,11 @@
     }
 
     ['touchstart','touchmove','mousedown','wheel','keydown'].forEach(evt => {
-      window.addEventListener(evt, onUserActivity, { passive: true });
+      scrollEl.addEventListener(evt, onUserActivity, { passive: true });
+    });
+
+    ['touchstart','touchmove','pointerdown','scroll'].forEach(evt => {
+      scrollEl.addEventListener(evt, playMusic, { passive: true });
     });
 
     setTimeout(startAutoScroll, 1000);
