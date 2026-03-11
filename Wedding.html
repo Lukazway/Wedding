@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Lukas & Venna 婚禮邀請函</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Sans+TC:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bark:      #6b4c35;
+      --bark-lt:   #8c6348;
+      --soil:      #4a3323;
+      --tan:       #c4a882;
+      --cream:     #f5efe6;
+      --warm-bg:   #faf6f0;
+      --moss:      #6e7d5b;
+      --moss-lt:   #8fa077;
+      --stone:     #a09080;
+      --rust:      #b0673a;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      background: #cfc0ae;
+      font-family: 'Noto Sans TC', 'Helvetica Neue', sans-serif;
+      color: var(--soil);
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone-wrap {
+      width: 100%;
+      max-width: 430px;
+      background: var(--warm-bg);
+      min-height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ===== MUSIC BTN ===== */
+    .music-btn {
+      position: fixed; top:18px; right:18px; z-index:999;
+      width:46px; height:46px;
+      background: rgba(74,51,35,0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(196,168,130,0.45);
+      border-radius: 50%;
+      color: var(--tan);
+      font-size:19px;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition: background 0.3s;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.25);
+    }
+    .music-btn:hover { background: rgba(74,51,35,0.92); }
+
+    /* ===== HERO ===== */
+    .hero {
+      position:relative;
+      height:100vh; min-height:620px;
+      overflow:hidden;
+    }
+    .hero-bg {
+      position:absolute; inset:0;
+      background-image: url('Pic/hero-bg.jpg');
+      background-size:cover; background-position:center 30%;
+      animation: heroZoom 22s ease-in-out infinite alternate;
+    }
+    @keyframes heroZoom {
+      from { transform:scale(1.04); }
+      to   { transform:scale(1.11); }
+    }
+    .hero-overlay {
+      position:absolute; inset:0;
+      background: linear-gradient(
+        to bottom,
+        rgba(40,22,8,0.28) 0%,
+        rgba(40,22,8,0.08) 28%,
+        rgba(40,22,8,0.45) 68%,
+        rgba(40,22,8,0.82) 100%
+      );
+    }
+    .hero-content {
+      position:relative; z-index:2;
+      height:100%;
+      display:flex; flex-direction:column; justify-content:flex-end;
+      padding: 0 30px 48px;
+      color:#fff;
+    }
+    .hero-tag {
+      font-size:11px; letter-spacing:4.5px; text-transform:uppercase;
+      color: var(--tan); margin-bottom:14px;
+      opacity:0; animation: fadeUp 1s 0.3s forwards;
+      font-family:'Nunito',sans-serif; font-weight:600;
+    }
+    .hero-names {
+      font-family:'Lora',serif; font-size:50px; font-weight:600;
+      line-height:1.12; letter-spacing:-0.5px;
+      opacity:0; animation: fadeUp 1s 0.65s forwards;
+    }
+    .hero-names em { font-style:italic; color:#f2e8d8; }
+    .hero-amp {
+      color:var(--tan); font-style:italic; font-size:58px;
+    }
+    .hero-date {
+      font-family:'Nunito',sans-serif; font-size:15px; font-weight:500;
+      letter-spacing:3px; color:#ddd0bc; margin-top:12px;
+      opacity:0; animation: fadeUp 1s 0.95s forwards;
+    }
+    .hero-scroll {
+      margin-top:32px;
+      display:flex; align-items:center; gap:12px;
+      opacity:0; animation: fadeUp 1s 1.4s forwards;
+      cursor:pointer;
+    }
+    .hero-scroll span {
+      font-size:10px; letter-spacing:3.5px; text-transform:uppercase;
+      color:rgba(255,255,255,0.55); font-family:'Nunito',sans-serif;
+    }
+    .scroll-line {
+      width:44px; height:1px;
+      background:rgba(255,255,255,0.3);
+      position:relative; overflow:hidden;
+    }
+    .scroll-line::after {
+      content:''; position:absolute; top:0; left:-100%;
+      width:100%; height:100%; background:var(--tan);
+      animation: lineSlide 2s 1.6s infinite;
+    }
+    @keyframes lineSlide { to { left:100%; } }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(22px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ===== COUNTDOWN ===== */
+    .countdown-block {
+      background: var(--soil);
+      padding: 52px 20px 48px;
+      text-align:center;
+      position:relative; overflow:hidden;
+    }
+    .countdown-block::before {
+      content:''; position:absolute; inset:0;
+      background-image: url('Pic/countdown.jpg');
+      background-size:cover; background-position:center;
+      opacity:0.14;
+    }
+    .countdown-block > * { position:relative; z-index:1; }
+
+    .cd-label {
+      font-family:'Nunito',sans-serif; font-weight:600;
+      font-size:11px; letter-spacing:5px; text-transform:uppercase;
+      color:var(--tan); margin-bottom:30px; opacity:0.85;
+    }
+    .cd-grid {
+      display:flex; justify-content:center; align-items:center; gap:6px;
+      margin-bottom:22px; flex-wrap:nowrap;
+    }
+    .cd-item {
+      background: rgba(255,255,255,0.07);
+      border: 1.5px solid rgba(196,168,130,0.25);
+      border-radius:14px;
+      padding: 18px 6px 14px;
+      flex:1; max-width:82px;
+    }
+    .cd-num {
+      font-family:'Lora',serif; font-size:40px; font-weight:600;
+      color:#fff; line-height:1; display:block;
+    }
+    .cd-unit {
+      font-family:'Nunito',sans-serif; font-weight:600;
+      font-size:9px; letter-spacing:1.5px;
+      color:var(--tan); margin-top:8px; display:block;
+    }
+    .cd-colon {
+      font-size:30px; color:rgba(196,168,130,0.4);
+      line-height:1; padding-bottom:22px;
+      font-family:'Lora',serif;
+    }
+    .cd-sub {
+      font-family:'Noto Sans TC',sans-serif; font-size:13px;
+      color:rgba(255,255,255,0.4); letter-spacing:2px;
+    }
+
+    /* ===== PHOTO FULL ===== */
+    .photo-full {
+      height:72vw; max-height:310px;
+      background-size:cover; background-position:center;
+      position:relative;
+    }
+    .photo-full-caption {
+      position:absolute; bottom:0; left:0; right:0;
+      padding: 55px 24px 18px;
+      background: linear-gradient(transparent, rgba(40,22,8,0.68));
+      color:#f0e6d8; font-family:'Lora',serif;
+      font-size:14px; font-style:italic; letter-spacing:1px;
+    }
+
+    /* ===== SECTION HELPERS ===== */
+    .section-eyebrow {
+      font-family:'Nunito',sans-serif; font-weight:700;
+      font-size:10px; letter-spacing:5px; text-transform:uppercase;
+      color:var(--moss); margin-bottom:8px;
+    }
+    .section-title {
+      font-family:'Lora',serif; font-size:28px; font-weight:500;
+      color:var(--soil); margin-bottom:26px; line-height:1.35;
+    }
+    .section-title em { font-style:italic; color:var(--bark); }
+
+    /* ===== INFO BLOCK ===== */
+    .info-block {
+      padding: 52px 22px 48px;
+      background: var(--cream);
+      position:relative;
+    }
+    .info-block::before {
+      content:''; position:absolute; top:0; left:0; right:0;
+      height:3px;
+      background: linear-gradient(90deg, transparent, var(--bark-lt), transparent);
+    }
+    .info-card {
+      background:#fff;
+      border-radius:14px;
+      padding: 16px 16px;
+      margin-bottom:14px;
+      border: 1px solid rgba(107,76,53,0.1);
+      display:flex; flex-direction:column; gap:0;
+      box-shadow: 0 2px 10px rgba(74,51,35,0.06);
+    }
+    
+    .info-card-header {
+      display:flex; gap:20px; align-items:center;
+      margin-bottom:0;
+    }
+    .info-icon {
+      font-size:20px; width:40px; height:40px;
+      background:var(--cream); border-radius:10px;
+      display:flex; align-items:center; justify-content:center;
+      flex-shrink:0;
+    }
+    .info-label {
+      font-family:'Nunito',sans-serif; font-weight:700;
+      font-size:14px; letter-spacing:3px; text-transform:uppercase;
+      color:var(--moss);
+    }
+    
+    .info-body {
+      padding-left:60px; 
+      margin-top:6px;
+    }
+    .info-body p { font-size:15px; color:var(--soil); line-height:1.75; }
+
+    /* ===== MINI CALENDAR ===== */
+    .mini-cal {
+      background: var(--warm-bg);
+      border-radius:12px;
+      border: 1px solid rgba(107,76,53,0.12);
+      overflow:hidden;
+      margin:16px auto;
+      max-width:300px;
+    }
+    .cal-header {
+      background: var(--bark);
+      color:#fff; text-align:center;
+      padding: 11px 0;
+      font-family:'Nunito',sans-serif; font-weight:700;
+      font-size:12px; letter-spacing:2px; text-transform:uppercase;
+    }
+    .cal-grid {
+      display:grid; grid-template-columns:repeat(7,1fr);
+      padding: 10px 6px 14px; gap:2px;
+    }
+    .cal-day-name {
+      text-align:center; font-size:10px; font-weight:700;
+      color:var(--stone); letter-spacing:0.5px; padding:4px 0;
+      font-family:'Nunito',sans-serif;
+    }
+    .cal-day {
+      text-align:center;
+      font-size:13px;
+      font-family:'Nunito',sans-serif;
+      font-weight:500;
+
+      width:30px;
+      height:30px;
+      line-height:30px;
+      margin:0 auto;
+
+      border-radius:7px;
+      color:var(--soil);
+    }
+    .cal-day.empty { color:transparent; pointer-events:none; }
+    .cal-day.sun { color:#c0503a; }
+    .cal-day.highlight {
+      background: var(--bark);
+      color:#fff !important;
+      font-weight:700;
+      border-radius:50%;
+      box-shadow: 0 3px 10px rgba(107,76,53,0.35);
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    /* ===== GOOGLE MAP ===== */
+    .map-wrap {
+      width:100%; height:200px;
+      border-radius:12px; overflow:hidden;
+      border: 1px solid rgba(107,76,53,0.12);
+      margin-top:14px;
+    }
+    .map-wrap iframe { width:100%; height:100%; border:0; display:block; }
+
+    /* ===== PHOTO GRID ===== */
+    .photo-grid-block {
+      padding: 50px 16px 52px;
+      background: var(--soil);
+      position:relative; overflow:hidden;
+    }
+    .photo-grid-block::before {
+      content:''; position:absolute; inset:0;
+      background-image:url('Pic/photo-grid-block.jpg');
+      background-size:cover; opacity:0.07;
+    }
+    .photo-grid-block > * { position:relative; z-index:1; }
+    .photo-grid-block .section-eyebrow { color:var(--tan); opacity:0.8; }
+    .photo-grid-block .section-title { color:#f2e8d8; }
+
+    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .g-img { border-radius:12px; overflow:hidden; aspect-ratio:3/4; }
+    .g-img.tall { grid-row:span 2; aspect-ratio:auto; }
+    .g-img img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.6s; }
+    .g-img:hover img { transform:scale(1.04); }
+
+    /* ===== TIMELINE (inside info-card) ===== */
+    .timeline-card {
+      margin-top:14px;
+      position:relative;
+    }
+    .timeline-card::before {
+      content:''; position:absolute; left:19px; top:6px; bottom:6px;
+      width:1.5px;
+      background:linear-gradient(to bottom,var(--tan),var(--moss));
+      opacity:0.35;
+    }
+    .tl-item { display:flex; gap:16px; margin-bottom:20px; align-items:flex-start; }
+    .tl-item:last-child { margin-bottom:0; }
+    .tl-dot {
+      width:38px; height:38px;
+      background:var(--cream);
+      border:2px solid var(--tan); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:15px; flex-shrink:0; position:relative; z-index:1;
+    }
+    .tl-content strong {
+      display:block;
+      font-family:'Nunito',sans-serif; font-weight:700;
+      font-size:11px; letter-spacing:2.5px; color:var(--moss);
+      text-transform:uppercase; margin-bottom:2px;
+    }
+    .tl-content p { font-size:14px; color:var(--soil); line-height:1.55; }
+
+    /* ===== FORM ===== */
+    .form-block {
+      padding:52px 26px 64px;
+      background:var(--soil);
+      position:relative; overflow:hidden;
+    }
+    .form-block::before {
+      content:''; position:absolute; inset:0;
+      background-image:url('Pic/form-block.jpg');
+      background-size:cover; background-position:center; opacity:0.1;
+    }
+    .form-block > * { position:relative; z-index:1; }
+    .form-block .section-eyebrow { color:var(--tan); opacity:0.8; }
+    .form-block .section-title { color:#f2e8d8; }
+
+    .form-field { margin-bottom:16px; }
+    .form-field > label {
+      display:block;
+      font-family:'Nunito',sans-serif; font-weight:700;
+      font-size:10px; letter-spacing:3.5px; text-transform:uppercase;
+      color:var(--tan); margin-bottom:9px; opacity:0.85;
+    }
+    .form-field input[type="text"],
+    .form-field input[type="number"] {
+      width:100%; padding:14px 16px;
+      background:rgba(255,255,255,0.08);
+      border:1.5px solid rgba(196,168,130,0.28);
+      border-radius:12px;
+      color:#f2e8d8; font-size:16px;
+      font-family:'Noto Sans TC',sans-serif;
+      outline:none; transition:border-color 0.3s;
+    }
+    .form-field input::placeholder { color:rgba(242,232,216,0.3); }
+    .form-field input:focus { border-color:var(--tan); }
+
+    .radio-row { display:flex; gap:10px; }
+    .radio-opt { flex:1; }
+    .radio-opt input { display:none; }
+    .radio-opt label {
+      display:flex; align-items:center; justify-content:center;
+      padding:13px; border-radius:12px;
+      background:rgba(255,255,255,0.07);
+      border:1.5px solid rgba(196,168,130,0.25);
+      font-size:15px; font-family:'Noto Sans TC',sans-serif;
+      color:rgba(242,232,216,0.65);
+      cursor:pointer; transition:all 0.25s;
+    }
+    .radio-opt input:checked + label {
+      background:rgba(196,168,130,0.18);
+      border-color:var(--tan); color:var(--tan);
+    }
+    .submit-btn {
+      width:100%; padding:18px; margin-top:26px;
+      background: linear-gradient(135deg,var(--bark-lt) 0%,var(--bark) 100%);
+      color:#fff; border:none; border-radius:14px;
+      font-size:15px; font-family:'Nunito',sans-serif; font-weight:700;
+      letter-spacing:3px; text-transform:uppercase;
+      cursor:pointer; transition:all 0.3s;
+      box-shadow:0 4px 20px rgba(107,76,53,0.38);
+    }
+    .submit-btn:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(107,76,53,0.45); }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background:#1e110a;
+      padding:52px 28px 72px;
+      text-align:center; color:rgba(242,232,216,0.45);
+    }
+    .footer-names {
+      font-family:'Lora',serif; font-size:32px; font-style:italic;
+      color:var(--tan); margin-bottom:8px; opacity:0.88;
+    }
+    .footer-date {
+      font-family:'Nunito',sans-serif; font-weight:500;
+      font-size:12px; letter-spacing:4px; margin-bottom:30px;
+    }
+    .footer-line {
+      width:50px; height:1px;
+      background:var(--tan); margin:0 auto 22px; opacity:0.3;
+    }
+    .footer-msg { font-size:13.5px; line-height:2; font-style:italic; }
+
+    /* ===== TOAST ===== */
+    .toast {
+      position:fixed; bottom:30px; left:50%;
+      transform:translateX(-50%) translateY(80px);
+      background:var(--moss); color:#fff;
+      padding:14px 28px; border-radius:100px;
+      font-size:14px; z-index:9999;
+      transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      white-space:nowrap; box-shadow:0 8px 30px rgba(0,0,0,0.3);
+      font-family:'Noto Sans TC',sans-serif;
+    }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* ===== REVEAL ===== */
+    .reveal {
+      opacity:0; transform:translateY(28px);
+      transition:opacity 0.85s, transform 0.85s;
+    }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+  </style>
+</head>
+<body>
+
+  
+  <audio id="bgMusic" loop>
+    <source src="background_music.mp3" type="audio/mpeg">
+  </audio>
+
+  <button class="music-btn" id="musicBtn">♫</button>
+
+  <div class="phone-wrap">
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <div class="hero-tag">Wedding Invitation · 婚禮邀請函</div>
+        <div class="hero-names">
+          <em>Lukas</em>
+          <span class="hero-amp"> &amp; </span>
+          <em>Venna</em>
+        </div>
+        <div class="hero-date">September 27 · 2026 · Taipei</div>
+      </div>
+    </section>
+
+    <!-- ===== COUNTDOWN ===== -->
+    <section class="countdown-block">
+      <div class="cd-label">Wedding Countdown · 婚禮倒數</div>
+      <div class="cd-grid">
+        <div class="cd-item">
+          <span class="cd-num" id="cd-days">--</span>
+          <span class="cd-unit">天 Days</span>
+        </div>
+        <span class="cd-colon">:</span>
+        <div class="cd-item">
+          <span class="cd-num" id="cd-hours">--</span>
+          <span class="cd-unit">時 Hours</span>
+        </div>
+        <span class="cd-colon">:</span>
+        <div class="cd-item">
+          <span class="cd-num" id="cd-mins">--</span>
+          <span class="cd-unit">分 Mins</span>
+        </div>
+        <span class="cd-colon">:</span>
+        <div class="cd-item">
+          <span class="cd-num" id="cd-secs">--</span>
+          <span class="cd-unit">秒 Secs</span>
+        </div>
+      </div>
+      <div class="cd-sub">距離那個美好的日子</div>
+    </section>
+
+    <!-- ===== PHOTO 1 ===== -->
+    <div class="photo-full block reveal"
+      style="background-image:url('Pic/photo-full.jpg')">
+      <div class="photo-full-caption">在草地與陽光下，許下一生的承諾</div>
+    </div>
+
+    <!-- ===== WEDDING INFO ===== -->
+    <section class="info-block reveal">
+      <div class="section-eyebrow">Event Details</div>
+      <div class="section-title"><em>婚禮資訊</em></div>
+
+      
+      <div class="info-card">
+        <div class="info-card-header">
+          <div class="info-icon">📅</div>
+          <span class="info-label">Date · 日期</span>
+        </div>
+        <div class="info-body">
+          <p>2026 年 9 月 27 日 星期天</p>
+          <p style="font-size: 12px;"><em>溫馨提醒：隔天教師節連假</em></p>
+        </div>
+        <div class="mini-cal">
+          <div class="cal-header">September 2026 · 九月</div>
+          <div class="cal-grid">
+            <div class="cal-day-name">日</div><div class="cal-day-name">一</div>
+            <div class="cal-day-name">二</div><div class="cal-day-name">三</div>
+            <div class="cal-day-name">四</div><div class="cal-day-name">五</div>
+            <div class="cal-day-name">六</div>
+            
+            <div class="cal-day empty">-</div>
+            <div class="cal-day empty">-</div>
+            <div class="cal-day">1</div>
+            <div class="cal-day">2</div>
+            <div class="cal-day">3</div>
+            <div class="cal-day">4</div>
+            <div class="cal-day sun">5</div>
+            <div class="cal-day sun">6</div>
+            <div class="cal-day">7</div><div class="cal-day">8</div>
+            <div class="cal-day">9</div><div class="cal-day">10</div>
+            <div class="cal-day">11</div><div class="cal-day sun">12</div>
+            <div class="cal-day sun">13</div>
+            <div class="cal-day">14</div><div class="cal-day">15</div>
+            <div class="cal-day">16</div><div class="cal-day">17</div>
+            <div class="cal-day">18</div><div class="cal-day sun">19</div>
+            <div class="cal-day sun">20</div>
+            <div class="cal-day">21</div><div class="cal-day">22</div>
+            <div class="cal-day">23</div><div class="cal-day">24</div>
+            <div class="cal-day sun">25</div><div class="cal-day sun">26</div>
+            <div class="cal-day sun"><div class="cal-day highlight">27</div></div>
+            <div class="cal-day sun">28</div><div class="cal-day">29</div>
+            <div class="cal-day">30</div>
+            <div class="cal-day empty">-</div>
+            <div class="cal-day empty">-</div>
+            <div class="cal-day empty">-</div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="info-card">
+        <div class="info-card-header">
+          <div class="info-icon">🕔</div>
+          <span class="info-label">Time · 時間</span>
+        </div>
+        <div class="info-body" style="padding-left:50px; margin-top:8px;">
+          <div class="timeline-card">
+            <div class="tl-item">
+              <div class="tl-dot">🌿</div>
+              <div class="tl-content">
+                <strong>17:00</strong>
+                <p>賓客入場、迎賓茶點時間</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot">💐</div>
+              <div class="tl-content">
+                <strong>18:00</strong>
+                <p>婚禮儀式正式開始</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot">🍽️</div>
+              <div class="tl-content">
+                <strong>18:30</strong>
+                <p>美式晚宴開席、酒水暢飲</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot">🥂</div>
+              <div class="tl-content">
+                <strong>19:45</strong>
+                <p>香檳慶賀、與賓客合影留念</p>
+              </div>
+            </div>
+            <div class="tl-item">
+              <div class="tl-dot">🎇</div>
+              <div class="tl-content">
+                <strong>20:00</strong>
+                <p>戶外活動節目</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="info-card">
+        <div class="info-card-header">
+          <div class="info-icon">📍</div>
+          <span class="info-label">Venue · 地點</span>
+        </div>
+        <div class="info-body">
+          <p style="font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;letter-spacing:1px;color:var(--bark);margin-bottom:4px;">CHALET V</p>
+          <p>104 臺北市中山區植福路 8 號 1F</p>
+          <p style="font-size:13px;color:var(--stone);">（典華幸福大樓側邊木門處）</p>
+        </div>
+        <div class="map-wrap" style="margin:12px 0 0;">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.5353286253426!2d121.55505520000001!3d25.083733899999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442ad7e7479d027%3A0x5b6a14ae3fb2e3dc!2sCHALET%20V!5e0!3m2!1szh-TW!2stw!4v1773212628408!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+
+      
+      <div class="info-card">
+        <div class="info-card-header">
+          <div class="info-icon">🚌</div>
+          <span class="info-label">Transit · 交通</span>
+        </div>
+        <div class="info-body">
+          <p>捷運大直站，步行 2 分鐘可達</p>
+        </div>
+      </div>
+
+      
+      <div class="info-card">
+        <div class="info-card-header">
+          <div class="info-icon">🚗</div>
+          <span class="info-label">Parking · 停車</span>
+        </div>
+        <br>
+        <div class="info-body" style="padding-left: 0px;">
+          <p>📍USPACE大直典華停車場</p>
+        </div>
+        <div class="map-wrap" style="margin:12px 0 0;">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.5353286253426!2d121.55505520000001!3d25.083733899999995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442adb8e219d2a3%3A0xd67f4c3f69a28ec3!2zVVNQQUNF5aSn55u05YW46I-v5YGc6LuK5aC0!5e0!3m2!1szh-TW!2stw!4v1773216238950!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <br>
+        <div class="info-body" style="padding-left: 0px;">
+          <p>📍台灣聯通停車場-敬業場</p>
+        </div>
+        <div class="map-wrap" style="margin:12px 0 0;">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.545711241007!2d121.55430609999999!3d25.0833822!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442ad00093fe697%3A0xe424a28c0c1a3886!2z5Y-w54Gj6IGv6YCa5YGc6LuK5aC0LeaVrOalreWgtA!5e0!3m2!1szh-TW!2stw!4v1773216206836!5m2!1szh-TW!2stw" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PHOTO GRID ===== -->
+    <section class="photo-grid-block reveal">
+      <div class="section-eyebrow">Moments</div>
+      <div class="section-title" style="margin-bottom:24px;"><em>珍貴的回憶</em></div>
+      <div class="grid-2">
+        <div class="g-img tall">
+          <img src="Pic/photo-grid.jpg" alt="wedding">
+        </div>
+        <div class="g-img">
+          <img src="Pic/photo-grid2.jpg" alt="wedding">
+        </div>
+        <div class="g-img">
+          <img src="Pic/photo-grid3.jpg" alt="wedding">
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== RSVP FORM ===== -->
+    <section class="form-block reveal">
+      <div class="section-eyebrow">RSVP</div>
+      <div class="section-title"><em>賓客回覆</em></div>
+      <form id="guestForm">
+        <div class="form-field">
+          <label>Your Name · 姓名</label>
+          <input type="text" name="guestName" placeholder="Name · 您的姓名" required>
+        </div>
+        <div class="form-field">
+          <label>Attendance · 出席</label>
+          <div class="radio-row">
+            <div class="radio-opt">
+              <input type="radio" name="attend" id="r-yes" value="Yes 是" required>
+              <label for="r-yes">✓ 出席</label>
+            </div>
+            <div class="radio-opt">
+              <input type="radio" name="attend" id="r-no" value="No 否">
+              <label for="r-no">✕ 不出席</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-field" id="field-guestCount">
+          <label>Guest Count · 出席人數</label>
+          <input type="number" id="guestCount" name="guestCount" min="1" max="10" placeholder="Including yourself · 請包含自己" required>
+        </div>
+        <div id="meal-fields-wrap"></div>
+        <div class="form-field">
+          <label>Message · 備註</label>
+          <input type="text" name="message" placeholder="Message for the Couple · 想給我們的話">
+        </div>
+        <button class="submit-btn" type="submit">送出回覆 · RSVP</button>
+      </form>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+      <div class="footer-names">Lukas &amp; Venna</div>
+      <div class="footer-date">September 27, 2026</div>
+      <div class="footer-line"></div>
+      <p class="footer-msg">感謝您撥冗出席，<br>期待在那個美好的夜晚與您共聚。</p>
+    </footer>
+
+  </div>
+
+  <div class="toast" id="toast">✓ 回覆已送出，感謝您！</div>
+
+    <script>
+    /* ===== COUNTDOWN ===== */
+    const weddingDate = new Date('2026-09-27T17:00:00+08:00');
+    function pad(n) { return String(n).padStart(2,'0'); }
+    function updateCountdown() {
+      const diff = weddingDate - new Date();
+      if (diff <= 0) {
+        ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => document.getElementById(id).textContent='00');
+        return;
+      }
+      document.getElementById('cd-days').textContent  = pad(Math.floor(diff/(1000*60*60*24)));
+      document.getElementById('cd-hours').textContent = pad(Math.floor((diff%(1000*60*60*24))/(1000*60*60)));
+      document.getElementById('cd-mins').textContent  = pad(Math.floor((diff%(1000*60*60))/(1000*60)));
+      document.getElementById('cd-secs').textContent  = pad(Math.floor((diff%(1000*60))/1000));
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    /* ===== FORM ===== */
+    document.getElementById('guestForm').onsubmit = e => {
+      e.preventDefault();
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    };
+
+    /* ===== SCROLL REVEAL ===== */
+    const revealObs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+    /* ===== MUSIC ===== */
+    const bgMusic = document.getElementById('bgMusic');
+    let musicOn    = false;
+    let userPaused = false;
+    let audioReady = false;
+    const musicBtn = document.getElementById('musicBtn');
+
+    bgMusic.addEventListener('canplaythrough', () => { audioReady = true; }, { once: true });
+
+    function playMusic() {
+      if (musicOn || userPaused || !audioReady) return;
+      bgMusic.play().then(() => {
+        musicOn = true;
+        musicBtn.textContent = '♫';
+      }).catch(() => {});
+    }
+
+    ['scroll', 'touchstart', 'touchmove', 'pointerdown'].forEach(evt => {
+      window.addEventListener(evt, playMusic, { passive: true });
+    });
+
+    musicBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (musicOn) {
+        bgMusic.pause();
+        musicOn    = false;
+        userPaused = true;
+        musicBtn.textContent = '♪';
+      } else {
+        userPaused = false;
+        bgMusic.play().then(() => {
+          musicOn = true;
+          musicBtn.textContent = '♫';
+        }).catch(() => {});
+      }
+    });
+
+    /* ===== MEAL OPTIONS (edit here to change choices) ===== */
+    const MEALS = [
+      { value: 'Steak',      label: 'Steak<br>牛排' },
+      { value: 'Seafood',    label: 'Seafood<br>海鮮' },
+      { value: 'Vegetarian', label: 'Vegetarian<br>素食' }
+    ];
+
+    const fieldGuestCount = document.getElementById('field-guestCount');
+    const mealWrap        = document.getElementById('meal-fields-wrap');
+    const guestCountInput = document.getElementById('guestCount');
+
+    function buildMealField(index) {
+      const suffix = index === 1 ? '' : ` (${index})`;
+      const div = document.createElement('div');
+      div.className = 'form-field';
+      const lbl = document.createElement('label');
+      lbl.textContent = `Meal Choice · 主餐選擇${suffix}`;
+      div.appendChild(lbl);
+      const row = document.createElement('div');
+      row.className = 'radio-row';
+      MEALS.forEach(m => {
+        const id  = `meal-${index}-${m.value}`;
+        const opt = document.createElement('div');
+        opt.className = 'radio-opt';
+        const inp = document.createElement('input');
+        inp.type = 'radio'; inp.name = `meal_${index}`;
+        inp.id = id; inp.value = m.value; inp.required = true;
+        const ol  = document.createElement('label');
+        ol.htmlFor = id; ol.innerHTML = m.label;
+        opt.appendChild(inp); opt.appendChild(ol);
+        row.appendChild(opt);
+      });
+      div.appendChild(row);
+      return div;
+    }
+
+    function syncMealFields(count) {
+      const n       = Math.min(Math.max(parseInt(count) || 1, 1), 10);
+      const current = mealWrap.children.length;
+      if (n > current) {
+        for (let i = current + 1; i <= n; i++) mealWrap.appendChild(buildMealField(i));
+      } else if (n < current) {
+        for (let i = current; i > n; i--) mealWrap.removeChild(mealWrap.lastElementChild);
+      }
+    }
+
+    syncMealFields(1);
+
+    guestCountInput.addEventListener('input', () => {
+      const checked = document.querySelector('input[name="attend"]:checked');
+      if (!checked || checked.value.startsWith('Yes')) syncMealFields(guestCountInput.value);
+    });
+
+    /* ===== ATTENDANCE TOGGLE ===== */
+    function setAttending(attending) {
+      fieldGuestCount.style.display = attending ? '' : 'none';
+      mealWrap.style.display        = attending ? '' : 'none';
+      guestCountInput.required      = attending;
+      if (!attending) {
+        guestCountInput.value = '';
+        syncMealFields(1);
+      } else {
+        syncMealFields(parseInt(guestCountInput.value) || 1);
+      }
+    }
+
+    document.querySelectorAll('input[name="attend"]').forEach(r => {
+      r.addEventListener('change', () => setAttending(r.value.startsWith('Yes')));
+    });
+
+    /* ===== AUTO-SCROLL ===== */
+    const SCROLL_SPEED = 25;
+    let autoScrolling = false;
+    let rafId = null;
+    let idleTimer = null;
+    let scrollAccum = 0;
+
+    function startAutoScroll() {
+      if (autoScrolling) return;
+      autoScrolling = true;
+      let lastTs = null;
+
+      function step(ts) {
+        if (!autoScrolling) return;
+        if (lastTs !== null) {
+          scrollAccum += (ts - lastTs) / 1000 * SCROLL_SPEED;
+          if (scrollAccum >= 1) {
+            const px = Math.floor(scrollAccum);
+            window.scrollBy(0, px);
+            scrollAccum -= px;
+          }
+          if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) {
+            autoScrolling = false;
+            return;
+          }
+        }
+        lastTs = ts;
+        rafId = requestAnimationFrame(step);
+      }
+      rafId = requestAnimationFrame(step);
+    }
+
+    function stopAutoScroll() {
+      autoScrolling = false;
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+
+    function onUserActivity() {
+      stopAutoScroll();
+      clearTimeout(idleTimer);
+      idleTimer = setTimeout(startAutoScroll, 3000);
+    }
+
+    ['touchstart','touchmove','mousedown','wheel','keydown'].forEach(evt => {
+      window.addEventListener(evt, onUserActivity, { passive: true });
+    });
+
+    setTimeout(startAutoScroll, 1000);
+  </script>
+</body>
+</html>
