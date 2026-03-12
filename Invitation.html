@@ -66,6 +66,25 @@
     }
     .music-btn:hover { background: rgba(74,51,35,0.92); }
 
+    /* ===== SCROLL BTN ===== */
+    .scroll-btn {
+      position: fixed; top:72px; right:18px; z-index:999;
+      width:46px; height:46px;
+      background: rgba(74,51,35,0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(196,168,130,0.45);
+      border-radius: 50%;
+      color: var(--tan);
+      font-size:18px;
+      line-height:46px;
+      cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+      transition: background 0.3s;
+      box-shadow: 0 3px 14px rgba(0,0,0,0.25);
+    }
+    .scroll-btn:hover { background: rgba(74,51,35,0.92); }
+
     /* ===== HERO ===== */
     .hero {
       position:relative;
@@ -435,7 +454,13 @@
 
     .radio-row { display:flex; gap:10px; }
     .radio-opt { flex:1; }
-    .radio-opt input { display:none; }
+    .radio-opt input {
+      clip: rect(0 0 0 0);
+      height: 1px; width: 1px;
+      position: absolute;
+      overflow: hidden;
+      margin: 0;
+    }
     .radio-opt label {
       display:flex; align-items:center; justify-content:center;
       padding:13px; border-radius:12px;
@@ -509,6 +534,10 @@
   </audio>
 
   <button class="music-btn" id="musicBtn">♫</button>
+  <button class="scroll-btn" id="scrollBtn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                              <line x1="8" y1="2" x2="8" y2="12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                              <polyline points="4,9 8,13 12,9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg></button>
 
   <div id="scroll-container">
   <div class="phone-wrap">
@@ -552,7 +581,7 @@
           <span class="cd-unit">秒 Secs</span>
         </div>
       </div>
-      <div class="cd-sub">距離那個美好的日子</div>
+      <div class="cd-sub">距離那個美好的日子<br>Countdown to the Big Day</div>
     </section>
 
     <!-- ===== PHOTO 1 ===== -->
@@ -637,7 +666,7 @@
               <div class="tl-content">
                 <strong>17:00</strong>
                 <p>賓客入場、迎賓簽到</p>
-                <p style="font-size:13px;color:var(--stone);">Guest Arrival & Registration</p>
+                <p style="font-size:13px;color:var(--stone);">Guest Arrival</p>
               </div>
             </div>
             <div class="tl-item">
@@ -754,7 +783,7 @@
           <label>Guest Count · 出席人數</label>
           <input type="number" id="guestCount" name="guestCount" min="1" max="10" placeholder="Including yourself · 請包含自己" required>
         </div>
-        <div id="meal-fields-wrap"></div>
+        <div id="guest-fields-wrap"></div>
         <div class="form-field">
           <label>Message · 備註</label>
           <input type="text" name="message" placeholder="Message for the Couple · 想給我們的話">
@@ -768,7 +797,7 @@
       <div class="footer-names">Lukas &amp; Venna</div>
       <div class="footer-date">September 27, 2026</div>
       <div class="footer-line"></div>
-      <p class="footer-msg">感謝您撥冗出席，<br>期待在那個美好的夜晚與您共聚。</p>
+      <p class="footer-msg">感謝您撥冗出席，<br>期待在那個美好的夜晚與您共聚。<br>Thank you for celebrating with us.<br>We look forward to seeing you.</p>
     </footer>
 
   </div>
@@ -797,6 +826,10 @@
     /* ===== FORM ===== */
     document.getElementById('guestForm').onsubmit = e => {
       e.preventDefault();
+      if (!e.target.checkValidity()) {
+        e.target.reportValidity();
+        return;
+      }
       const toast = document.getElementById('toast');
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3500);
@@ -851,61 +884,87 @@
     ];
 
     const fieldGuestCount = document.getElementById('field-guestCount');
-    const mealWrap        = document.getElementById('meal-fields-wrap');
+    const guestFieldsWrap = document.getElementById('guest-fields-wrap');
     const guestCountInput = document.getElementById('guestCount');
 
-    function buildMealField(index) {
-      const suffix = index === 1 ? '' : ` (${index})`;
-      const div = document.createElement('div');
-      div.className = 'form-field';
-      const lbl = document.createElement('label');
-      lbl.textContent = `Meal Choice · 主餐選擇${suffix}`;
-      div.appendChild(lbl);
+    function buildGuestGroup(index) {
+      const frag = document.createDocumentFragment();
+
+      if (index > 1) {
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'form-field';
+        const nameLbl = document.createElement('label');
+        nameLbl.textContent = `Guest Name · 姓名 (${index})`;
+        nameDiv.appendChild(nameLbl);
+        const nameInp = document.createElement('input');
+        nameInp.type = 'text'; nameInp.name = `guestName_${index}`;
+        nameInp.placeholder = `Name · 第${index}位姓名`; nameInp.required = true;
+        nameDiv.appendChild(nameInp);
+        frag.appendChild(nameDiv);
+      }
+
+      const mealSuffix = index === 1 ? '' : ` (${index})`;
+      const mealDiv = document.createElement('div');
+      mealDiv.className = 'form-field';
+      const mealLbl = document.createElement('label');
+      mealLbl.textContent = `Meal Choice · 主餐選擇${mealSuffix}`;
+      mealDiv.appendChild(mealLbl);
       const row = document.createElement('div');
       row.className = 'radio-row';
-      MEALS.forEach(m => {
+      MEALS.forEach((m, i) => {
         const id  = `meal-${index}-${m.value}`;
         const opt = document.createElement('div');
         opt.className = 'radio-opt';
         const inp = document.createElement('input');
         inp.type = 'radio'; inp.name = `meal_${index}`;
-        inp.id = id; inp.value = m.value; inp.required = true;
+        inp.id = id; inp.value = m.value;
+        if (i === 0) inp.required = true;
         const ol  = document.createElement('label');
         ol.htmlFor = id; ol.innerHTML = m.label;
         opt.appendChild(inp); opt.appendChild(ol);
         row.appendChild(opt);
       });
-      div.appendChild(row);
-      return div;
+      mealDiv.appendChild(row);
+      frag.appendChild(mealDiv);
+
+      const wrapper = document.createElement('div');
+      wrapper.dataset.guestIndex = index;
+      wrapper.appendChild(frag);
+      return wrapper;
     }
 
-    function syncMealFields(count) {
+    function syncGuestFields(count) {
       const n       = Math.min(Math.max(parseInt(count) || 1, 1), 10);
-      const current = mealWrap.children.length;
+      const current = guestFieldsWrap.children.length;
       if (n > current) {
-        for (let i = current + 1; i <= n; i++) mealWrap.appendChild(buildMealField(i));
+        for (let i = current + 1; i <= n; i++) guestFieldsWrap.appendChild(buildGuestGroup(i));
       } else if (n < current) {
-        for (let i = current; i > n; i--) mealWrap.removeChild(mealWrap.lastElementChild);
+        for (let i = current; i > n; i--) guestFieldsWrap.removeChild(guestFieldsWrap.lastElementChild);
       }
     }
 
-    syncMealFields(1);
+    syncGuestFields(1);
 
     guestCountInput.addEventListener('input', () => {
       const checked = document.querySelector('input[name="attend"]:checked');
-      if (!checked || checked.value.startsWith('Yes')) syncMealFields(guestCountInput.value);
+      if (!checked || checked.value.startsWith('Yes')) syncGuestFields(guestCountInput.value);
     });
 
     /* ===== ATTENDANCE TOGGLE ===== */
     function setAttending(attending) {
-      fieldGuestCount.style.display = attending ? '' : 'none';
-      mealWrap.style.display        = attending ? '' : 'none';
-      guestCountInput.required      = attending;
+      fieldGuestCount.style.display   = attending ? '' : 'none';
+      guestFieldsWrap.style.display   = attending ? '' : 'none';
+      guestCountInput.required        = attending;
       if (!attending) {
         guestCountInput.value = '';
-        syncMealFields(1);
+        syncGuestFields(1);
+        guestFieldsWrap.querySelectorAll('input[type="radio"]').forEach(r => { r.required = false; });
       } else {
-        syncMealFields(parseInt(guestCountInput.value) || 1);
+        syncGuestFields(parseInt(guestCountInput.value) || 1);
+        guestFieldsWrap.querySelectorAll('.radio-row').forEach(row => {
+          const first = row.querySelector('input[type="radio"]');
+          if (first) first.required = true;
+        });
       }
     }
 
@@ -915,14 +974,16 @@
 
     /* ===== AUTO-SCROLL ===== */
     const SCROLL_SPEED = 25;
-    const scrollEl = document.getElementById('scroll-container');
-    let autoScrolling = false;
+    const scrollEl  = document.getElementById('scroll-container');
+    const scrollBtn = document.getElementById('scrollBtn');
+    let autoScrolling    = false;
+    let userStoppedScroll = false;
     let rafId = null;
     let idleTimer = null;
     let scrollAccum = 0;
 
     function startAutoScroll() {
-      if (autoScrolling) return;
+      if (autoScrolling || userStoppedScroll) return;
       autoScrolling = true;
       let lastTs = null;
 
@@ -954,8 +1015,28 @@
     function onUserActivity() {
       stopAutoScroll();
       clearTimeout(idleTimer);
-      idleTimer = setTimeout(startAutoScroll, 3000);
+      if (!userStoppedScroll) idleTimer = setTimeout(startAutoScroll, 3000);
     }
+
+    scrollBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userStoppedScroll = !userStoppedScroll;
+      scrollBtn.innerHTML = userStoppedScroll
+                          ? `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <rect x="3.5" y="3" width="3" height="10" rx="1" fill="currentColor"/>
+                              <rect x="9.5" y="3" width="3" height="10" rx="1" fill="currentColor"/>
+                            </svg>`
+                          : `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <line x1="8" y1="2" x2="8" y2="12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                              <polyline points="4,9 8,13 12,9" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>`;
+      if (userStoppedScroll) {
+        stopAutoScroll();
+        clearTimeout(idleTimer);
+      } else {
+        startAutoScroll();
+      }
+    });
 
     ['touchstart','touchmove','mousedown','wheel','keydown'].forEach(evt => {
       scrollEl.addEventListener(evt, onUserActivity, { passive: true });
