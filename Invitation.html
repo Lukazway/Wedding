@@ -484,6 +484,14 @@
       box-shadow:0 4px 20px rgba(107,76,53,0.38);
     }
     .submit-btn:hover { transform:translateY(-2px); box-shadow:0 7px 28px rgba(107,76,53,0.45); }
+    .submit-btn:disabled { opacity:0.5; cursor:not-allowed; transform:none; box-shadow:none; }
+    .reset-link {
+      display:none; margin-top:14px; text-align:center;
+      font-family:'Nunito',sans-serif; font-size:12px;
+      color:rgba(196,168,130,0.6); letter-spacing:1px;
+      cursor:pointer; text-decoration:underline;
+    }
+    .reset-link.show { display:block; }
 
     /* ===== FOOTER ===== */
     .footer {
@@ -517,6 +525,7 @@
       font-family:'Noto Sans TC',sans-serif;
     }
     .toast.show { transform:translateX(-50%) translateY(0); }
+    .toast-error { background: #b05040; }
 
     /* ===== REVEAL ===== */
     .reveal {
@@ -770,12 +779,12 @@
           <label>Attendance · 出席</label>
           <div class="radio-row">
             <div class="radio-opt">
-              <input type="radio" name="attend" id="r-yes" value="Yes 是" required>
-              <label for="r-yes">✓ 出席</label>
+              <input type="radio" name="attend" id="r-yes" value="是" required>
+              <label for="r-yes">Attending<br>✓ 出席</label>
             </div>
             <div class="radio-opt">
-              <input type="radio" name="attend" id="r-no" value="No 否">
-              <label for="r-no">✕ 不出席</label>
+              <input type="radio" name="attend" id="r-no" value="否">
+              <label for="r-no">Not Attending<br>✕ 不出席</label>
             </div>
           </div>
         </div>
@@ -788,7 +797,8 @@
           <label>Message · 備註</label>
           <input type="text" name="message" placeholder="Message for the Couple · 想給我們的話">
         </div>
-        <button class="submit-btn" type="submit">送出回覆 · RSVP</button>
+        <button class="submit-btn" id="submitBtn" type="submit">送出回覆 · RSVP</button>
+        <p class="reset-link" id="resetLink">重新填寫 · Edit &amp; Resubmit</p>
       </form>
     </section>
 
@@ -803,7 +813,8 @@
   </div>
 
   </div><!-- /scroll-container -->
-  <div class="toast" id="toast">✓ 回覆已送出，感謝您！</div>
+  <div class="toast" id="toast">✓ 回覆已送出 · Reply sent</div>
+  <div class="toast toast-error" id="toast-error">✕ 送出失敗 · Failed to send</div>
 
     <script>
     /* ===== COUNTDOWN ===== */
@@ -824,15 +835,173 @@
     setInterval(updateCountdown, 1000);
 
     /* ===== FORM ===== */
-    document.getElementById('guestForm').onsubmit = e => {
+    const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSc91ync7349wExgBm_AvUmeDYAX9_6wA48XwJ2LzPgy5d5vBQ/formResponse';
+    const ENTRY = {
+      guestName:   'entry.467724035',
+      attend:      'entry.845374054',
+      guestCount:  'entry.825666548',
+      meal:        'entry.999341293',
+      allergic:    'entry.332017852',
+      message:     'entry.1251733321',
+      referential: 'entry.308371174'
+    };
+
+    const COOKIE_KEY  = 'rsvp_data';
+    const COOKIE_DAYS = 7;
+
+    function saveCookie(data) {
+      const exp = new Date(Date.now() + COOKIE_DAYS * 24 * 60 * 60 * 1000).toUTCString();
+      const val = encodeURIComponent(JSON.stringify(data));
+      document.cookie = `${COOKIE_KEY}=${val}; expires=${exp}; path=/; SameSite=Lax`;
+    }
+
+    function clearCookie() {
+      document.cookie = `${COOKIE_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax`;
+    }
+
+    function loadCookie() {
+      const match = document.cookie.split(';').map(s => s.trim()).find(s => s.startsWith(`${COOKIE_KEY}=`));
+      if (!match) return null;
+      try { return JSON.parse(decodeURIComponent(match.slice(COOKIE_KEY.length + 1))); }
+      catch { return null; }
+    }
+
+    function buildFormData(guestName, attend, guestCount, meal, allergic, message, referential) {
+      const fd = new FormData();
+      fd.append(ENTRY.guestName,  guestName);
+      fd.append(ENTRY.attend,     attend);
+      fd.append(ENTRY.guestCount, String(guestCount));
+      fd.append(ENTRY.meal,       meal);
+      fd.append(ENTRY.allergic,   allergic);
+      if (message     !== null) fd.append(ENTRY.message,     message);
+      if (referential !== null) fd.append(ENTRY.referential, referential);
+      return fd;
+    }
+
+    async function submitToGoogle(formDataList) {
+      const results = await Promise.all(
+        formDataList.map(fd =>
+          fetch(GOOGLE_FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' })
+            .then(() => true).catch(() => false)
+        )
+      );
+      return results.every(r => r === true);
+    }
+
+    function showToast(success) {
+      const el = document.getElementById(success ? 'toast' : 'toast-error');
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3500);
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    const resetLink = document.getElementById('resetLink');
+
+    function lockForm(data) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = '✓ 已送出 · Sent';
+      resetLink.classList.add('show');
+      if (data) renderFromCookie(data);
+    }
+
+    function unlockForm() {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '送出回覆 · RSVP';
+      resetLink.classList.remove('show');
+    }
+
+    function renderFromCookie(data) {
+      const form = document.getElementById('guestForm');
+
+      // 姓名
+      const nameEl = form.querySelector('[name="guestName"]');
+      if (nameEl) nameEl.value = data.guestName || '';
+
+      // 出席
+      const attendEl = form.querySelector(`[name="attend"][value="${data.attend}"]`);
+      if (attendEl) {
+        attendEl.checked = true;
+        setAttending(data.attend === '是');
+      }
+
+      // 人數
+      const countEl = document.getElementById('guestCount');
+      if (countEl && data.guestCount) {
+        countEl.value = data.guestCount;
+        syncGuestFields(data.guestCount);
+      }
+
+      // 動態 guest fields
+      if (data.guests && data.attend === '是') {
+        data.guests.forEach((g, idx) => {
+          const i = idx + 1;
+          if (i > 1) {
+            const nameInp = form.querySelector(`[name="guestName_${i}"]`);
+            if (nameInp) nameInp.value = g.name || '';
+          }
+          const mealInp = form.querySelector(`[name="meal_${i}"][value="${g.meal}"]`);
+          if (mealInp) mealInp.checked = true;
+          const allerInp = form.querySelector(`[name="allergic_${i}"][value="${g.allergic}"]`);
+          if (allerInp) allerInp.checked = true;
+        });
+      }
+
+      // 備註
+      const msgEl = form.querySelector('[name="message"]');
+      if (msgEl) msgEl.value = data.message || '';
+
+      // 鎖住所有 input
+      form.querySelectorAll('input').forEach(el => { el.disabled = true; });
+    }
+
+    resetLink.addEventListener('click', () => {
+      clearCookie();
+      const form = document.getElementById('guestForm');
+      form.querySelectorAll('input').forEach(el => { el.disabled = false; });
+      form.reset();
+      unlockForm();
+      syncGuestFields(1);
+    });
+
+    document.getElementById('guestForm').onsubmit = async e => {
       e.preventDefault();
       if (!e.target.checkValidity()) {
         e.target.reportValidity();
         return;
       }
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3500);
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送出中 · Sending';
+
+      const form       = e.target;
+      const guestName  = form.querySelector('[name="guestName"]').value.trim();
+      const guestCount = parseInt(form.querySelector('[name="guestCount"]').value) || 1;
+      const message    = form.querySelector('[name="message"]').value.trim() || null;
+      const formDataList = [];
+      const guestsSnap   = [];
+
+      for (let i = 1; i <= guestCount; i++) {
+        const name        = i === 1 ? guestName : (form.querySelector(`[name="guestName_${i}"]`)?.value.trim() || '');
+        const meal        = form.querySelector(`[name="meal_${i}"]:checked`)?.value || '';
+        const allergic    = form.querySelector(`[name="allergic_${i}"]:checked`)?.value || '';
+        const count       = i === 1 ? guestCount : 0;
+        const msg         = i === 1 ? message : null;
+        const referential = i === 1 ? null : guestName;
+        guestsSnap.push({ name, meal, allergic });
+        formDataList.push(buildFormData(name, '是', count, meal, allergic, msg, referential));
+      }
+
+      const ok = await submitToGoogle(formDataList);
+
+      if (ok) {
+        showToast(true);
+        saveCookie({ guestName, attend: '是', guestCount, guests: guestsSnap, message });
+        lockForm(null);
+      } else {
+        showToast(false);
+        submitBtn.disabled = false;
+        submitBtn.textContent = '送出回覆 · RSVP';
+      }
     };
 
     /* ===== SCROLL REVEAL ===== */
@@ -878,9 +1047,14 @@
 
     /* ===== MEAL OPTIONS (edit here to change choices) ===== */
     const MEALS = [
-      { value: 'Steak',      label: 'Steak<br>牛排' },
-      { value: 'Seafood',    label: 'Seafood<br>海鮮' },
-      { value: 'Vegetarian', label: 'Vegetarian<br>素食' }
+      { value: '吃牛',  label: 'Beef<br>吃牛' },
+      { value: '不吃牛', label: 'No Beef<br>不吃牛' },
+      { value: '素食',  label: 'Vegetarian<br>素食' }
+    ];
+
+    const ALLERGIC = [
+      { value: '吃蝦', label: 'Shrimp<br>✓ 吃蝦' },
+      { value: '不吃蝦', label: 'No Shrimp<br>✕ 不吃蝦' }
     ];
 
     const fieldGuestCount = document.getElementById('field-guestCount');
@@ -927,6 +1101,30 @@
       mealDiv.appendChild(row);
       frag.appendChild(mealDiv);
 
+      const allergicSuffix = index === 1 ? '' : ` (${index})`;
+      const allergicDiv = document.createElement('div');
+      allergicDiv.className = 'form-field';
+      const allergicLbl = document.createElement('label');
+      allergicLbl.textContent = `Allergic · 過敏${allergicSuffix}`;
+      allergicDiv.appendChild(allergicLbl);
+      const allergicRow = document.createElement('div');
+      allergicRow.className = 'radio-row';
+      ALLERGIC.forEach((a, i) => {
+        const aid  = `allergic-${index}-${a.value}`;
+        const aopt = document.createElement('div');
+        aopt.className = 'radio-opt';
+        const ainp = document.createElement('input');
+        ainp.type = 'radio'; ainp.name = `allergic_${index}`;
+        ainp.id = aid; ainp.value = a.value;
+        if (i === 0) ainp.required = true;
+        const aol  = document.createElement('label');
+        aol.htmlFor = aid; aol.innerHTML = a.label;
+        aopt.appendChild(ainp); aopt.appendChild(aol);
+        allergicRow.appendChild(aopt);
+      });
+      allergicDiv.appendChild(allergicRow);
+      frag.appendChild(allergicDiv);
+
       const wrapper = document.createElement('div');
       wrapper.dataset.guestIndex = index;
       wrapper.appendChild(frag);
@@ -945,9 +1143,12 @@
 
     syncGuestFields(1);
 
+    const saved = loadCookie();
+    if (saved) lockForm(saved);
+
     guestCountInput.addEventListener('input', () => {
       const checked = document.querySelector('input[name="attend"]:checked');
-      if (!checked || checked.value.startsWith('Yes')) syncGuestFields(guestCountInput.value);
+      if (!checked || checked.value === '是') syncGuestFields(guestCountInput.value);
     });
 
     /* ===== ATTENDANCE TOGGLE ===== */
@@ -969,7 +1170,7 @@
     }
 
     document.querySelectorAll('input[name="attend"]').forEach(r => {
-      r.addEventListener('change', () => setAttending(r.value.startsWith('Yes')));
+      r.addEventListener('change', () => setAttending(r.value === '是'));
     });
 
     /* ===== AUTO-SCROLL ===== */
