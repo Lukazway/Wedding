@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Guest Registration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Sans+TC:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bark:    #6b4c35;
+      --soil:    #4a3323;
+      --tan:     #c4a882;
+      --tan-lt:  #d9c4a4;
+      --cream:   #f5efe6;
+      --warm-bg: #f7f0e8;
+      --stone:   #a09080;
+      --err:     #b0673a;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html { height:100%; height:-webkit-fill-available; }
+
+    body {
+      background: #2c2318;
+      font-family: 'Noto Sans TC','Helvetica Neue',sans-serif;
+      color: var(--soil);
+      display: flex; justify-content: center;
+      min-height: 100%; min-height: -webkit-fill-available;
+    }
+
+    .phone-wrap {
+      width: 100%; max-width: 430px;
+      background: var(--warm-bg);
+      min-height: 100%; min-height: -webkit-fill-available;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+
+    /* HEADER */
+    .header {
+      flex-shrink: 0;
+      padding: 5px 10px;
+      background: var(--warm-bg);
+      text-align: center;
+      border-bottom: 1px solid rgba(196,168,130,0.25);
+    }
+    /* .header-label {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 10px; letter-spacing: 0.22em;
+      color: var(--stone); text-transform: uppercase; margin-bottom: 3px;
+    } */
+    .header-title {
+      font-family: 'Lora', serif;
+      font-size: 20px; font-weight: 600;
+      color: var(--bark); letter-spacing: 0.04em;
+    }
+    .header-sub {
+      font-size: 12px; color: var(--stone);
+      letter-spacing: 0.06em; margin-top: 3px;
+    }
+
+    /* FORM SCROLL AREA */
+    .form-scroll {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 24px 24px calc(32px + env(safe-area-inset-bottom, 0px));
+    }
+
+    /* FIELD GROUP */
+    .field {
+      margin-bottom: 18px;
+    }
+    .field-label {
+      display: flex; align-items: baseline; gap: 6px;
+      margin-bottom: 6px; margin-left: 8px;
+    }
+    .field-label-zh {
+      font-size: 15px; font-weight: 600; color: var(--bark);
+      letter-spacing: 0.04em;
+    }
+    .field-label-en {
+      font-size: 12px; color: var(--stone);
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .required { color: var(--err); font-size: 12px; margin-left: 2px; }
+
+    /* INPUTS */
+    .input, .select {
+      width: 100%; height: 48px;
+      background: #fff;
+      border: 1.5px solid rgba(196,168,130,0.35);
+      border-radius: 12px;
+      padding: 0 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px; font-weight: 500;
+      color: var(--soil);
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s;
+      appearance: none; -webkit-appearance: none;
+    }
+    .input::placeholder { color: var(--stone); font-weight: 400; font-size: 15px; }
+    .input:focus, .select:focus {
+      border-color: var(--tan);
+      box-shadow: 0 0 0 3px rgba(196,168,130,0.18);
+    }
+    .input.err, .select.err { border-color: var(--err); }
+
+    /* SELECT wrapper for custom arrow */
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '';
+      position: absolute; right: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--stone);
+      pointer-events: none;
+    }
+    .select { padding-right: 36px; background: #fff; cursor: pointer; }
+    .select option { color: var(--soil); }
+
+    /* ROW — two fields side by side */
+    .field-row { display: flex; gap: 12px; }
+    .field-row .field { flex: 1; }
+
+    /* PHOTO UPLOAD */
+    .photo-section {
+      margin-bottom: 18px;
+    }
+    .photo-upload-area {
+      border: 1.5px dashed rgba(196,168,130,0.5);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.6);
+      padding: 18px 14px;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+    }
+    .photo-upload-area:hover, .photo-upload-area.drag-over {
+      border-color: var(--tan);
+      background: rgba(196,168,130,0.08);
+    }
+    .photo-upload-inner {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 6px;
+      pointer-events: none;
+    }
+    .upload-icon {
+      width: 36px; height: 36px; opacity: 0.45;
+    }
+    .upload-hint-zh { font-size: 15px; font-weight: 600; color: var(--bark); }
+    .upload-hint-en { font-size: 12px; color: var(--stone); letter-spacing: 0.1em; }
+    .upload-limit   { font-size: 12px; color: var(--stone); }
+    #fileInput { display: none; }
+
+    /* PHOTO PREVIEWS */
+    .photo-previews {
+      display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+    }
+    .preview-item {
+      position: relative;
+      width: calc((100% - 16px) / 3);
+      aspect-ratio: 1;
+      border-radius: 10px; overflow: hidden;
+      border: 1.5px solid rgba(196,168,130,0.35);
+      background: var(--cream);
+    }
+    .preview-item img {
+      width: 100%; height: 100%; object-fit: cover; object-position: top;
+      display: block;
+    }
+    .preview-badge {
+      position: absolute; bottom: 4px; left: 4px;
+      background: rgba(44,35,24,0.7);
+      border-radius: 4px; padding: 2px 5px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.9);
+      letter-spacing: 0.04em;
+    }
+    .preview-remove {
+      position: absolute; top: 4px; right: 4px;
+      width: 20px; height: 20px;
+      background: rgba(44,35,24,0.65);
+      border-radius: 50%; border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .preview-remove svg { width: 10px; height: 10px; }
+
+    /* DIVIDER */
+    .divider {
+      height: 1px;
+      background: rgba(196,168,130,0.22);
+      margin: 24px 0;
+    }
+
+    /* FIELD ERROR TEXT */
+    .field-err {
+      font-size: 12px; color: var(--err);
+      margin-top: 4px; margin-left: 8px;
+      display: none; letter-spacing: 0.04em;
+    }
+    .field-err.show { display: block; }
+    .photo-upload-area.err { border: 2px solid var(--err); }
+
+    /* SUBMIT BUTTON */
+    .submit-btn {
+      width: 100%; height: 54px;
+      background: var(--bark); color: #fff;
+      border: none; border-radius: 14px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px; font-weight: 700;
+      letter-spacing: 0.1em;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, opacity 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .submit-btn .btn-text { transition: opacity 0.15s; }
+    .submit-btn .btn-spinner {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.15s;
+    }
+    .submit-btn.loading .btn-text  { opacity: 0; }
+    .submit-btn.loading .btn-spinner { opacity: 1; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner-ring {
+      width: 22px; height: 22px;
+      border: 2.5px solid rgba(255,255,255,0.35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    /* SUCCESS / ERROR TOAST */
+    .toast {
+      position: fixed; bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #2c2318; color: var(--cream);
+      border-radius: 14px; padding: 12px 22px;
+      font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 600;
+      letter-spacing: 0.06em; white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+      z-index: 200;
+      border: 1px solid rgba(196,168,130,0.2);
+    }
+    .toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+    .toast.success { border-color: rgba(110,125,91,0.5); }
+    .toast.error   { border-color: rgba(176,103,58,0.5); }
+
+    /* SUCCESS STATE */
+    .success-screen {
+      display: none;
+      flex-direction: column; align-items: center; justify-content: center;
+      flex: 1; padding: 40px 32px;
+      text-align: center; gap: 12px;
+    }
+    .success-screen.show { display: flex; }
+    .success-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 1.5px solid var(--tan);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; margin-bottom: 8px;
+    }
+    .success-ring::before {
+      content: ''; position: absolute; inset: 8px;
+      border-radius: 50%; border: 1px solid rgba(196,168,130,0.35);
+    }
+    .success-ring svg { width: 32px; height: 32px; }
+    .success-title {
+      font-family: 'Lora', serif; font-size: 22px; font-weight: 600;
+      color: var(--bark);
+    }
+    .success-sub {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 15px; color: var(--stone); letter-spacing: 0.1em;
+    }
+    .success-again {
+      margin-top: 20px; height: 46px; padding: 0 28px;
+      background: transparent; color: var(--bark);
+      border: 1.5px solid rgba(196,168,130,0.5);
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s;
+    }
+    .success-again:hover { background: rgba(196,168,130,0.12); }
+  </style>
+</head>
+<body>
+<div class="phone-wrap">
+
+  <div class="header">
+    <!-- <div class="header-label">Wedding · 2026</div> -->
+    <div class="header-title">賓客登記</div>
+    <div class="header-sub">Guest Registration</div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-scroll" id="formScroll">
+
+    <div class="field-row">
+      <div class="field">
+        <div class="field-label">
+          <span class="field-label-zh">姓名<span class="required">*</span></span>
+          <span class="field-label-en">Name</span>
+        </div>
+        <input id="f-name" class="input" type="text" placeholder="您的姓名" autocomplete="off">
+        <div class="field-err" id="err-name">請輸入姓名 Please enter name</div>
+      </div>
+      <div class="field">
+        <div class="field-label">
+          <span class="field-label-zh">年紀<span class="required">*</span></span>
+          <span class="field-label-en">Age</span>
+        </div>
+        <input id="f-age" class="input" type="number" placeholder="歲數" min="1" max="120" inputmode="numeric">
+        <div class="field-err" id="err-age">請輸入年紀 Please enter age</div>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <div class="field-label">
+          <span class="field-label-zh">性別<span class="required">*</span></span>
+          <span class="field-label-en">Gender</span>
+        </div>
+        <div class="select-wrap">
+          <select id="f-gender" class="select">
+            <option value="">請選擇</option>
+            <option value="male">男 Male</option>
+            <option value="female">女 Female</option>
+          </select>
+        </div>
+        <div class="field-err" id="err-gender">請選擇性別 Please select</div>
+      </div>
+      <div class="field">
+        <div class="field-label">
+          <span class="field-label-zh">星座<span class="required">*</span></span>
+          <span class="field-label-en">Zodiac</span>
+        </div>
+        <div class="select-wrap">
+          <select id="f-zodiac" class="select">
+            <option value="">請選擇</option>
+            <option value="牡羊座">牡羊 Aries</option>
+            <option value="金牛座">金牛 Taurus</option>
+            <option value="雙子座">雙子 Gemini</option>
+            <option value="巨蟹座">巨蟹 Cancer</option>
+            <option value="獅子座">獅子 Leo</option>
+            <option value="處女座">處女 Virgo</option>
+            <option value="天秤座">天秤 Libra</option>
+            <option value="天蠍座">天蠍 Scorpio</option>
+            <option value="射手座">射手 Sagittarius</option>
+            <option value="摩羯座">摩羯 Capricorn</option>
+            <option value="水瓶座">水瓶 Aquarius</option>
+            <option value="雙魚座">雙魚 Pisces</option>
+          </select>
+        </div>
+        <div class="field-err" id="err-zodiac">請選擇星座 Please select</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="field-label-zh">手機號碼<span class="required">*</span></span>
+        <span class="field-label-en">Phone</span>
+      </div>
+      <input id="f-phone" class="input" type="tel" placeholder="09xxxxxxxx" inputmode="numeric" maxlength="12" autocomplete="off">
+      <div class="field-err" id="err-phone">請輸入手機號碼 Please enter phone</div>
+    </div>
+
+    <div class="field">
+      <div class="field-label">
+        <span class="field-label-zh">IG 名稱<span class="required">*</span></span>
+        <span class="field-label-en">Instagram Name</span>
+      </div>
+      <input id="f-ig" class="input" type="text" placeholder="@username" autocomplete="off">
+      <div class="field-err" id="err-ig">請輸入IG 名稱 Please enter Instagram Name</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- PHOTO UPLOAD -->
+    <div class="photo-section">
+      <div class="field-label" style="margin-bottom:10px;">
+        <span class="field-label-zh">個人照片<span class="required">*</span></span>
+        <span class="field-label-en">Photos (up to 3)</span>
+      </div>
+      <div class="photo-upload-area" id="uploadArea">
+        <input type="file" id="fileInput" accept="image/*" multiple>
+        <div class="photo-upload-inner">
+          <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="var(--tan)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="3"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <polyline points="21 15 16 10 5 21"/>
+          </svg>
+          <div class="upload-hint-zh">點擊或拖曳上傳照片</div>
+          <div class="upload-hint-en">Tap or drag to upload photos</div>
+          <div class="upload-limit">最多 3 張 · Max 3 images · JPG / PNG</div>
+        </div>
+      </div>
+      <div class="photo-previews" id="photoPreviews"></div>
+      <div class="field-err" id="err-photos">請至少上傳一張照片 Please upload at least 1 photo</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <button class="submit-btn" id="submitBtn">
+      <span class="btn-text">送出 &nbsp;Submit</span>
+      <span class="btn-spinner"><div class="spinner-ring"></div></span>
+    </button>
+
+  </div>
+
+  <!-- SUCCESS SCREEN -->
+  <div class="success-screen" id="successScreen">
+    <div class="success-ring">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+    </div>
+    <div class="success-title">成功送出！</div>
+    <div class="success-sub" id="successName">— welcome —</div>
+    <button class="success-again" id="againBtn">重新填寫 Register again</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* GUID */
+function uuid() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+/* TOAST */
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => { t.className = 'toast'; }, 3200);
+}
+
+/* PHOTO MANAGEMENT */
+const MAX_PHOTOS = 3;
+let selectedFiles = [];
+
+const uploadArea  = document.getElementById('uploadArea');
+const fileInput   = document.getElementById('fileInput');
+const previewsEl  = document.getElementById('photoPreviews');
+
+uploadArea.addEventListener('click', () => fileInput.click());
+
+uploadArea.addEventListener('dragover', e => {
+  e.preventDefault(); uploadArea.classList.add('drag-over');
+});
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault(); uploadArea.classList.remove('drag-over');
+  handleFiles(Array.from(e.dataTransfer.files));
+});
+
+fileInput.addEventListener('change', () => {
+  handleFiles(Array.from(fileInput.files));
+  fileInput.value = '';
+});
+
+function handleFiles(files) {
+  const imageFiles = files.filter(f => f.type.startsWith('image/'));
+  const remaining  = MAX_PHOTOS - selectedFiles.length;
+  const toAdd      = imageFiles.slice(0, remaining);
+  if (imageFiles.length > remaining) {
+    showToast(`最多只能上傳 ${MAX_PHOTOS} 張照片 · Max ${MAX_PHOTOS} photos`, 'error');
+  }
+  toAdd.forEach(f => selectedFiles.push(f));
+  renderPreviews();
+}
+
+function renderPreviews() {
+  previewsEl.innerHTML = '';
+  selectedFiles.forEach((file, idx) => {
+    const url  = URL.createObjectURL(file);
+    const item = document.createElement('div');
+    item.className = 'preview-item';
+    item.innerHTML = `
+      <img src="${url}" alt="photo ${idx+1}">
+      <div class="preview-badge">_${idx + 1}</div>
+      <button class="preview-remove" data-idx="${idx}" aria-label="Remove">
+        <svg viewBox="0 0 10 10" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round">
+          <line x1="2" y1="2" x2="8" y2="8"/><line x1="8" y1="2" x2="2" y2="8"/>
+        </svg>
+      </button>
+    `;
+    previewsEl.appendChild(item);
+  });
+  previewsEl.querySelectorAll('.preview-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      selectedFiles.splice(+btn.dataset.idx, 1);
+      renderPreviews();
+    });
+  });
+}
+
+/* VALIDATION */
+function getVal(id) { return document.getElementById(id).value.trim(); }
+function setErr(fieldId, errId, bad) {
+  document.getElementById(fieldId).classList.toggle('err', bad);
+  document.getElementById(errId).classList.toggle('show', bad);
+  return !bad;
+}
+
+function validate() {
+  let ok = true;
+
+  const name   = getVal('f-name');
+  const age    = getVal('f-age');
+  const gender = getVal('f-gender');
+  const zodiac = getVal('f-zodiac');
+  const phone  = getVal('f-phone');
+  const ig     = getVal('f-ig');
+  const noPhotos = selectedFiles.length === 0;
+
+  if (!setErr('f-name', 'err-name', !name)) ok = false;
+  if (!setErr('f-age', 'err-age', !age || +age < 1 || +age > 120)) ok = false;
+  if (!setErr('f-gender', 'err-gender', !gender)) ok = false;
+  if (!setErr('f-zodiac', 'err-zodiac', !zodiac)) ok = false;
+  if (!setErr('f-phone', 'err-phone', !phone)) ok = false;
+  if (!setErr('f-ig', 'err-ig', !ig)) ok = false;
+  if (!setErr('uploadArea', 'err-photos', noPhotos)) ok = false;
+
+  return ok;
+}
+
+/* BASE64 */
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload  = () => res(r.result);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+/* BUILD PAYLOAD */
+async function buildPayload() {
+  const name  = getVal('f-name');
+  const rawIg = getVal('f-ig').replace(/^@/, '');
+
+  /* rename photos to {name}_1.jpg, {name}_2.jpg … */
+  const photosData = await Promise.all(selectedFiles.map(async (file, i) => {
+    const b64 = await toBase64(file);
+    const ext  = file.type === 'image/png' ? 'png' : 'jpg';
+    const renamedName = `${name}_${i + 1}.${ext}`;
+    return {
+      name:   renamedName,
+      type:   file.type,
+      base64: b64.split(',')[1]
+    };
+  }));
+
+  /* photos array for JSON  e.g. ["Seoli_1.jpg","Seoli_2.jpg"] */
+  const photoNames = photosData.map(p => p.name);
+
+  return {
+    id:          uuid(),
+    name:        name,
+    age:         +getVal('f-age'),
+    zodiac:      getVal('f-zodiac'),
+    gender:      getVal('f-gender'),
+    phone:       getVal('f-phone').replace(/\D/g,''),
+    instagram:   rawIg,
+    photos:      photoNames,
+    photosData:  photosData
+  };
+}
+
+/* SUBMIT */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbzlaYIu1kat5DdOW26GNWm3uUEVOpOTm1WOJESPu5JV5eqXbNV2UYCPQAod-MSfGOjw/exec';
+
+const submitBtn = document.getElementById('submitBtn');
+
+submitBtn.addEventListener('click', async () => {
+  if (!validate()) {
+    const firstErr = document.querySelector('.input.err, .select.err');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  submitBtn.classList.add('loading');
+  submitBtn.disabled = true;
+
+  try {
+    const payload  = await buildPayload();
+    const response = await fetch(GAS_URL, {
+      method:  'POST',
+      body:    JSON.stringify(payload)
+    });
+    const result = await response.json();
+
+    if (result.status === 'ok' || result.success || response.ok) {
+      showSuccess(payload.name);
+    } else {
+      throw new Error(result.message || 'Server error');
+    }
+  } catch (err) {
+    console.error(err);
+    showToast('送出失敗，請稍後再試 · Submission failed', 'error');
+  } finally {
+    submitBtn.classList.remove('loading');
+    submitBtn.disabled = false;
+  }
+});
+
+/* SUCCESS */
+function showSuccess(name) {
+  document.getElementById('formScroll').style.display   = 'none';
+  const s = document.getElementById('successScreen');
+  s.classList.add('show');
+  document.getElementById('successName').textContent = `— ${name} —`;
+}
+
+document.getElementById('againBtn').addEventListener('click', () => {
+  document.getElementById('successScreen').classList.remove('show');
+  document.getElementById('formScroll').style.display = '';
+
+  ['f-name','f-age','f-phone','f-ig'].forEach(id => {
+    document.getElementById(id).value = '';
+    if (['f-name','f-age','f-phone','f-ig'].includes(id)) setErr(id, false);
+  });
+  ['f-gender','f-zodiac'].forEach(id => {
+    document.getElementById(id).value = '';
+    setErr(id, false);
+  });
+  selectedFiles = [];
+  renderPreviews();
+  document.getElementById('formScroll').scrollTop = 0;
+});
+
+/* clear error on input */
+['f-name','f-age','f-phone','f-ig'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => setErr(id, false));
+});
+['f-gender','f-zodiac'].forEach(id => {
+  document.getElementById(id).addEventListener('change', () => setErr(id, false));
+});
+</script>
+</body>
+</html>
