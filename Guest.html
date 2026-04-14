@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Wedding Guests</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Sans+TC:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bark:    #6b4c35;
+      --bark-lt: #8c6348;
+      --soil:    #4a3323;
+      --tan:     #c4a882;
+      --cream:   #f5efe6;
+      --warm-bg: #f7f0e8;
+      --stone:   #a09080;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html { height:100%; height:-webkit-fill-available; }
+
+    body {
+      background: #cfc0ae;
+      font-family: 'Noto Sans TC','Helvetica Neue',sans-serif;
+      color: var(--soil);
+      display: flex; justify-content: center;
+      height: 100%; height: -webkit-fill-available;
+      overflow: hidden;
+    }
+
+    .phone-wrap {
+      width: 100%; max-width: 430px;
+      background: var(--warm-bg);
+      height: 100%; height: -webkit-fill-available;
+      overflow: hidden;
+      display: flex; flex-direction: column;
+      position: relative;
+    }
+
+    /* ══════════════════════════════════════
+       LOCK SCREEN
+    ══════════════════════════════════════ */
+    #lockScreen {
+      position: absolute; inset: 0; z-index: 100;
+      background: #2c2318;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 36px calc(40px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .lock-deco {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(196,168,130,0.4);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .lock-deco::before {
+      content: '';
+      position: absolute; inset: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(196,168,130,0.2);
+    }
+    .lock-deco svg { width: 28px; height: 28px; }
+
+    .lock-title {
+      font-family: 'Lora', serif;
+      font-size: 25px; font-weight: 600;
+      color: var(--cream); letter-spacing: 0.03em;
+      margin-bottom: 6px; text-align: center;
+    }
+    .lock-sub {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 15px; color: rgba(196,168,130,0.6);
+      letter-spacing: 0.14em; text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .lock-input-wrap {
+      width: 100%; position: relative; margin-bottom: 14px;
+    }
+    .lock-input {
+      width: 100%; height: 52px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(196,168,130,0.22);
+      border-radius: 14px;
+      color: var(--cream);
+      font-family: 'Nunito', sans-serif;
+      font-size: 18px; font-weight: 600;
+      letter-spacing: 0.18em;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+      caret-color: var(--tan);
+    }
+    .lock-input::placeholder {
+      color: rgba(196,168,130,0.3);
+      letter-spacing: 0.1em; font-size: 15px; font-weight: 400;
+    }
+    .lock-input:focus { border-color: rgba(196,168,130,0.55); }
+    .lock-input.shake {
+      animation: shake 0.38s ease;
+      border-color: rgba(176,103,58,0.7);
+    }
+
+    .lock-btn {
+      width: 100%; height: 52px;
+      background: var(--bark);
+      border: none; border-radius: 14px;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px; font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .lock-btn:active { background: var(--soil); transform: scale(0.98); }
+
+    .lock-error {
+      margin-top: 12px;
+      font-size: 15px; color: rgba(176,103,58,0.85);
+      font-family: 'Nunito', sans-serif;
+      letter-spacing: 0.06em; text-align: center;
+      height: 16px;
+    }
+
+    #lockScreen.unlocking {
+      animation: lockFadeOut 0.55s ease forwards;
+    }
+    @keyframes lockFadeOut {
+      0%   { opacity:1; transform:scale(1); }
+      100% { opacity:0; transform:scale(1.04); pointer-events:none; }
+    }
+    @keyframes shake {
+      0%,100% { transform:translateX(0); }
+      20%     { transform:translateX(-8px); }
+      40%     { transform:translateX(8px); }
+      60%     { transform:translateX(-5px); }
+      80%     { transform:translateX(5px); }
+    }
+
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    .header {
+      flex-shrink: 0;
+      height: calc(50px + env(safe-area-inset-top, 50px));
+      padding-top: env(safe-area-inset-top, 44px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: var(--warm-bg); z-index: 10;
+    }
+    .header-label {
+      font-family: 'Lora', serif; font-style: italic;
+      font-size: 12px; letter-spacing: 0.22em;
+      color: var(--stone); text-transform: uppercase; margin-bottom: 2px;
+    }
+    .header-title {
+      font-family: 'Lora', serif;
+      font-size: 18px; font-weight: 600;
+      color: var(--bark); letter-spacing: 0.04em;
+    }
+
+    /* ══════════════════════════════════════
+       STACK AREA
+    ══════════════════════════════════════ */
+    .stack-area {
+      flex: 1; position: relative; overflow: hidden;
+      padding: 10px 42px 72px;
+    }
+
+    /* ══════════════════════════════════════
+       CARD
+    ══════════════════════════════════════ */
+    .card {
+      position: absolute;
+      top: 10px; left: 42px; right: 42px; bottom: 72px;
+      border-radius: 22px; overflow: hidden;
+      background: #2a1f16;
+      box-shadow: 0 12px 40px rgba(20,10,4,0.38);
+      transform-origin: center bottom;
+      transition: transform 0.38s cubic-bezier(0.34,1.4,0.64,1), opacity 0.3s ease;
+      will-change: transform, opacity;
+      user-select: none; touch-action: pan-y;
+      pointer-events: none;
+    }
+    .card[data-depth="0"] { pointer-events: auto; }
+    .card[data-depth="0"] { transform: translate(  0px,  0px) rotate( 0.0deg) scale(1.00); opacity:1;    z-index:5; }
+    .card[data-depth="1"] { transform: translate( 10px, 14px) rotate( 2.6deg) scale(0.95); opacity:1;    z-index:4; }
+    .card[data-depth="2"] { transform: translate( -8px, 26px) rotate(-2.0deg) scale(0.90); opacity:0.65; z-index:3; }
+    .card[data-depth="3"] { transform: translate(  5px, 36px) rotate( 1.6deg) scale(0.86); opacity:0;    z-index:2; }
+
+    .card-photos { position:absolute; inset:0; }
+    .card-photo {
+      position:absolute; inset:0;
+      opacity:0;
+    }
+    .card-photo.active { opacity:1; }
+
+    .photo-dots {
+      position:absolute; top:13px; left:50%;
+      transform:translateX(-50%);
+      display:flex; gap:5px; z-index:4;
+      pointer-events:none;
+    }
+    .photo-dot {
+      width:22px; height:3px; border-radius:2px;
+      background:rgba(255,255,255,0.35);
+    }
+    .photo-dot.active { background:rgba(255,255,255,0.95); }
+
+    .hit-prev, .hit-next {
+      position:absolute; top:0; bottom:0; width:42%;
+      z-index:30; cursor:pointer;
+    }
+    .hit-prev { left:0; } .hit-next { right:0; }
+
+    .card-info {
+      position:absolute; bottom:0; left:0; right:0;
+      padding:18px 20px 24px; z-index:3;
+      transition:opacity 0.22s ease;
+    }
+    .card-name {
+      font-family:'Lora',serif; font-size:30px; font-weight:600;
+      color:#fff; line-height:1.15; letter-spacing:0.01em;
+      text-shadow:0 1px 10px rgba(0,0,0,0.45);
+    }
+    .card-meta { display:flex; align-items:center; gap:7px; margin-top:4px; }
+    .card-age  { font-family:'Nunito',sans-serif; font-size:15px; font-weight:500; color:rgba(255,255,255,0.9); }
+    .meta-dot  { width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.4); }
+    .card-zodiac { font-size:15px; color:rgba(255,255,255,0.68); letter-spacing:0.07em; }
+
+    /* ══════════════════════════════════════
+       IG SLIDE
+    ══════════════════════════════════════ */
+    .ig-slide {
+      position:absolute; inset:0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index:1; opacity:0;
+      transition:opacity 0.22s ease;
+      pointer-events:none;
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+    }
+    .ig-slide.visible { opacity:1; z-index:10; pointer-events:auto; }
+
+    .ig-deco-ring {
+      width:96px; height:96px; border-radius:50%;
+      border:1.5px solid var(--tan);
+      display:flex; align-items:center; justify-content:center;
+      position:relative; margin-bottom:16px; flex-shrink:0;
+    }
+    .ig-deco-ring::before {
+      content:''; position:absolute; inset:7px;
+      border-radius:50%; border:1px solid rgba(196,168,130,0.35);
+    }
+    .ig-deco-ring svg { width:38px; height:38px; }
+
+    .ig-name {
+      font-family:'Lora',serif; font-size:20px; font-weight:600;
+      color:var(--cream); letter-spacing:0.02em; margin-bottom:3px;
+    }
+    .ig-handle-lbl {
+      font-size:15px; color:var(--stone); letter-spacing:0.1em;
+      margin-bottom:22px;
+    }
+    .ig-btn {
+      display:inline-flex; align-items:center;
+      padding:11px 26px;
+      background:var(--bark); color:#fff;
+      border-radius:50px; border:none;
+      font-family:'Nunito',sans-serif;
+      font-size:12px; font-weight:700; letter-spacing:0.05em;
+      text-decoration:none; cursor:pointer;
+      transition:background 0.15s, transform 0.1s;
+    }
+    .ig-btn:active { background:var(--soil); transform:scale(0.96); }
+
+    .ig-foot {
+      position:absolute; bottom:16px;
+      font-family:'Lora',serif; font-style:italic;
+      font-size:12px; color:var(--tan); letter-spacing:0.14em;
+    }
+
+    /* ══════════════════════════════════════
+       FLOATING PILL NAV
+    ══════════════════════════════════════ */
+    .nav-float {
+      position: absolute;
+      bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      left: 50%; transform: translateX(-50%);
+      z-index: 20;
+      background: rgba(44,35,24,0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-radius: 50px;
+      border: 1px solid rgba(196,168,130,0.18);
+      padding: 5px 6px;
+      display: flex; gap: 4px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.32);
+    }
+    .nav-tab {
+      height: 38px; padding: 0 20px;
+      border-radius: 50px; border: none;
+      background: transparent;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px; font-weight: 600;
+      letter-spacing: 0.06em;
+      color: rgba(196,168,130,0.55);
+      cursor: pointer;
+      transition: background 0.22s, color 0.22s;
+      white-space: nowrap;
+    }
+    .nav-tab.active { background: var(--tan); color: var(--soil); }
+
+    /* ══════════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════════ */
+    .card.exit-left   { animation:exitLeft   0.34s cubic-bezier(0.4,0,0.6,1) forwards; }
+    .card.exit-right  { animation:exitRight  0.34s cubic-bezier(0.4,0,0.6,1) forwards; }
+    .card.enter-left  { animation:enterLeft  0.40s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .card.enter-right { animation:enterRight 0.40s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+    @keyframes exitLeft { to { transform:translateX(-140%) rotate(-18deg); opacity:0; } }
+    @keyframes enterLeft {
+      from { transform:translateX(-60%) rotate(-10deg) scale(0.9); opacity:0; }
+      to   { transform:translate(0,0) rotate(0deg) scale(1); opacity:1; }
+    }
+  </style>
+</head>
+<body>
+<div class="phone-wrap">
+
+  <div id="lockScreen">
+    <div class="lock-deco">
+      <svg viewBox="0 0 24 24" fill="none" stroke="rgba(196,168,130,0.7)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+    <div class="lock-title">Wedding Guests</div>
+    <div class="lock-sub">— guests only —</div>
+    <div class="lock-input-wrap">
+      <input id="phoneInput" class="lock-input" type="tel"
+        inputmode="numeric" maxlength="12"
+        placeholder="輸入手機號碼" autocomplete="off">
+    </div>
+    <button class="lock-btn" id="lockBtn">進入</button>
+    <div class="lock-error" id="lockError"></div>
+  </div>
+
+  <header class="header">
+    <div class="header-label">Wedding Guests</div>
+    <div class="header-title">認識今天的嘉賓</div>
+  </header>
+
+  <div class="stack-area" id="stackArea"></div>
+
+  <nav class="nav-float" id="nav">
+    <button class="nav-tab active" data-filter="all">全部</button>
+    <button class="nav-tab" data-filter="male">男生</button>
+    <button class="nav-tab" data-filter="female">女生</button>
+  </nav>
+
+</div>
+<script>
+/* ══════════════════════════════════════
+   LOCK SCREEN
+══════════════════════════════════════ */
+let data = [];
+const getUrl = 'https://script.google.com/macros/s/AKfycbzlaYIu1kat5DdOW26GNWm3uUEVOpOTm1WOJESPu5JV5eqXbNV2UYCPQAod-MSfGOjw/exec';
+const validNumbers = new Set(['0987654321']);
+async function loadPhones() {
+  try {
+    data = await fetch(getUrl).then(r => r.json());
+    data.forEach(g => { if (g.phone) validNumbers.add(String(g.phone).replace(/\D/g,'')); });
+  } catch(_) {}
+}
+(async () => {
+  await loadPhones();
+
+  const screen = document.getElementById('lockScreen');
+  const input  = document.getElementById('phoneInput');
+  const btn    = document.getElementById('lockBtn');
+  const errEl  = document.getElementById('lockError');
+
+  function attempt() {
+    const val = input.value.replace(/\D/g,'');
+    if (validNumbers.has(val)) {
+      screen.classList.add('unlocking');
+      screen.addEventListener('animationend', () => screen.remove(), { once:true });
+    } else {
+      errEl.textContent = '僅限婚禮賓客，謝謝';
+      input.classList.remove('shake');
+      void input.offsetWidth;
+      input.classList.add('shake');
+      input.addEventListener('animationend', () => input.classList.remove('shake'), { once:true });
+      setTimeout(() => { errEl.textContent = ''; }, 2200);
+    }
+  }
+
+  btn.addEventListener('click', attempt);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
+  await initMainApp();
+})();
+
+/* ══════════════════════════════════════
+   MAIN APP
+══════════════════════════════════════ */
+async function initMainApp() {
+  let allGuests = data;
+  const STACK = 3;
+  const area  = document.getElementById('stackArea');
+  let guests  = [...allGuests];
+  let current = 0;
+  let busy    = false;
+  const pIdx  = {};
+
+  const imgCache = {};
+  await Promise.all(allGuests.map(g => {
+    pIdx[g.id] = 0;
+    if (!g.photos?.length) return Promise.resolve();
+    imgCache[g.id] = [];
+    return Promise.all(g.photos.map((src, i) => {
+      const img = new Image();
+      img.fetchPriority = i === 0 ? 'high' : 'low';
+      img.src = src;
+      imgCache[g.id][i] = img;
+      return img.decode().catch(() => {});
+    }));
+  }));
+
+  function prefetchGuest(idx) {
+    const g = guests[wrap(idx, guests.length)];
+    if (!g || !g.photos?.length || imgCache[g.id]) return;
+    imgCache[g.id] = g.photos.map((src, i) => {
+        const img = new Image();
+      img.fetchPriority = i === 0 ? 'high' : 'low';
+        img.src = src;
+      img.decode().catch(() => {});
+      return img;
+      });
+    }
+
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const f = tab.dataset.filter;
+      guests = f === 'all' ? [...allGuests] : allGuests.filter(g => g.gender === f);
+      current = 0;
+      allGuests.forEach(g => { pIdx[g.id] = 0; });
+      render();
+    });
+  });
+
+  function wrap(i, len) { return ((i % len) + len) % len; }
+
+  function mkIgSlide(g) {
+    const handle = g.instagram || '';
+    const el = document.createElement('div');
+    el.className = 'ig-slide';
+    if (pIdx[g.id] === (g.photos?.length ?? 0)) el.classList.add('visible');
+    el.innerHTML = `
+      <div class="ig-deco-ring">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="20" height="20" rx="5" stroke="#ffffff" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="4.5" stroke="#ffffff" stroke-width="1.5"/>
+          <circle cx="17.5" cy="6.5" r="1.1" fill="#ffffff"/>
+        </svg>
+      </div>
+      <div class="ig-name">${g.name}</div>
+      <div class="ig-handle-lbl">${handle ? '@' + handle : 'Instagram'}</div>
+      ${handle ? `<a class="ig-btn" href="https://www.instagram.com/${handle}" target="_blank" rel="noopener">前往 Instagram</a>` : ''}
+      <div class="ig-foot">— follow to connect —</div>
+    `;
+    return el;
+  }
+
+  function mkCard(g) {
+    if (!g) return document.createElement('div');
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.guestId = g.id;
+
+    const photos = g.photos || [];
+    const total  = photos.length + 1;
+    const cur    = pIdx[g.id];
+    const isIg   = cur === photos.length;
+
+    const photosWrap = document.createElement('div');
+    photosWrap.className = 'card-photos';
+    photos.forEach((src, i) => {
+      const div = document.createElement('div');
+      const isActive = i === cur || (isIg && i === photos.length - 1);
+      div.className = 'card-photo' + (isActive ? ' active' : '');
+      const img = (imgCache[g.id]?.[i]) ?? (() => {
+        const el = new Image(); el.src = src; return el;
+      })();
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;';
+      div.appendChild(img);
+      photosWrap.appendChild(div);
+    });
+    card.appendChild(photosWrap);
+    card.appendChild(mkIgSlide(g));
+
+    if (total > 1) {
+      const dotsEl = document.createElement('div');
+      dotsEl.className = 'photo-dots';
+      for (let i = 0; i < total; i++) {
+        const d = document.createElement('div');
+        d.className = 'photo-dot' + (i === cur ? ' active' : '');
+        dotsEl.appendChild(d);
+      }
+      card.appendChild(dotsEl);
+    }
+
+    const info = document.createElement('div');
+    info.className = 'card-info';
+    if (isIg) info.style.opacity = '0';
+    info.innerHTML = `
+      <div class="card-name">${g.name}</div>
+      <div class="card-meta">
+        <span class="card-age">${g.age} 歲</span>
+        <span class="meta-dot"></span>
+        <span class="card-zodiac">${g.zodiac}</span>
+      </div>`;
+    card.appendChild(info);
+
+    if (total > 1) {
+      ['prev','next'].forEach(dir => {
+        const hz = document.createElement('div');
+        hz.className = `hit-${dir}`;
+        hz.addEventListener('click', e => { e.stopPropagation(); slidePhoto(card, g, dir === 'next' ? 1 : -1); });
+        card.appendChild(hz);
+      });
+    }
+    return card;
+  }
+
+  function slidePhoto(card, g, dir) {
+    const photos = g.photos || [];
+    const total  = photos.length + 1;
+    pIdx[g.id]   = wrap(pIdx[g.id] + dir, total);
+    const newIdx = pIdx[g.id];
+    const isIg   = newIdx === photos.length;
+    
+    const photoEls = card.querySelectorAll('.card-photo');
+    const dotEls   = card.querySelectorAll('.photo-dot');
+    const igEl     = card.querySelector('.ig-slide');
+    const info     = card.querySelector('.card-info');
+
+    photoEls.forEach(p => p.classList.remove('active'));
+    if (isIg) {
+      photoEls[photos.length - 1]?.classList.add('active');
+    } else {
+      photoEls[newIdx]?.classList.add('active');
+    }
+    dotEls.forEach((d, i) => d.classList.toggle('active', i === newIdx));
+    if (igEl)  igEl.classList.toggle('visible', isIg);
+    if (info)  info.style.opacity = isIg ? '0' : '1';
+  }
+
+  function render() {
+    area.innerHTML = '';
+    if (!guests.length) return;
+    const frag  = document.createDocumentFragment();
+    const count = Math.min(STACK, guests.length);
+    for (let i = count - 1; i >= 0; i--) {
+      const c = mkCard(guests[wrap(current + i, guests.length)]);
+      c.setAttribute('data-depth', i);
+      frag.appendChild(c);
+    }
+    area.appendChild(frag);
+    prefetchGuest(current + STACK);
+  }
+
+  function next() {
+    if (busy || guests.length <= 1) return; 
+    busy = true;
+    const front = area.querySelector('.card[data-depth="0"]');
+    if (front) {
+      front.classList.add('exit-left');
+      front.addEventListener('animationend', () => {
+        current = wrap(current + 1, guests.length);
+        busy = false; render();
+      }, { once:true });
+    }
+    area.querySelectorAll('.card[data-depth]').forEach(c => {
+      const d = +c.dataset.depth;
+      if (d > 0) c.setAttribute('data-depth', d - 1);
+    });
+  }
+
+  function prev() {
+    if (busy || guests.length <= 1) return; 
+    busy = true;
+    current = wrap(current - 1, guests.length);
+    const nc = mkCard(guests[current]);
+    nc.setAttribute('data-depth', '0');
+    nc.classList.add('enter-left');
+    area.insertBefore(nc, area.firstChild);
+    area.querySelectorAll('.card:not(.enter-left)').forEach(c => {
+      c.setAttribute('data-depth', +(c.dataset.depth || 0) + 1);
+    });
+    nc.addEventListener('animationend', () => { busy = false; render(); }, { once:true });
+  }
+
+  let sx = 0, sy = 0;
+  area.addEventListener('touchstart', e => {
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+  }, { passive:true });
+  area.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      dx < 0 ? next() : prev();
+    }
+  }, { passive:true });
+
+  render();
+};
+</script>
+</body>
+</html>
