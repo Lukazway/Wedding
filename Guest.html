@@ -341,8 +341,141 @@
       cursor: pointer;
       transition: background 0.22s, color 0.22s;
       white-space: nowrap;
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px;
     }
     .nav-tab.active { background: var(--tan); color: var(--soil); }
+    .nav-tab[data-filter="likes"] { padding: 0 16px; }
+    .nav-tab[data-filter="likes"] svg { width: 22px; height: 22px; }
+    .nav-tab[data-filter="likes"] .likes-heart { fill: #e5353b; }
+    .nav-tab[data-filter="likes"].active { background: rgba(229,53,59,0.18); }
+    .nav-tab[data-filter="likes"].active .likes-heart { fill: #e5353b; }
+    .nav-icon {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    /* ══════════════════════════════════════
+       LIKES EMPTY STATE
+    ══════════════════════════════════════ */
+    .likes-empty {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; 
+      /* justify-content: center; */
+      gap: 14px; padding: 40px;
+    }
+    .likes-empty-box {
+      width: calc(100% - 20px);
+      height: 90%;
+      border: 2px dashed var(--stone);
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 60px;
+    }
+    .likes-empty svg { width: 56px; height: 56px; opacity: 0.25; }
+    .likes-empty-title {
+      font-family: 'Lora', serif; font-size: 18px; font-weight: 600;
+      color: var(--bark); letter-spacing: 0.02em; text-align: center;
+    }
+    .likes-empty-sub {
+      font-family: 'Nunito', sans-serif; font-size: 16px;
+      color: var(--stone); letter-spacing: 0.04em;
+      text-align: center; line-height: 1.6;
+    }
+    .likes-empty-title .en,
+    .likes-empty-sub .en {
+      display: block;
+      margin-top: 10px;
+      font-size: 14px;
+      opacity: 0.85;
+      letter-spacing: 0.02em;
+    }
+    /* ══════════════════════════════════════
+       POST-LOGIN LOADING OVERLAY
+    ══════════════════════════════════════ */
+    #loginLoader {
+      position: absolute;
+      inset: 0;
+      z-index: 90;
+      background: var(--warm-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      transition: opacity 0.4s ease;
+    }
+
+    #loginLoader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .paw-label {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--stone);
+      letter-spacing: 0.14em;
+    }
+
+    .paw-trail.walk {
+      display: flex;
+      align-items: flex-end;
+      gap: 25px;
+    }
+
+    .paw-trail.walk .paw:nth-child(odd) {
+      --step-offset: -15px;
+    }
+
+    .paw-trail.walk .paw:nth-child(even) {
+      --step-offset: 15px;
+    }
+
+    .paw-trail.walk .paw {
+      opacity: 0;
+      transform: translateX(-40px) translateY(6px) scale(0.75) rotate(-10deg);
+      animation: pawWalk 1.8s ease-in-out infinite;
+    }
+
+    .paw-trail.walk .paw:nth-child(1) { animation-delay: 0s; }
+    .paw-trail.walk .paw:nth-child(2) { animation-delay: 0.45s; }
+    .paw-trail.walk .paw:nth-child(3) { animation-delay: 0.9s; }
+    .paw-trail.walk .paw:nth-child(4) { animation-delay: 1.35s; }
+
+    @keyframes pawWalk {
+      0% {
+        opacity: 0;
+        transform: translateX(-40px) translateY(calc(8px + var(--step-offset))) scale(0.7) rotate(-12deg);
+      }
+      15% {
+        opacity: 1;
+        transform: translateX(-10px) translateY(calc(0px + var(--step-offset))) scale(1) rotate(-8deg);
+      }
+      35% {
+        opacity: 1;
+        transform: translateX(10px) translateY(calc(2px + var(--step-offset))) scale(0.95) rotate(6deg);
+      }
+      55% {
+        opacity: 0.9;
+        transform: translateX(25px) translateY(calc(0px + var(--step-offset))) scale(1) rotate(-6deg);
+      }
+      75% {
+        opacity: 0.6;
+        transform: translateX(40px) translateY(calc(4px + var(--step-offset))) scale(0.9) rotate(8deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(60px) translateY(calc(8px + var(--step-offset))) scale(0.8) rotate(12deg);
+      }
+    }
 
     /* ══════════════════════════════════════
        ANIMATIONS
@@ -387,36 +520,106 @@
 
   <div class="stack-area" id="stackArea"></div>
 
+  <div id="loginLoader">
+    <div class="paw-trail walk">
+      <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+        <g transform="rotate(90 32 32)">
+          <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+          <circle cx="18" cy="28" r="6"/>
+          <circle cx="46" cy="28" r="6"/>
+          <circle cx="26" cy="18" r="5.5"/>
+          <circle cx="38" cy="18" r="5.5"/>
+        </g>
+      </svg>
+
+      <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+        <g transform="rotate(90 32 32)">
+          <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+          <circle cx="18" cy="28" r="6"/>
+          <circle cx="46" cy="28" r="6"/>
+          <circle cx="26" cy="18" r="5.5"/>
+          <circle cx="38" cy="18" r="5.5"/>
+        </g>
+      </svg>
+
+      <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+        <g transform="rotate(90 32 32)">
+          <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+          <circle cx="18" cy="28" r="6"/>
+          <circle cx="46" cy="28" r="6"/>
+          <circle cx="26" cy="18" r="5.5"/>
+          <circle cx="38" cy="18" r="5.5"/>
+        </g>
+      </svg>
+
+      <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+        <g transform="rotate(90 32 32)">
+          <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+          <circle cx="18" cy="28" r="6"/>
+          <circle cx="46" cy="28" r="6"/>
+          <circle cx="26" cy="18" r="5.5"/>
+          <circle cx="38" cy="18" r="5.5"/>
+        </g>
+      </svg>
+    </div>
+    <div class="paw-label">loading…</div>
+  </div>
+  
   <nav class="nav-float" id="nav">
-    <button class="nav-tab active" data-filter="all">全部</button>
-    <button class="nav-tab" data-filter="male">男生</button>
-    <button class="nav-tab" data-filter="female">女生</button>
+    <button class="nav-tab" data-filter="male">
+      <svg viewBox="0 0 24 24" class="nav-icon">
+        <path d="M16 2h6v6h-2V5.41l-3.29 3.3a7 7 0 1 1-1.41-1.41L18.59 4H16V2z"/>
+      </svg>
+      男生
+    </button>
+
+    <button class="nav-tab active" data-filter="likes">
+      <svg viewBox="0 0 24 24" class="nav-icon">
+        <path class="likes-heart" d="M12 21C12 21 3 14.5 3 8.5C3 5.42 5.42 3 8.5 3C10.24 3 11.91 3.81 13 5.08C14.09 3.81 15.76 3 17.5 3C20.58 3 23 5.42 23 8.5C23 14.5 12 21 12 21Z"/>
+      </svg>
+    </button>
+
+    <button class="nav-tab" data-filter="female">
+      女生
+      <svg viewBox="0 0 24 24" class="nav-icon">
+        <path d="M12 2a6 6 0 1 1 0 12v3h3v2h-3v3h-2v-3H7v-2h3v-3a6 6 0 0 1 2-12z"/>
+      </svg>
+    </button>
   </nav>
 
 </div>
 <script>
 /* ══════════════════════════════════════
-   LOCK SCREEN
+   CONFIG & STATE
 ══════════════════════════════════════ */
 const GAS_URL      = 'https://script.google.com/macros/s/AKfycbzlaYIu1kat5DdOW26GNWm3uUEVOpOTm1WOJESPu5JV5eqXbNV2UYCPQAod-MSfGOjw/exec';
 const MASTER_PHONE = '0987654321';
-let allGuestData  = [];
 const validNumbers = new Set([MASTER_PHONE]);
-let myLikes  = new Set();
+let defaultCard   = null;
+let allGuestData  = [];
+let myLikes       = new Set();
 let currentUserId = null;
+let likesReady    = false;
 
+/* ══════════════════════════════════════
+   DATA FETCH
+══════════════════════════════════════ */
 const guestDataReady = (async () => {
   try {
     const res = await fetch(GAS_URL).then(r => r.json());
     allGuestData = Array.isArray(res) ? res : (res.data || res.guests || []);
+    defaultCard = allGuestData.find(g => g.id === 'default') || null;
     allGuestData.forEach(g => {
-      if (g.phone) validNumbers.add(String(g.phone).replace(/\D/g,''));
+      if (g.phone) validNumbers.add(String(g.phone).replace(/\D/g, ''));
     });
-  } catch(_) {}
+  } catch (_) {}
 })();
 
-guestDataReady.then(() => initMainApp(new Set()));
+guestDataReady.then(() => initMainApp());
 
+/* ══════════════════════════════════════
+   LOCK SCREEN
+══════════════════════════════════════ */
 (async () => {
   await guestDataReady;
 
@@ -424,37 +627,40 @@ guestDataReady.then(() => initMainApp(new Set()));
   const input  = document.getElementById('phoneInput');
   const btn    = document.getElementById('lockBtn');
   const errEl  = document.getElementById('lockError');
+  const loader = document.getElementById('loginLoader');
 
   function attempt() {
-    const val = input.value.replace(/\D/g,'');
+    const val = input.value.replace(/\D/g, '');
     if (!validNumbers.has(val)) {
       errEl.textContent = '僅限婚禮賓客，謝謝';
       input.classList.remove('shake');
       void input.offsetWidth;
       input.classList.add('shake');
-      input.addEventListener('animationend', () => input.classList.remove('shake'), { once:true });
+      input.addEventListener('animationend', () => input.classList.remove('shake'), { once: true });
       setTimeout(() => { errEl.textContent = ''; }, 2200);
       return;
     }
 
     if (val !== MASTER_PHONE) {
-      const found = allGuestData.find(g => String(g.phone).replace(/\D/g,'') === val);
+      const found = allGuestData.find(g => String(g.phone).replace(/\D/g, '') === val);
       currentUserId = found?.id ?? null;
     }
 
+    loader.classList.remove('hidden');
+
     screen.classList.add('unlocking');
-    screen.addEventListener('animationend', () => screen.remove(), { once:true });
+    screen.addEventListener('animationend', () => screen.remove(), { once: true });
 
     if (currentUserId) {
       fetch(`${GAS_URL}?uid=${currentUserId}`)
         .then(r => r.json())
         .then(res => {
-          if (Array.isArray(res.myLikes)) {
-            myLikes = new Set(res.myLikes);
-            patchLikeButtons();
-          }
+          if (Array.isArray(res.myLikes)) res.myLikes.forEach(id => myLikes.add(id));
+          patchLikeButtons();
         })
-        .catch(() => {});
+        .catch(() => patchLikeButtons());
+    } else {
+      patchLikeButtons();
     }
   }
 
@@ -466,30 +672,36 @@ guestDataReady.then(() => initMainApp(new Set()));
    MAIN APP
 ══════════════════════════════════════ */
 function patchLikeButtons() {
-  document.querySelectorAll('.card[data-depth="0"] .like-btn').forEach(btn => {
-    const guestId = btn.dataset.guestId;
-    if (guestId) applyLikeState(btn, myLikes.has(guestId));
+  likesReady = true;
+  document.querySelectorAll('.like-btn').forEach(btn => {
+    const id = btn.dataset.guestId;
+    if (id) applyLikeState(btn, myLikes.has(id) || id === defaultCard.id);
   });
-  document.querySelectorAll('.like-btn[data-guest-id]').forEach(btn => {
-    applyLikeState(btn, myLikes.has(btn.dataset.guestId));
-  });
+  const activeTab = document.querySelector('.nav-tab.active');
+  if (activeTab?.dataset.filter === 'likes') activeTab.dispatchEvent(new Event('click'));
+
+  const loader = document.getElementById('loginLoader');
+  if (loader) loader.classList.add('hidden');
 }
 
 function applyLikeState(btn, liked) {
   btn.classList.toggle('liked', liked);
 }
 
-async function initMainApp(initialLikes) {
-  myLikes = initialLikes;
-  let allGuests = allGuestData;
+async function initMainApp() {
+  myLikes.add(defaultCard.id);
+
   const STACK = 3;
   const area  = document.getElementById('stackArea');
-  let guests  = [...allGuests];
-  let current = 0;
-  let busy    = false;
-  const pIdx  = {};
+  let allGuests = allGuestData;
+  let guests    = [];
+  let current   = 0;
+  let busy      = false;
+  const pIdx    = {};
 
+  /* ── Preload images ── */
   const imgCache = {};
+  pIdx[defaultCard.id] = 0;
   await Promise.all(allGuests.map(g => {
     pIdx[g.id] = 0;
     if (!g.photos?.length) return Promise.resolve();
@@ -503,32 +715,70 @@ async function initMainApp(initialLikes) {
     }));
   }));
 
-  function prefetchGuest(idx) {
-    const g = guests[wrap(idx, guests.length)];
-    if (!g || !g.photos?.length || imgCache[g.id]) return;
-    imgCache[g.id] = g.photos.map((src, i) => {
-        const img = new Image();
-      img.fetchPriority = i === 0 ? 'high' : 'low';
-        img.src = src;
-      img.decode().catch(() => {});
-      return img;
-      });
-    }
-
+  /* ── Nav tabs ── */
   document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const f = tab.dataset.filter;
-      guests = f === 'all' ? [...allGuests] : allGuests.filter(g => g.gender === f);
+
+      if (f === 'likes') {
+        area.innerHTML = '';
+        if (!likesReady) return;
+
+        const likedGuests  = allGuests.filter(g => myLikes.has(g.id));
+
+        if (likedGuests.length === 0) {
+          const empty = document.createElement('div');
+          empty.className = 'likes-empty';
+          empty.innerHTML = `
+            <div class="likes-empty-box">
+              <div class="likes-empty-title">
+                沒有收藏的卡片
+                <div class="en">No saved cards yet</div>
+              </div>
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 21C12 21 3 14.5 3 8.5C3 5.42 5.42 3 8.5 3C10.24 3 11.91 3.81 13 5.08C14.09 3.81 15.76 3 17.5 3C20.58 3 23 5.42 23 8.5C23 14.5 12 21 12 21Z"
+                  fill="none" stroke="var(--bark)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div class="likes-empty-sub">
+                滑動卡片，點擊愛心<br>把感興趣的人加入這裡
+                <div class="en">Swipe and tap to save cards you like</div>
+              </div>
+            </div>`;
+          area.appendChild(empty);
+        } else {
+          guests = likedGuests;
+          current = 0;
+          likedGuests.forEach(g => { pIdx[g.id] = 0; });
+          render();
+        }
+        return;
+      }
+
+      guests = allGuests.filter(g => g.gender === f);
       current = 0;
       allGuests.forEach(g => { pIdx[g.id] = 0; });
       render();
     });
   });
 
+  /* ── Helpers ── */
   function wrap(i, len) { return ((i % len) + len) % len; }
 
+  function prefetchGuest(idx) {
+    const g = guests[wrap(idx, guests.length)];
+    if (!g || !g.photos?.length || imgCache[g.id]) return;
+    imgCache[g.id] = g.photos.map((src, i) => {
+      const img = new Image();
+      img.fetchPriority = i === 0 ? 'high' : 'low';
+      img.src = src;
+      img.decode().catch(() => {});
+      return img;
+    });
+  }
+
+  /* ── Card builders ── */
   function mkIgSlide(g) {
     const handle = g.instagram || '';
     const el = document.createElement('div');
@@ -545,14 +795,13 @@ async function initMainApp(initialLikes) {
       <div class="ig-name">${g.name}</div>
       <div class="ig-handle-lbl">${handle ? '@' + handle : 'Instagram'}</div>
       ${handle ? `<a class="ig-btn" href="https://www.instagram.com/${handle}" target="_blank" rel="noopener">前往 Instagram</a>` : ''}
-      <div class="ig-foot">— follow to connect —</div>
-    `;
+      <div class="ig-foot">— follow to connect —</div>`;
     return el;
   }
 
   function mkCard(g) {
     if (!g) return document.createElement('div');
-    const card = document.createElement('div');
+    const card   = document.createElement('div');
     card.className = 'card';
     card.dataset.guestId = g.id;
 
@@ -565,11 +814,8 @@ async function initMainApp(initialLikes) {
     photosWrap.className = 'card-photos';
     photos.forEach((src, i) => {
       const div = document.createElement('div');
-      const isActive = i === cur || (isIg && i === photos.length - 1);
-      div.className = 'card-photo' + (isActive ? ' active' : '');
-      const img = (imgCache[g.id]?.[i]) ?? (() => {
-        const el = new Image(); el.src = src; return el;
-      })();
+      div.className = 'card-photo' + (i === cur || (isIg && i === photos.length - 1) ? ' active' : '');
+      const img = imgCache[g.id]?.[i] ?? (() => { const el = new Image(); el.src = src; return el; })();
       img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;';
       div.appendChild(img);
       photosWrap.appendChild(div);
@@ -586,6 +832,13 @@ async function initMainApp(initialLikes) {
         dotsEl.appendChild(d);
       }
       card.appendChild(dotsEl);
+
+      ['prev', 'next'].forEach(dir => {
+        const hz = document.createElement('div');
+        hz.className = `hit-${dir}`;
+        hz.addEventListener('click', e => { e.stopPropagation(); slidePhoto(card, g, dir === 'next' ? 1 : -1); });
+        card.appendChild(hz);
+      });
     }
 
     const info = document.createElement('div');
@@ -600,82 +853,75 @@ async function initMainApp(initialLikes) {
       </div>`;
     card.appendChild(info);
 
-    if (total > 1) {
-      ['prev','next'].forEach(dir => {
-        const hz = document.createElement('div');
-        hz.className = `hit-${dir}`;
-        hz.addEventListener('click', e => { e.stopPropagation(); slidePhoto(card, g, dir === 'next' ? 1 : -1); });
-        card.appendChild(hz);
-      });
-    }
+    const likeBtn = document.createElement('button');
+    likeBtn.className = 'like-btn' + (g.id === 'default' || myLikes.has(g.id) ? ' liked' : '');
+    likeBtn.dataset.guestId = g.id;
+    likeBtn.setAttribute('aria-label', 'Like');
+    likeBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path class="heart-outline" d="M12 21C12 21 3 14.5 3 8.5C3 5.42 5.42 3 8.5 3C10.24 3 11.91 3.81 13 5.08C14.09 3.81 15.76 3 17.5 3C20.58 3 23 5.42 23 8.5C23 14.5 12 21 12 21Z" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>`;
 
-    if (true) {
-      const likeBtn = document.createElement('button');
-      likeBtn.className = 'like-btn' + (myLikes.has(g.id) ? ' liked' : '');
-      likeBtn.dataset.guestId = g.id;
-      likeBtn.setAttribute('aria-label', 'Like');
-      likeBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path class="heart-outline" d="M12 21C12 21 3 14.5 3 8.5C3 5.42 5.42 3 8.5 3C10.24 3 11.91 3.81 13 5.08C14.09 3.81 15.76 3 17.5 3C20.58 3 23 5.42 23 8.5C23 14.5 12 21 12 21Z" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`;
+    likeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!currentUserId) return;
+      const wasLiked = likeBtn.classList.contains('liked');
 
-      likeBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        if (!currentUserId) return;
-        const wasLiked = likeBtn.classList.contains('liked');
-        const action   = wasLiked ? 'removeLike' : 'addLike';
-        applyLikeState(likeBtn, !wasLiked);
-        if (!wasLiked) {
-          myLikes.add(g.id);
-        } else {
-          myLikes.delete(g.id);
-        }
-        likeBtn.classList.remove('pop');
-        void likeBtn.offsetWidth;
-        likeBtn.classList.add('pop');
-        likeBtn.addEventListener('animationend', () => likeBtn.classList.remove('pop'), { once: true });
+      if (g.id === 'default') {
+        if (!wasLiked) return;
+        applyLikeState(likeBtn, false);
+        myLikes.delete(g.id);
+        triggerPop(likeBtn);
+        syncLikesTab();
+        return;
+      }
 
-        fetch(GAS_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action, userId: currentUserId, targetId: g.id })
-        }).catch(() => {});
-      });
+      applyLikeState(likeBtn, !wasLiked);
+      wasLiked ? myLikes.delete(g.id) : myLikes.add(g.id);
+      triggerPop(likeBtn);
+      syncLikesTab();
+      fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify({ action: wasLiked ? 'removeLike' : 'addLike', userId: currentUserId, targetId: g.id })
+      }).catch(() => {});
+    });
 
-      card.appendChild(likeBtn);
-    }
-
+    card.appendChild(likeBtn);
     return card;
   }
 
+  function triggerPop(btn) {
+    btn.classList.remove('pop');
+    void btn.offsetWidth;
+    btn.classList.add('pop');
+    btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
+  }
+
+  function syncLikesTab() {
+    const activeTab = document.querySelector('.nav-tab.active');
+    if (activeTab?.dataset.filter === 'likes') activeTab.dispatchEvent(new Event('click'));
+  }
+
+  /* ── Photo slide ── */
   function slidePhoto(card, g, dir) {
     const photos = g.photos || [];
     const total  = photos.length + 1;
     pIdx[g.id]   = wrap(pIdx[g.id] + dir, total);
     const newIdx = pIdx[g.id];
     const isIg   = newIdx === photos.length;
-    
-    const photoEls = card.querySelectorAll('.card-photo');
-    const dotEls   = card.querySelectorAll('.photo-dot');
-    const igEl     = card.querySelector('.ig-slide');
-    const info     = card.querySelector('.card-info');
 
-    photoEls.forEach(p => p.classList.remove('active'));
-    if (isIg) {
-      photoEls[photos.length - 1]?.classList.add('active');
-    } else {
-      photoEls[newIdx]?.classList.add('active');
-    }
-    dotEls.forEach((d, i) => d.classList.toggle('active', i === newIdx));
-    if (igEl)  igEl.classList.toggle('visible', isIg);
-    if (info)  info.style.opacity = isIg ? '0' : '1';
+    card.querySelectorAll('.card-photo').forEach(p => p.classList.remove('active'));
+    const targetPhoto = isIg ? photos.length - 1 : newIdx;
+    card.querySelectorAll('.card-photo')[targetPhoto]?.classList.add('active');
+    card.querySelectorAll('.photo-dot').forEach((d, i) => d.classList.toggle('active', i === newIdx));
+    card.querySelector('.ig-slide')?.classList.toggle('visible', isIg);
+    const info = card.querySelector('.card-info');
+    if (info) info.style.opacity = isIg ? '0' : '1';
 
     const btn = card.querySelector('.like-btn');
-    if (btn) {
-      btn.style.display = 'none';
-      btn.offsetHeight;
-      btn.style.display = 'flex';
-    }
+    if (btn) { btn.style.display = 'none'; btn.offsetHeight; btn.style.display = 'flex'; }
   }
 
+  /* ── Render ── */
   function render() {
     area.innerHTML = '';
     if (!guests.length) return;
@@ -690,16 +936,18 @@ async function initMainApp(initialLikes) {
     prefetchGuest(current + STACK);
   }
 
+  /* ── Navigation ── */
   function next() {
-    if (busy || guests.length <= 1) return; 
+    if (busy || guests.length <= 1) return;
     busy = true;
     const front = area.querySelector('.card[data-depth="0"]');
     if (front) {
       front.classList.add('exit-left');
       front.addEventListener('animationend', () => {
         current = wrap(current + 1, guests.length);
-        busy = false; render();
-      }, { once:true });
+        busy = false;
+        render();
+      }, { once: true });
     }
     area.querySelectorAll('.card[data-depth]').forEach(c => {
       const d = +c.dataset.depth;
@@ -708,7 +956,7 @@ async function initMainApp(initialLikes) {
   }
 
   function prev() {
-    if (busy || guests.length <= 1) return; 
+    if (busy || guests.length <= 1) return;
     busy = true;
     current = wrap(current - 1, guests.length);
     const nc = mkCard(guests[current]);
@@ -718,23 +966,22 @@ async function initMainApp(initialLikes) {
     area.querySelectorAll('.card:not(.enter-left)').forEach(c => {
       c.setAttribute('data-depth', +(c.dataset.depth || 0) + 1);
     });
-    nc.addEventListener('animationend', () => { busy = false; render(); }, { once:true });
+    nc.addEventListener('animationend', () => { busy = false; render(); }, { once: true });
   }
 
+  /* ── Touch swipe ── */
   let sx = 0, sy = 0;
   area.addEventListener('touchstart', e => {
     sx = e.touches[0].clientX; sy = e.touches[0].clientY;
-  }, { passive:true });
+  }, { passive: true });
   area.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
-    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
-      dx < 0 ? next() : prev();
-    }
-  }, { passive:true });
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) dx < 0 ? next() : prev();
+  }, { passive: true });
 
   render();
-};
+}
 </script>
 </body>
 </html>
