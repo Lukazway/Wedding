@@ -211,8 +211,8 @@
     .photo-dot.active { background:rgba(255,255,255,0.95); }
 
     .hit-prev, .hit-next {
-      position:absolute; top:0; bottom:0; width:42%;
-      z-index:30; cursor:pointer;
+      position:absolute; top:0; bottom:0; width:30%;
+      z-index:15; cursor:pointer;
     }
     .hit-prev { left:0; } .hit-next { right:0; }
 
@@ -220,23 +220,51 @@
       position:absolute; bottom:0; left:0; right:0;
       padding:18px 20px 24px; z-index:3;
       transition:opacity 0.22s ease;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.7);
     }
     .card-name {
       font-family:'Lora',serif; font-size:30px; font-weight:600;
-      color:#fff; line-height:1.15; letter-spacing:0.01em;
-      text-shadow:0 1px 10px rgba(0,0,0,0.45);
+      color:var(--warm-bg); line-height:1.15; letter-spacing:0.01em;
     }
     .card-meta { display:flex; align-items:center; gap:7px; margin-top:4px; }
-    .card-age  { font-family:'Nunito',sans-serif; font-size:15px; font-weight:500; color:rgba(255,255,255,0.9); }
+    .card-age  { font-family:'Nunito',sans-serif; font-size:15px; font-weight:500; color:var(--warm-bg); }
     .meta-dot  { width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.4); }
-    .card-zodiac { font-size:15px; color:rgba(255,255,255,0.68); letter-spacing:0.07em; }
+    .card-zodiac { font-size:15px; color:var(--warm-bg); letter-spacing:0.07em; }
+
+    /* ══════════════════════════════════════
+       LIKE BUTTON
+    ══════════════════════════════════════ */
+    .like-btn {
+      position: absolute;
+      bottom: 24px; right: 22px;
+      width: 50px; height: 50px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.22);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.35);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; z-index: 20;
+      transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), background 0.18s;
+    }
+    .like-btn:active { transform: scale(0.88); }
+    .like-btn svg { width: 25px; height: 25px; transition: fill 0.18s ease, stroke 0.18s ease; }
+    .like-btn .heart-outline { fill: none; stroke: rgba(255,255,255,0.9); stroke-width: 1.8; }
+    .like-btn.liked .heart-outline { fill: #e5353b; stroke: #e5353b; }
+    @keyframes heartPop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.32); }
+      70%  { transform: scale(0.92); }
+      100% { transform: scale(1); }
+    }
+    .like-btn.pop { animation: heartPop 0.38s cubic-bezier(0.34,1.56,0.64,1); }
 
     /* ══════════════════════════════════════
        IG SLIDE
     ══════════════════════════════════════ */
     .ig-slide {
       position:absolute; inset:0;
-      background: rgba(0,0,0,0.6);
+      background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
       z-index:1; opacity:0;
@@ -280,7 +308,7 @@
     .ig-btn:active { background:var(--soil); transform:scale(0.96); }
 
     .ig-foot {
-      position:absolute; bottom:16px;
+      position:absolute; top:20px;
       font-family:'Lora',serif; font-style:italic;
       font-size:12px; color:var(--tan); letter-spacing:0.14em;
     }
@@ -370,17 +398,27 @@
 /* ══════════════════════════════════════
    LOCK SCREEN
 ══════════════════════════════════════ */
-let data = [];
-const getUrl = 'https://script.google.com/macros/s/AKfycbzlaYIu1kat5DdOW26GNWm3uUEVOpOTm1WOJESPu5JV5eqXbNV2UYCPQAod-MSfGOjw/exec';
-const validNumbers = new Set(['0987654321']);
-async function loadPhones() {
+const GAS_URL      = 'https://script.google.com/macros/s/AKfycbzlaYIu1kat5DdOW26GNWm3uUEVOpOTm1WOJESPu5JV5eqXbNV2UYCPQAod-MSfGOjw/exec';
+const MASTER_PHONE = '0987654321';
+let allGuestData  = [];
+const validNumbers = new Set([MASTER_PHONE]);
+let myLikes  = new Set();
+let currentUserId = null;
+
+const guestDataReady = (async () => {
   try {
-    data = await fetch(getUrl).then(r => r.json());
-    data.forEach(g => { if (g.phone) validNumbers.add(String(g.phone).replace(/\D/g,'')); });
+    const res = await fetch(GAS_URL).then(r => r.json());
+    allGuestData = Array.isArray(res) ? res : (res.data || res.guests || []);
+    allGuestData.forEach(g => {
+      if (g.phone) validNumbers.add(String(g.phone).replace(/\D/g,''));
+    });
   } catch(_) {}
-}
+})();
+
+guestDataReady.then(() => initMainApp(new Set()));
+
 (async () => {
-  await loadPhones();
+  await guestDataReady;
 
   const screen = document.getElementById('lockScreen');
   const input  = document.getElementById('phoneInput');
@@ -389,29 +427,61 @@ async function loadPhones() {
 
   function attempt() {
     const val = input.value.replace(/\D/g,'');
-    if (validNumbers.has(val)) {
-      screen.classList.add('unlocking');
-      screen.addEventListener('animationend', () => screen.remove(), { once:true });
-    } else {
+    if (!validNumbers.has(val)) {
       errEl.textContent = '僅限婚禮賓客，謝謝';
       input.classList.remove('shake');
       void input.offsetWidth;
       input.classList.add('shake');
       input.addEventListener('animationend', () => input.classList.remove('shake'), { once:true });
       setTimeout(() => { errEl.textContent = ''; }, 2200);
+      return;
+    }
+
+    if (val !== MASTER_PHONE) {
+      const found = allGuestData.find(g => String(g.phone).replace(/\D/g,'') === val);
+      currentUserId = found?.id ?? null;
+    }
+
+    screen.classList.add('unlocking');
+    screen.addEventListener('animationend', () => screen.remove(), { once:true });
+
+    if (currentUserId) {
+      fetch(`${GAS_URL}?uid=${currentUserId}`)
+        .then(r => r.json())
+        .then(res => {
+          if (Array.isArray(res.myLikes)) {
+            myLikes = new Set(res.myLikes);
+            patchLikeButtons();
+          }
+        })
+        .catch(() => {});
     }
   }
 
   btn.addEventListener('click', attempt);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
-  await initMainApp();
 })();
 
 /* ══════════════════════════════════════
    MAIN APP
 ══════════════════════════════════════ */
-async function initMainApp() {
-  let allGuests = data;
+function patchLikeButtons() {
+  document.querySelectorAll('.card[data-depth="0"] .like-btn').forEach(btn => {
+    const guestId = btn.dataset.guestId;
+    if (guestId) applyLikeState(btn, myLikes.has(guestId));
+  });
+  document.querySelectorAll('.like-btn[data-guest-id]').forEach(btn => {
+    applyLikeState(btn, myLikes.has(btn.dataset.guestId));
+  });
+}
+
+function applyLikeState(btn, liked) {
+  btn.classList.toggle('liked', liked);
+}
+
+async function initMainApp(initialLikes) {
+  myLikes = initialLikes;
+  let allGuests = allGuestData;
   const STACK = 3;
   const area  = document.getElementById('stackArea');
   let guests  = [...allGuests];
@@ -538,6 +608,41 @@ async function initMainApp() {
         card.appendChild(hz);
       });
     }
+
+    if (true) {
+      const likeBtn = document.createElement('button');
+      likeBtn.className = 'like-btn' + (myLikes.has(g.id) ? ' liked' : '');
+      likeBtn.dataset.guestId = g.id;
+      likeBtn.setAttribute('aria-label', 'Like');
+      likeBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path class="heart-outline" d="M12 21C12 21 3 14.5 3 8.5C3 5.42 5.42 3 8.5 3C10.24 3 11.91 3.81 13 5.08C14.09 3.81 15.76 3 17.5 3C20.58 3 23 5.42 23 8.5C23 14.5 12 21 12 21Z" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+
+      likeBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (!currentUserId) return;
+        const wasLiked = likeBtn.classList.contains('liked');
+        const action   = wasLiked ? 'removeLike' : 'addLike';
+        applyLikeState(likeBtn, !wasLiked);
+        if (!wasLiked) {
+          myLikes.add(g.id);
+        } else {
+          myLikes.delete(g.id);
+        }
+        likeBtn.classList.remove('pop');
+        void likeBtn.offsetWidth;
+        likeBtn.classList.add('pop');
+        likeBtn.addEventListener('animationend', () => likeBtn.classList.remove('pop'), { once: true });
+
+        fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action, userId: currentUserId, targetId: g.id })
+        }).catch(() => {});
+      });
+
+      card.appendChild(likeBtn);
+    }
+
     return card;
   }
 
@@ -562,6 +667,13 @@ async function initMainApp() {
     dotEls.forEach((d, i) => d.classList.toggle('active', i === newIdx));
     if (igEl)  igEl.classList.toggle('visible', isIg);
     if (info)  info.style.opacity = isIg ? '0' : '1';
+
+    const btn = card.querySelector('.like-btn');
+    if (btn) {
+      btn.style.display = 'none';
+      btn.offsetHeight;
+      btn.style.display = 'flex';
+    }
   }
 
   function render() {
