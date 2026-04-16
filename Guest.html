@@ -239,10 +239,8 @@
       bottom: 24px; right: 22px;
       width: 50px; height: 50px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.22);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.35);
+      background: rgba(30,20,12,0.38);
+      border: 1px solid rgba(255,255,255,0.28);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; z-index: 20;
       transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), background 0.18s;
@@ -603,14 +601,14 @@ let allGuestData  = [];
 let myLikes       = new Set();
 let currentUserId = null;
 let likesReady    = false;
-
+let initialPromise;
 const guestDataReady = fetchGuestData();
 async function initial() {
   initLockScreen();
   await guestDataReady;
-  initMainApp();
+  await initMainApp();
 }
-initial();
+initialPromise = initial();
 
 /* ══════════════════════════════════════
    DATA FETCH
@@ -680,9 +678,10 @@ async function handleLogin({ loader, screen }) {
           }
         } catch (_) {}
       }
-      patchLikeButtons();
     })();
-    await Promise.all([animationPromise, dataPromise, guestDataReady]);
+    await Promise.all([animationPromise, dataPromise, initialPromise]);
+    patchLikeButtons();
+    await new Promise(resolve => requestAnimationFrame(resolve));
     document.getElementById('loginLoader')?.classList.add('hidden');
     screen.remove();
   } catch (err) {
@@ -935,8 +934,6 @@ async function initMainApp() {
     card.querySelector('.ig-slide')?.classList.toggle('visible', isIg);
     const info = card.querySelector('.card-info');
     if (info) info.style.opacity = isIg ? '0' : '1';
-    const btn = card.querySelector('.like-btn');
-    if (btn) { btn.style.display = 'none'; btn.offsetHeight; btn.style.display = 'flex'; }
   }
 
   /* ── Render ── */

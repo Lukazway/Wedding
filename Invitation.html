@@ -975,20 +975,25 @@
 
       const form       = e.target;
       const guestName  = form.querySelector('[name="guestName"]').value.trim();
+      const attend     = form.querySelector('[name="attend"]:checked')?.value || '否';
       const guestCount = parseInt(form.querySelector('[name="guestCount"]').value) || 1;
       const message    = form.querySelector('[name="message"]').value.trim() || null;
       const formDataList = [];
       const guestsSnap   = [];
 
-      for (let i = 1; i <= guestCount; i++) {
-        const name        = i === 1 ? guestName : (form.querySelector(`[name="guestName_${i}"]`)?.value.trim() || '');
-        const meal        = form.querySelector(`[name="meal_${i}"]:checked`)?.value || '';
-        const allergic    = form.querySelector(`[name="allergic_${i}"]:checked`)?.value || '';
-        const count       = i === 1 ? guestCount : 0;
-        const msg         = i === 1 ? message : null;
-        const referential = i === 1 ? null : guestName;
-        guestsSnap.push({ name, meal, allergic });
-        formDataList.push(buildFormData(name, '是', count, meal, allergic, msg, referential));
+      if (attend === '否') {
+        formDataList.push(buildFormData(guestName, '否', 0, '', '', message, null));
+      } else {
+        for (let i = 1; i <= guestCount; i++) {
+          const name        = i === 1 ? guestName : (form.querySelector(`[name="guestName_${i}"]`)?.value.trim() || '');
+          const meal        = form.querySelector(`[name="meal_${i}"]:checked`)?.value || '';
+          const allergic    = form.querySelector(`[name="allergic_${i}"]:checked`)?.value || '';
+          const count       = i === 1 ? guestCount : 0;
+          const msg         = i === 1 ? message : null;
+          const referential = i === 1 ? null : guestName;
+          guestsSnap.push({ name, meal, allergic });
+          formDataList.push(buildFormData(name, '是', count, meal, allergic, msg, referential));
+        }
       }
 
       const ok = await submitToGoogle(formDataList);
