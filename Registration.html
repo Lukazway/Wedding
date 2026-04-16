@@ -257,10 +257,10 @@
 
     /* SUCCESS STATE */
     .success-screen {
-      display: none;
-      flex-direction: column; align-items: center; justify-content: center;
-      flex: 1; padding: 40px 32px;
-      text-align: center; gap: 12px;
+      position: fixed; inset: 0;
+      display: none; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 40px 32px; text-align: center; gap: 12px;
     }
     .success-screen.show { display: flex; }
     .success-ring {
@@ -293,6 +293,211 @@
       transition: background 0.18s, border-color 0.18s;
     }
     .success-again:hover { background: rgba(196,168,130,0.12); }
+
+    /* CONFIRM MODAL */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(44,35,24,0.55);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 500;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.22s ease;
+      padding: 24px;
+    }
+    .modal-overlay.show {
+      opacity: 1; pointer-events: all;
+    }
+    .modal-box {
+      background: var(--warm-bg);
+      border-radius: 20px;
+      padding: 28px 24px 22px;
+      width: 100%; max-width: 340px;
+      box-shadow: 0 12px 40px rgba(44,35,24,0.28);
+      border: 1px solid rgba(196,168,130,0.3);
+      transform: translateY(10px) scale(0.97);
+      transition: transform 0.22s ease;  
+      display: flex;
+      flex-direction: column;
+      gap: 22px; 
+    }
+    .modal-overlay.show .modal-box {
+      transform: translateY(0) scale(1);
+    }
+    .modal-icon {
+      text-align: center;
+      font-size: 36px;
+    }
+    .modal-title {
+      font-family: 'Lora', serif; font-size: 18px; font-weight: 600;
+      color: var(--bark); text-align: center;
+      letter-spacing: 0.03em;
+    }
+    .modal-title-en {
+      font-family: 'Nunito', sans-serif; font-size: 15px;
+      color: var(--stone); text-align: center;
+      letter-spacing: 0.08em;
+    }
+    .modal-phone-label {
+      font-size: 12px; color: var(--stone);
+      text-align: center;
+      letter-spacing: 0.06em;
+    }
+    .modal-phone-value {
+      font-family: 'Nunito', sans-serif; font-size: 30px; font-weight: 700;
+      color: var(--soil); text-align: center; letter-spacing: 0.12em;
+      background: rgba(196,168,130,0.15);
+      border-radius: 10px; padding: 10px 16px;
+      width: 100%;
+    }
+    .modal-note {
+      font-size: 12px; color: var(--stone);
+      text-align: center; line-height: 1.6;
+      letter-spacing: 0.03em;
+    }
+    .modal-btns {
+      display: flex; gap: 10px;
+    }
+    .modal-btn-cancel {
+      flex: 1; height: 46px;
+      background: transparent;
+      border: 1.5px solid rgba(196,168,130,0.45);
+      border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 600;
+      color: var(--stone); cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+      letter-spacing: 0.05em;
+    }
+    .modal-btn-cancel:hover { background: rgba(196,168,130,0.1); border-color: var(--tan); }
+    .modal-btn-confirm {
+      flex: 1; height: 46px;
+      background: var(--bark); color: #fff;
+      border: none; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      letter-spacing: 0.05em;
+    }
+    .modal-btn-confirm:active { transform: scale(0.97); }
+    .modal-btn-confirm:hover { background: var(--soil); }
+
+    /* LOADING OVERLAY */
+    #loginLoader {
+      position: fixed; inset: 0;
+      background: rgba(247,240,232,0.82);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+      z-index: 600;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    #loginLoader.show {
+      opacity: 1; pointer-events: all;
+    }
+    .paw-label {
+      font-family: 'Nunito', sans-serif; font-size: 13px;
+      color: var(--stone); letter-spacing: 0.12em;
+      font-weight: 600;
+    }
+    
+    /* ══════════════════════════════════════
+       POST-LOGIN LOADING OVERLAY
+    ══════════════════════════════════════ */
+    #loginLoader {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: var(--warm-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      transition: opacity 0.4s ease;
+    }
+
+    #loginLoader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .paw-label {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--stone);
+      letter-spacing: 0.14em;
+    }
+
+    .paw-trail.walk {
+      display: flex;
+      align-items: flex-end;
+      gap: 25px;
+    }
+
+    .paw-trail.walk .paw:nth-child(odd) {
+      --step-offset: -15px;
+    }
+
+    .paw-trail.walk .paw:nth-child(even) {
+      --step-offset: 15px;
+    }
+
+    .paw-trail.walk .paw {
+      opacity: 0;
+      transform: translateX(-40px) translateY(6px) scale(0.75) rotate(-10deg);
+      animation: pawWalk 1.8s ease-in-out infinite;
+    }
+
+    .paw-trail.walk .paw:nth-child(1) { animation-delay: 0s; }
+    .paw-trail.walk .paw:nth-child(2) { animation-delay: 0.45s; }
+    .paw-trail.walk .paw:nth-child(3) { animation-delay: 0.9s; }
+    .paw-trail.walk .paw:nth-child(4) { animation-delay: 1.35s; }
+
+    @keyframes pawWalk {
+      0% {
+        opacity: 0;
+        transform: translateX(-40px) translateY(calc(8px + var(--step-offset))) scale(0.7) rotate(-12deg);
+      }
+      15% {
+        opacity: 1;
+        transform: translateX(-10px) translateY(calc(0px + var(--step-offset))) scale(1) rotate(-8deg);
+      }
+      35% {
+        opacity: 1;
+        transform: translateX(10px) translateY(calc(2px + var(--step-offset))) scale(0.95) rotate(6deg);
+      }
+      55% {
+        opacity: 0.9;
+        transform: translateX(25px) translateY(calc(0px + var(--step-offset))) scale(1) rotate(-6deg);
+      }
+      75% {
+        opacity: 0.6;
+        transform: translateX(40px) translateY(calc(4px + var(--step-offset))) scale(0.9) rotate(8deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateX(60px) translateY(calc(8px + var(--step-offset))) scale(0.8) rotate(12deg);
+      }
+    }
+
+    /* ══════════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════════ */
+    .card.exit-left   { animation:exitLeft   0.34s cubic-bezier(0.4,0,0.6,1) forwards; }
+    .card.exit-right  { animation:exitRight  0.34s cubic-bezier(0.4,0,0.6,1) forwards; }
+    .card.enter-left  { animation:enterLeft  0.40s cubic-bezier(0.22,1,0.36,1) forwards; }
+    .card.enter-right { animation:enterRight 0.40s cubic-bezier(0.22,1,0.36,1) forwards; }
+
+    @keyframes exitLeft { to { transform:translateX(-140%) rotate(-18deg); opacity:0; } }
+    @keyframes enterLeft {
+      from { transform:translateX(-60%) rotate(-10deg) scale(0.9); opacity:0; }
+      to   { transform:translate(0,0) rotate(0deg) scale(1); opacity:1; }
+    }
   </style>
 </head>
 <body>
@@ -419,21 +624,90 @@
 
   </div>
 
-  <!-- SUCCESS SCREEN -->
-  <div class="success-screen" id="successScreen">
-    <div class="success-ring">
-      <svg viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="20 6 9 17 4 12"/>
-      </svg>
-    </div>
-    <div class="success-title">成功送出！</div>
-    <div class="success-sub" id="successName">— welcome —</div>
-    <button class="success-again" id="againBtn">重新填寫 Register again</button>
-  </div>
-
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen">
+  <div class="success-ring">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--bark)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <div class="success-title">成功送出！</div>
+  <div class="success-sub" id="successName">— welcome —</div>
+  <button class="success-again" id="againBtn">重新填寫 Register again</button>
+</div>
+
+<!-- CONFIRM PHONE MODAL -->
+<div class="modal-overlay" id="phoneModal">
+  <div class="modal-box">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+      <div class="modal-icon">📱</div>
+      <div class="modal-title">確認手機號碼</div>
+      <div class="modal-title-en">Please confirm your phone number</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+      <div class="modal-phone-label">您的登入號碼 · Your login number</div>
+      <div class="modal-phone-value" id="modalPhoneValue">—</div>
+    </div>
+
+    <div class="modal-note">
+      請記住此號碼，將以此號碼進行登入<br>
+      Remember this number, used for login
+    </div>
+
+    <div class="modal-btns">
+      <button class="modal-btn-cancel" id="modalCancel">取消 Cancel</button>
+      <button class="modal-btn-confirm" id="modalConfirm">確定 Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loginLoader">
+  <div class="paw-trail walk">
+    <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+      <g transform="rotate(90 32 32)">
+        <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+        <circle cx="18" cy="28" r="6"/>
+        <circle cx="46" cy="28" r="6"/>
+        <circle cx="26" cy="18" r="5.5"/>
+        <circle cx="38" cy="18" r="5.5"/>
+      </g>
+    </svg>
+    <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+      <g transform="rotate(90 32 32)">
+        <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+        <circle cx="18" cy="28" r="6"/>
+        <circle cx="46" cy="28" r="6"/>
+        <circle cx="26" cy="18" r="5.5"/>
+        <circle cx="38" cy="18" r="5.5"/>
+      </g>
+    </svg>
+    <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+      <g transform="rotate(90 32 32)">
+        <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+        <circle cx="18" cy="28" r="6"/>
+        <circle cx="46" cy="28" r="6"/>
+        <circle cx="26" cy="18" r="5.5"/>
+        <circle cx="38" cy="18" r="5.5"/>
+      </g>
+    </svg>
+    <svg class="paw" viewBox="0 0 64 64" width="36" height="36" fill="var(--bark)">
+      <g transform="rotate(90 32 32)">
+        <path d="M32 50 C20 50,16 40,20 36 C24 32,28 36,32 34 C36 36,40 32,44 36 C48 40,44 50,32 50Z"/>
+        <circle cx="18" cy="28" r="6"/>
+        <circle cx="46" cy="28" r="6"/>
+        <circle cx="26" cy="18" r="5.5"/>
+        <circle cx="38" cy="18" r="5.5"/>
+      </g>
+    </svg>
+  </div>
+  <div class="paw-label">loading…</div>
+</div>
 
 <script>
 /* GUID */
@@ -445,12 +719,49 @@ function uuid() {
 }
 
 /* TOAST */
-function showToast(msg, type = 'success') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = `toast ${type} show`;
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => { t.className = 'toast'; }, 3200);
+function showToast(msg, type = 'success', delay = 0) {
+  setTimeout(() => {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => { t.className = 'toast'; }, 3200);
+  }, delay);
+}
+
+/* LOADING OVERLAY */
+function showLoader() {
+  document.getElementById('loginLoader').classList.add('show');
+}
+function hideLoader() {
+  document.getElementById('loginLoader').classList.remove('show');
+}
+
+/* PHONE CONFIRM MODAL */
+function showPhoneModal(phone) {
+  return new Promise((resolve) => {
+    document.getElementById('modalPhoneValue').textContent = phone;
+    const overlay = document.getElementById('phoneModal');
+    overlay.classList.add('show');
+
+    function onConfirm() {
+      overlay.classList.remove('show');
+      cleanup();
+      resolve(true);
+    }
+    function onCancel() {
+      overlay.classList.remove('show');
+      cleanup();
+      resolve(false);
+    }
+    function cleanup() {
+      document.getElementById('modalConfirm').removeEventListener('click', onConfirm);
+      document.getElementById('modalCancel').removeEventListener('click', onCancel);
+    }
+
+    document.getElementById('modalConfirm').addEventListener('click', onConfirm);
+    document.getElementById('modalCancel').addEventListener('click', onCancel);
+  });
 }
 
 /* PHOTO MANAGEMENT */
@@ -607,8 +918,13 @@ submitBtn.addEventListener('click', async () => {
     return;
   }
 
+  const phoneVal = document.getElementById('f-phone').value.trim();
+  const confirmed = await showPhoneModal(phoneVal);
+  if (!confirmed) return;
+
   submitBtn.classList.add('loading');
   submitBtn.disabled = true;
+  showLoader();
 
   try {
     const payload  = await buildPayload();
@@ -618,13 +934,16 @@ submitBtn.addEventListener('click', async () => {
     });
     const result = await response.json();
 
+    hideLoader();
+
     if (result.status === 'ok' || result.success || response.ok) {
       showSuccess(payload.name);
     } else {
       throw new Error(result.message || 'Server error');
     }
   } catch (_) {
-    showToast('送出失敗，請稍後再試 · Submission failed', 'error');
+    hideLoader();
+    showToast('送出失敗，請稍後再試 · Submission failed', 'error', 400);
   } finally {
     submitBtn.classList.remove('loading');
     submitBtn.disabled = false;
