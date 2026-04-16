@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Wedding Guests</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Lora:ital,wght@0,500;0,600;1,500;1,600&family=Noto+Sans+TC:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -343,6 +343,9 @@
       white-space: nowrap;
       display: flex; align-items: center; justify-content: center;
       gap: 10px;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .nav-tab.active { background: var(--tan); color: var(--soil); }
     .nav-tab[data-filter="likes"] { padding: 0 16px; }
@@ -601,35 +604,42 @@ let myLikes       = new Set();
 let currentUserId = null;
 let likesReady    = false;
 
+const guestDataReady = fetchGuestData();
+async function initial() {
+  initLockScreen();
+  await guestDataReady;
+  initMainApp();
+}
+initial();
+
 /* ══════════════════════════════════════
    DATA FETCH
 ══════════════════════════════════════ */
-const guestDataReady = (async () => {
+async function fetchGuestData() {
   try {
     const res = await fetch(GAS_URL).then(r => r.json());
     allGuestData = Array.isArray(res) ? res : (res.data || res.guests || []);
-    defaultCard = allGuestData.find(g => g.id === 'default') || null;
+    defaultCard  = allGuestData.find(g => g.id === 'default') || null;
+
     allGuestData.forEach(g => {
-      if (g.phone) validNumbers.add(String(g.phone).replace(/\D/g, ''));
+      if (g.phone) {
+        validNumbers.add(String(g.phone).replace(/\D/g, ''));
+      }
     });
   } catch (_) {}
-})();
-
-guestDataReady.then(() => initMainApp());
+}
 
 /* ══════════════════════════════════════
    LOCK SCREEN
 ══════════════════════════════════════ */
-(async () => {
-  await guestDataReady;
-
+async function initLockScreen() {
   const screen = document.getElementById('lockScreen');
   const input  = document.getElementById('phoneInput');
   const btn    = document.getElementById('lockBtn');
   const errEl  = document.getElementById('lockError');
   const loader = document.getElementById('loginLoader');
 
-  function attempt() {
+  async function attempt() {
     const val = input.value.replace(/\D/g, '');
     if (!validNumbers.has(val)) {
       errEl.textContent = '僅限婚禮賓客，謝謝';
@@ -645,63 +655,70 @@ guestDataReady.then(() => initMainApp());
       const found = allGuestData.find(g => String(g.phone).replace(/\D/g, '') === val);
       currentUserId = found?.id ?? null;
     }
-
-    loader.classList.remove('hidden');
-
-    screen.classList.add('unlocking');
-    screen.addEventListener('animationend', () => screen.remove(), { once: true });
-
-    if (currentUserId) {
-      fetch(`${GAS_URL}?uid=${currentUserId}`)
-        .then(r => r.json())
-        .then(res => {
-          if (Array.isArray(res.myLikes)) res.myLikes.forEach(id => myLikes.add(id));
-          patchLikeButtons();
-        })
-        .catch(() => patchLikeButtons());
-    } else {
-      patchLikeButtons();
-    }
+    await handleLogin({ loader, screen });
   }
-
   btn.addEventListener('click', attempt);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') attempt(); });
-})();
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') attempt();
+  });
+}
 
-/* ══════════════════════════════════════
-   MAIN APP
-══════════════════════════════════════ */
+async function handleLogin({ loader, screen }) {
+  try {
+    loader.classList.remove('hidden');
+    screen.classList.add('unlocking');
+    const animationPromise = new Promise(resolve => {
+      screen.addEventListener('animationend', resolve, { once: true });
+    });
+
+    const dataPromise = (async () => {
+      if (currentUserId) {
+        try {
+          const res = await fetch(`${GAS_URL}?uid=${currentUserId}`).then(r => r.json());
+          if (Array.isArray(res.myLikes)) {
+            res.myLikes.forEach(id => myLikes.add(id));
+          }
+        } catch (_) {}
+      }
+      patchLikeButtons();
+    })();
+    await Promise.all([animationPromise, dataPromise, guestDataReady]);
+    document.getElementById('loginLoader')?.classList.add('hidden');
+    screen.remove();
+  } catch (err) {
+    loader.classList.add('hidden');
+    alert('登入失敗，請稍後再試');
+  }
+}
+
 function patchLikeButtons() {
   likesReady = true;
   document.querySelectorAll('.like-btn').forEach(btn => {
     const id = btn.dataset.guestId;
-    if (id) applyLikeState(btn, myLikes.has(id) || id === defaultCard.id);
+    if (id) btn.classList.toggle('liked', myLikes.has(id));
   });
   const activeTab = document.querySelector('.nav-tab.active');
   if (activeTab?.dataset.filter === 'likes') activeTab.dispatchEvent(new Event('click'));
-
-  const loader = document.getElementById('loginLoader');
-  if (loader) loader.classList.add('hidden');
 }
 
-function applyLikeState(btn, liked) {
-  btn.classList.toggle('liked', liked);
-}
-
+/* ══════════════════════════════════════
+   MAIN APP
+══════════════════════════════════════ */
 async function initMainApp() {
   myLikes.add(defaultCard.id);
 
   const STACK = 3;
+  const ANIM_MS = 500;
   const area  = document.getElementById('stackArea');
   let allGuests = allGuestData;
   let guests    = [];
   let current   = 0;
   let busy      = false;
+  let sx = 0, sy = 0;
   const pIdx    = {};
 
   /* ── Preload images ── */
   const imgCache = {};
-  pIdx[defaultCard.id] = 0;
   await Promise.all(allGuests.map(g => {
     pIdx[g.id] = 0;
     if (!g.photos?.length) return Promise.resolve();
@@ -715,20 +732,50 @@ async function initMainApp() {
     }));
   }));
 
+  /* ── Helpers ── */
+  function wrap(i, len) { return ((i % len) + len) % len; }
+
+  function prefetchGuest(idx) {
+    const g = guests[wrap(idx, guests.length)];
+    if (!g || !g.photos?.length || imgCache[g.id]) return;
+    imgCache[g.id] = g.photos.map((src, i) => {
+      const img = new Image();
+      img.fetchPriority = i === 0 ? 'high' : 'low';
+      img.src = src;
+      img.decode().catch(() => {});
+      return img;
+    });
+  }
+
+  function sortedLikes() {
+    const liked = allGuests.filter(g => myLikes.has(g.id) && g.id !== defaultCard?.id);
+    if (defaultCard && myLikes.has(defaultCard.id)) liked.push(defaultCard);
+    return liked;
+  }
+
+  function shuffleArray(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
   /* ── Nav tabs ── */
   document.querySelectorAll('.nav-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
+      busy = false;
+      sx = 0; sy = 0;
       const f = tab.dataset.filter;
 
       if (f === 'likes') {
         area.innerHTML = '';
         if (!likesReady) return;
-
-        const likedGuests  = allGuests.filter(g => myLikes.has(g.id));
-
-        if (likedGuests.length === 0) {
+        const likedGuests = sortedLikes();
+        if (!likedGuests.length) {
           const empty = document.createElement('div');
           empty.className = 'likes-empty';
           empty.innerHTML = `
@@ -756,27 +803,14 @@ async function initMainApp() {
         return;
       }
 
-      guests = allGuests.filter(g => g.gender === f);
+      let filtered = allGuests.filter(g => g.gender === f);
+      if (f === 'male' || f === 'female') filtered = shuffleArray(filtered);
+      guests = filtered;
       current = 0;
       allGuests.forEach(g => { pIdx[g.id] = 0; });
       render();
     });
   });
-
-  /* ── Helpers ── */
-  function wrap(i, len) { return ((i % len) + len) % len; }
-
-  function prefetchGuest(idx) {
-    const g = guests[wrap(idx, guests.length)];
-    if (!g || !g.photos?.length || imgCache[g.id]) return;
-    imgCache[g.id] = g.photos.map((src, i) => {
-      const img = new Image();
-      img.fetchPriority = i === 0 ? 'high' : 'low';
-      img.src = src;
-      img.decode().catch(() => {});
-      return img;
-    });
-  }
 
   /* ── Card builders ── */
   function mkIgSlide(g) {
@@ -801,7 +835,7 @@ async function initMainApp() {
 
   function mkCard(g) {
     if (!g) return document.createElement('div');
-    const card   = document.createElement('div');
+    const card = document.createElement('div');
     card.className = 'card';
     card.dataset.guestId = g.id;
 
@@ -832,7 +866,6 @@ async function initMainApp() {
         dotsEl.appendChild(d);
       }
       card.appendChild(dotsEl);
-
       ['prev', 'next'].forEach(dir => {
         const hz = document.createElement('div');
         hz.className = `hit-${dir}`;
@@ -847,14 +880,14 @@ async function initMainApp() {
     info.innerHTML = `
       <div class="card-name">${g.name}</div>
       <div class="card-meta">
-        <span class="card-age">${g.age} 歲</span>
+        <span class="card-age">${g.age} yrs old</span>
         <span class="meta-dot"></span>
         <span class="card-zodiac">${g.zodiac}</span>
       </div>`;
     card.appendChild(info);
 
     const likeBtn = document.createElement('button');
-    likeBtn.className = 'like-btn' + (g.id === 'default' || myLikes.has(g.id) ? ' liked' : '');
+    likeBtn.className = 'like-btn' + (myLikes.has(g.id) ? ' liked' : '');
     likeBtn.dataset.guestId = g.id;
     likeBtn.setAttribute('aria-label', 'Like');
     likeBtn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -863,37 +896,25 @@ async function initMainApp() {
 
     likeBtn.addEventListener('click', e => {
       e.stopPropagation();
-      if (!currentUserId) return;
       const wasLiked = likeBtn.classList.contains('liked');
-
-      if (g.id === 'default') {
-        if (!wasLiked) return;
-        applyLikeState(likeBtn, false);
-        myLikes.delete(g.id);
-        triggerPop(likeBtn);
-        syncLikesTab();
-        return;
-      }
-
-      applyLikeState(likeBtn, !wasLiked);
+      if (g.id === 'default' && !wasLiked) return;
+      likeBtn.classList.toggle('liked', !wasLiked);
       wasLiked ? myLikes.delete(g.id) : myLikes.add(g.id);
-      triggerPop(likeBtn);
+      likeBtn.classList.remove('pop');
+      void likeBtn.offsetWidth;
+      likeBtn.classList.add('pop');
+      likeBtn.addEventListener('animationend', () => likeBtn.classList.remove('pop'), { once: true });
       syncLikesTab();
-      fetch(GAS_URL, {
-        method: 'POST',
-        body: JSON.stringify({ action: wasLiked ? 'removeLike' : 'addLike', userId: currentUserId, targetId: g.id })
-      }).catch(() => {});
+      if (currentUserId) {
+        fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: wasLiked ? 'removeLike' : 'addLike', userId: currentUserId, targetId: g.id })
+        }).catch(() => {});
+      }
     });
 
     card.appendChild(likeBtn);
     return card;
-  }
-
-  function triggerPop(btn) {
-    btn.classList.remove('pop');
-    void btn.offsetWidth;
-    btn.classList.add('pop');
-    btn.addEventListener('animationend', () => btn.classList.remove('pop'), { once: true });
   }
 
   function syncLikesTab() {
@@ -904,19 +925,16 @@ async function initMainApp() {
   /* ── Photo slide ── */
   function slidePhoto(card, g, dir) {
     const photos = g.photos || [];
-    const total  = photos.length + 1;
-    pIdx[g.id]   = wrap(pIdx[g.id] + dir, total);
+    pIdx[g.id]   = wrap(pIdx[g.id] + dir, photos.length + 1);
     const newIdx = pIdx[g.id];
     const isIg   = newIdx === photos.length;
 
     card.querySelectorAll('.card-photo').forEach(p => p.classList.remove('active'));
-    const targetPhoto = isIg ? photos.length - 1 : newIdx;
-    card.querySelectorAll('.card-photo')[targetPhoto]?.classList.add('active');
+    card.querySelectorAll('.card-photo')[isIg ? photos.length - 1 : newIdx]?.classList.add('active');
     card.querySelectorAll('.photo-dot').forEach((d, i) => d.classList.toggle('active', i === newIdx));
     card.querySelector('.ig-slide')?.classList.toggle('visible', isIg);
     const info = card.querySelector('.card-info');
     if (info) info.style.opacity = isIg ? '0' : '1';
-
     const btn = card.querySelector('.like-btn');
     if (btn) { btn.style.display = 'none'; btn.offsetHeight; btn.style.display = 'flex'; }
   }
@@ -943,11 +961,16 @@ async function initMainApp() {
     const front = area.querySelector('.card[data-depth="0"]');
     if (front) {
       front.classList.add('exit-left');
-      front.addEventListener('animationend', () => {
+      let done = false;
+      const finish = () => {
+        if (done) return; done = true;
         current = wrap(current + 1, guests.length);
-        busy = false;
-        render();
-      }, { once: true });
+        busy = false; render();
+      };
+      front.addEventListener('animationend', finish, { once: true });
+      setTimeout(finish, ANIM_MS);
+    } else {
+      busy = false;
     }
     area.querySelectorAll('.card[data-depth]').forEach(c => {
       const d = +c.dataset.depth;
@@ -966,17 +989,25 @@ async function initMainApp() {
     area.querySelectorAll('.card:not(.enter-left)').forEach(c => {
       c.setAttribute('data-depth', +(c.dataset.depth || 0) + 1);
     });
-    nc.addEventListener('animationend', () => { busy = false; render(); }, { once: true });
+    let done = false;
+    const finish = () => {
+      if (done) return; done = true;
+      busy = false; render();
+    };
+    nc.addEventListener('animationend', finish, { once: true });
+    setTimeout(finish, ANIM_MS);
   }
 
   /* ── Touch swipe ── */
-  let sx = 0, sy = 0;
   area.addEventListener('touchstart', e => {
-    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
   }, { passive: true });
   area.addEventListener('touchend', e => {
+    if (sx === 0 && sy === 0) return;
     const dx = e.changedTouches[0].clientX - sx;
     const dy = e.changedTouches[0].clientY - sy;
+    sx = 0; sy = 0;
     if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) dx < 0 ? next() : prev();
   }, { passive: true });
 
