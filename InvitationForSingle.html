@@ -653,6 +653,109 @@
     }
     .modal-btn-confirm:active { transform: scale(0.97); }
 
+    /* ===== DEADLINE MODAL ===== */
+    .deadline-modal {
+      display: none;
+      position: fixed; inset: 0;
+      z-index: 800;
+      background: rgba(30, 17, 10, 0.62);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      align-items: center; justify-content: center;
+      padding: 28px;
+    }
+    .deadline-modal.show {
+      display: flex;
+    }
+    .deadline-modal-content {
+      background: var(--warm-bg);
+      border-radius: 22px;
+      padding: 36px 28px 28px;
+      width: 100%; max-width: 320px;
+      box-shadow: 0 16px 48px rgba(44,35,24,0.36);
+      border: 1px solid rgba(196,168,130,0.32);
+      text-align: center;
+      position: relative;
+      animation: dlModalIn 0.3s cubic-bezier(0.34,1.38,0.64,1) both;
+    }
+    @keyframes dlModalIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0)    scale(1);    }
+    }
+    .deadline-modal-icon {
+      font-size: 40px;
+      margin-bottom: 15px;
+      display: block;
+    }
+    .deadline-modal-content h3 {
+      font-family: 'Lora', serif;
+      font-size: 20px; font-weight: 600;
+      color: var(--bark);
+      letter-spacing: 0.04em;
+      margin-bottom: 5px;
+    }
+    .deadline-modal-content p {
+      font-size: 15px;
+      color: rgba(74,51,35,0.78);
+      line-height: 1.85;
+      margin-bottom: 10px;
+    }
+    .deadline-modal-subtitle {
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px; font-weight: 600;
+      color: var(--stone);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 15px;
+    }
+    .deadline-modal-btn {
+      display: block;
+      width: 100%;
+      margin-top: 26px;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--bark-lt) 0%, var(--bark) 100%);
+      color: #fff;
+      border: none; border-radius: 12px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.18s, transform 0.12s;
+      box-shadow: 0 4px 18px rgba(107,76,53,0.32);
+    }
+    .deadline-modal-btn:hover  { opacity: 0.88; }
+    .deadline-modal-btn:active { transform: scale(0.97); }
+
+    /* ===== FORM DEADLINE LOCK ===== */
+    .form-block.deadline-locked .form-field input,
+    .form-block.deadline-locked .radio-opt label {
+      opacity: 0.55;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .form-block.deadline-locked .submit-btn,
+    .form-block.deadline-locked .register-btn {
+      display: none !important;
+    }
+    .form-block.deadline-locked .reset-link {
+      display: none !important;
+    }
+    .deadline-notice {
+      display: none;
+      margin-top: 22px;
+      padding: 16px 18px;
+      background: rgba(176,103,58,0.12);
+      border: 1.5px dashed rgba(176,103,58,0.35);
+      border-radius: 14px;
+      color: rgba(242,232,216,0.75);
+      font-size: 13px;
+      line-height: 1.85;
+      text-align: center;
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+    .form-block.deadline-locked .deadline-notice {
+      display: block;
+    }
   </style>
 </head>
 <body>
@@ -921,7 +1024,23 @@
         <p class="reset-link" id="resetLink">重新填寫 · Edit &amp; Resubmit</p>
       </form>
       <button class="register-btn" id="registerBtn" type="register" style="display: none;">登記 · register</button>
+      <p class="deadline-notice">
+        ⏰ 截止日期已過。<br>
+        如需異動，請直接與我們聯絡。<br>
+        The RSVP deadline has passed.
+      </p>
     </section>
+
+    <div class="deadline-modal" id="deadlineModal">
+      <div class="deadline-modal-content">
+        <span class="deadline-modal-icon">⏰</span>
+          <h3>回覆截止</h3>
+          <h5 class="deadline-modal-subtitle">RSVP Deadline Passed</h5>
+          <p>如需新增或修改資料，<br>請直接與我們聯絡。<br></p>
+          <p>Please contact us<br>if you need to update your RSVP.<br></p>
+        <button class="deadline-modal-btn" id="closeModalBtn">我知道了 · Got it</button>
+      </div>
+    </div>
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer">
@@ -977,6 +1096,58 @@
   <div class="toast toast-error" id="toast-error">✕ 送出失敗 · Failed to send</div>
 
   <script>
+    const GAS_URL      = 'https://script.google.com/macros/s/AKfycbzlaYIu1kat5DdOW26GNWm3uUEVOpOTm1WOJESPu5JV5eqXbNV2UYCPQAod-MSfGOjw/exec';
+    let deadline = null;
+    async function initDeadline() {
+      try {
+        const response = await fetch(`${GAS_URL}?action=getDeadline`);
+        const data = await response.json();
+        if (data.result === 'success') {
+          deadline = data.deadline; 
+          console.log("Deadline:", deadline);
+          checkDeadlineExpiry(deadline);
+        } else {
+          console.error("錯誤：", data.message);
+        }
+      } catch (error) {
+        console.error("API 失敗：", error);
+      }
+    }
+
+    function checkDeadlineExpiry(deadlineStr) {
+      if (!deadlineStr) return;
+
+      const deadlineDate = new Date(deadlineStr);
+      if (isNaN(deadlineDate.getTime())) {
+        console.warn("Invalid deadline format:", deadlineStr);
+        return;
+      }
+
+      const now = new Date();
+      if (now <= deadlineDate) return;
+      const formBlock = document.querySelector('.form-block');
+      if (formBlock) formBlock.classList.add('deadline-locked');
+      const form = document.getElementById('guestForm');
+      if (form) {
+        form.querySelectorAll('input, textarea, select, button').forEach(el => {
+          el.disabled = true;
+        });
+        form.onsubmit = e => e.preventDefault();
+      }
+
+      const formBlock2 = document.querySelector('.form-block');
+      if (formBlock2) {
+        formBlock2.addEventListener('click', () => {
+          const modal = document.getElementById('deadlineModal');
+          if (modal) modal.classList.add('show');
+        }, { once: false });
+      }
+    }
+    document.getElementById('closeModalBtn').addEventListener('click', () => {
+      document.getElementById('deadlineModal').classList.remove('show');
+    });
+    initDeadline();
+
     /* ===== COUNTDOWN ===== */
     const weddingDate = new Date('2026-09-27T17:00:00+08:00');
     function pad(n) { return String(n).padStart(2,'0'); }
