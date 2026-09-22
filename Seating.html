@@ -221,8 +221,8 @@ button { font: inherit; color: inherit; }
   padding: 10px 10px; border: 0; background: transparent; border-radius: 10px; text-align: left; cursor: pointer;
 }
 #results li button:hover, #results li button.active { background: color-mix(in srgb, var(--gold) 16%, transparent); }
-#results .who { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
-#results .tgs { display: flex; flex-wrap: wrap; gap: 4px; }
+#results .who { min-width: 0; display: flex; flex-direction: row; align-items: center; gap: 5px; }
+#results .tgs { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; flex-shrink: 0; }
 #results .n { font-size: 16px; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 #results .n mark { background: var(--gold-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
 #results .loc { font-size: 12.5px; color: var(--muted); white-space: nowrap; flex: none; }

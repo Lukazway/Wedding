@@ -718,9 +718,10 @@ async function initMainApp() {
 
   /* ── Preload images ── */
   const imgCache = {};
-  await Promise.all(allGuests.map(g => {
-    pIdx[g.id] = 0;
+  allGuests.forEach(g => { pIdx[g.id] = 0; });
+  function loadGuestPhotos(g) {
     if (!g.photos?.length) return Promise.resolve();
+    if (imgCache[g.id]) return Promise.resolve();
     imgCache[g.id] = [];
     return Promise.all(g.photos.map((src, i) => {
       const img = new Image();
@@ -729,7 +730,26 @@ async function initMainApp() {
       imgCache[g.id][i] = img;
       return img.decode().catch(() => {});
     }));
-  }));
+  }
+  function withTimeout(promise, ms) {
+    return Promise.race([promise, new Promise(resolve => setTimeout(resolve, ms))]);
+  }
+
+  async function preloadWithConcurrency(list, limit) {
+    let i = 0;
+    async function worker() {
+      while (i < list.length) {
+        const g = list[i++];
+        await loadGuestPhotos(g);
+      }
+    }
+    await Promise.all(Array.from({ length: Math.min(limit, list.length) || 1 }, worker));
+  }
+  const criticalGuests = allGuests.slice(0, STACK);
+  await withTimeout(preloadWithConcurrency(criticalGuests, criticalGuests.length), 2500);
+
+  const remainingGuests = allGuests.slice(STACK);
+  preloadWithConcurrency(remainingGuests, 3);
 
   /* ── Helpers ── */
   function wrap(i, len) { return ((i % len) + len) % len; }
