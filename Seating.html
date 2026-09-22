@@ -1,0 +1,1612 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>婚禮座位圖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700&display=swap">
+<style>
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+  --pill-ink: #34302a;
+
+  --edge: 14px;
+  --ui-w: 372px;
+  --ui-left: max(var(--edge), env(safe-area-inset-left, 0px));
+  --ui-right: max(var(--edge), env(safe-area-inset-right, 0px));
+  --ui-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--edge));
+
+  --font-ui: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", "Segoe UI", sans-serif;
+  --font-serif: "Noto Serif TC", "Songti TC", "PMingLiU", Georgia, serif;
+  --font-display: "Cormorant Garamond", Georgia, "Noto Serif TC", serif;
+
+  /* page + panels */
+  --bg: #e6e9dc;
+  --ink: #34302a;
+  --muted: #776f62;
+  --panel: rgba(255, 252, 246, .88);
+  --panel-line: rgba(120, 100, 70, .22);
+  --field: #fffdf8;
+  --shadow: 0 10px 34px rgba(60, 50, 30, .16);
+
+  /* outdoors */
+  --lawn: #cfdcbd;
+  --lawn-2: #c6d5b3;
+  --tree: #86a172;
+  --tree-hi: #a3ba8e;
+  --tree-shadow: rgba(60, 80, 50, .18);
+  --path: #eadfc6;
+  --bloom-a: #e4bdb2;
+  --bloom-b: #fbf3e4;
+  --bloom-c: #a9bf95;
+
+  /* indoors */
+  --floor: #f6f0e5;
+  --floor-line: #ebe2d1;
+  --wall: #a58f78;
+  --wall-dark: #7f6a55;
+  --room: #efe7d9;
+  --hatch-bg: #ece5d8;
+  --hatch: #ddd3c1;
+  --stage: #8b6f58;
+  --stage-2: #a58a70;
+  --stage-text: #fbf5ea;
+  --wood: #d6b78f;
+  --wood-line: #b3915f;
+  --runner: #a9bc93;
+  --linen: #fffaf1;
+  --gold: #b48d4c;
+  --gold-soft: #e9d6a8;
+
+  /* seats */
+  --chip: #fffdf8;
+  --chip-line: #d8ccb6;
+  --couple: #f7dcd5;
+  --couple-line: #c99188;
+  --hit: #ffe7a6;
+  --hit-line: #c18717;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #171c17; --ink: #efe8da; --muted: #a79f90;
+    --panel: rgba(34, 38, 33, .88); --panel-line: rgba(220, 205, 170, .16);
+    --field: #262b25; --shadow: 0 10px 34px rgba(0, 0, 0, .45);
+    --lawn: #27392b; --lawn-2: #2c4131; --tree: #3d5d45; --tree-hi: #4e7256; --tree-shadow: rgba(0, 0, 0, .25);
+    --path: #4a4436; --bloom-a: #a77c76; --bloom-b: #d9ccb2; --bloom-c: #6f8b62;
+    --floor: #2d2924; --floor-line: #35302a; --wall: #6f5d4c; --wall-dark: #574739; --room: #38322b;
+    --hatch-bg: #332e28; --hatch: #3d372f; --stage: #6a5240; --stage-2: #84674f; --stage-text: #f7eedd;
+    --wood: #7a6044; --wood-line: #a68557; --runner: #5f7a58; --linen: #ede3d0; --gold: #d3ad6a; --gold-soft: #8c7648;
+    --chip: #3b352e; --chip-line: #5a5145; --couple: #5b3f3c; --couple-line: #d09a90;
+    --hit: #6d5320; --hit-line: #f0c15a;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #171c17; --ink: #efe8da; --muted: #a79f90;
+  --panel: rgba(34, 38, 33, .88); --panel-line: rgba(220, 205, 170, .16);
+  --field: #262b25; --shadow: 0 10px 34px rgba(0, 0, 0, .45);
+  --lawn: #27392b; --lawn-2: #2c4131; --tree: #3d5d45; --tree-hi: #4e7256; --tree-shadow: rgba(0, 0, 0, .25);
+  --path: #4a4436; --bloom-a: #a77c76; --bloom-b: #d9ccb2; --bloom-c: #6f8b62;
+  --floor: #2d2924; --floor-line: #35302a; --wall: #6f5d4c; --wall-dark: #574739; --room: #38322b;
+  --hatch-bg: #332e28; --hatch: #3d372f; --stage: #6a5240; --stage-2: #84674f; --stage-text: #f7eedd;
+  --wood: #7a6044; --wood-line: #a68557; --runner: #5f7a58; --linen: #ede3d0; --gold: #d3ad6a; --gold-soft: #8c7648;
+  --chip: #3b352e; --chip-line: #5a5145; --couple: #5b3f3c; --couple-line: #d09a90;
+  --hit: #6d5320; --hit-line: #f0c15a;
+}
+
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-ui); overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* ---------- map ---------- */
+#view { position: fixed; inset: 0; touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+#view.grabbing { cursor: grabbing; }
+#map { display: block; width: 100%; height: 100%; text-rendering: geometricPrecision; }
+
+.zone { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 32px; letter-spacing: .12em; fill: var(--ink); opacity: .38; }
+.stage-t { font-family: var(--font-serif); font-weight: 700; font-size: 52px; letter-spacing: .5em; fill: var(--stage-text); }
+.stage-sub { font-family: var(--font-display); font-size: 26px; fill: var(--stage-text); opacity: .8; letter-spacing: .08em; }
+.room { fill: var(--room); stroke: var(--wall); stroke-width: 4; }
+.room-t { font-family: var(--font-serif); font-weight: 700; font-size: 26px; fill: var(--muted); }
+.door { fill: var(--wall-dark); }
+.door-t { font-family: var(--font-serif); font-weight: 700; font-size: 26px; fill: #fbf5ea; }
+.gift, .prop { fill: var(--wood); stroke: var(--wood-line); stroke-width: 3; }
+.prop-t { font-family: var(--font-serif); font-weight: 700; font-size: 26px; fill: var(--ink); opacity: .78; }
+.prop-s { font-family: var(--font-serif); font-size: 17px; fill: var(--ink); opacity: .7; }
+.soft-t { font-family: var(--font-serif); font-weight: 700; fill: var(--ink); opacity: .55; }
+
+.tbl-body { fill: var(--wood); stroke: var(--wood-line); stroke-width: 2.5; }
+.tbl-runner { fill: var(--runner); opacity: .85; }
+.tbl-pill { fill: var(--linen); stroke: var(--gold); stroke-width: 1.5; }
+.tbl-label { font-family: var(--font-ui); font-weight: 700; font-size: 14.5px; fill: var(--pill-ink); }
+.col-label { font-family: var(--font-serif); font-weight: 700; font-size: 20px; fill: var(--gold); letter-spacing: .12em; }
+.tbl.hit .tbl-body { stroke: var(--hit-line); stroke-width: 3; }
+
+.chip rect { fill: var(--chip); stroke: var(--chip-line); stroke-width: 1.3; transition: fill .25s, stroke .25s; }
+.chip text { fill: var(--ink); font-family: var(--font-ui); font-weight: 500; pointer-events: none; }
+.chip { cursor: pointer; }
+.chip:hover rect { stroke: var(--gold); stroke-width: 2; }
+.chip.couple rect { fill: var(--couple); stroke: var(--couple-line); }
+.chip.couple text { font-weight: 700; }
+.chip.empty { cursor: default; }
+.chip.empty rect { fill: transparent; stroke-dasharray: 3 4; opacity: .7; }
+.chip.empty text { opacity: .45; font-weight: 400; }
+.chip.hit rect { fill: var(--hit); stroke: var(--hit-line); stroke-width: 2.5; }
+.chip.hit text { font-weight: 700; }
+#map.has-focus .chip:not(.hit) { opacity: .5; }
+.chip { transition: opacity .4s; }
+
+.main-cloth { fill: var(--linen); stroke: var(--gold); stroke-width: 4; }
+.main-t { font-family: var(--font-serif); font-weight: 700; font-size: 24px; fill: var(--pill-ink); opacity: .8; }
+.halo { fill: none; stroke: var(--hit-line); animation: halo 1.7s ease-out infinite; pointer-events: none; }
+@keyframes halo { 0% { stroke-opacity: .95; stroke-width: 3; } 100% { stroke-opacity: 0; stroke-width: 18; } }
+
+/* ---------- panels ---------- */
+.ui { position: fixed; background: var(--panel); border: 1px solid var(--panel-line); box-shadow: var(--shadow); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); cursor: default; }
+#panel {
+  top: calc(env(safe-area-inset-top, 0px) + var(--edge));
+  left: var(--ui-left);
+  width: min(var(--ui-w), calc(100% - var(--ui-left) - var(--ui-right)));
+  box-sizing: border-box;
+  border-radius: 18px;
+  padding: 12px 12px 2px;
+  max-height: 100vh; overflow: hidden;
+  transition: width .25s ease, max-height .25s ease, border-radius .25s ease, padding .25s ease;
+}
+
+#search-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.field {
+  position: relative;
+  margin-top: 0;
+  flex: 1;
+  min-width: 0;
+}
+.field svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+
+#panel-toggle {
+  flex: none;
+  width: 44px; height: 44px; box-sizing: border-box;
+  border: 1px solid var(--panel-line);
+  border-radius: 12px;
+  display: grid; place-items: center; padding: 0;
+  background: var(--field); color: var(--ink); cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  transition: border-radius .25s ease;
+}
+#panel-toggle:hover { background: color-mix(in srgb, var(--gold) 16%, var(--field)); }
+#panel-toggle svg { width: 18px; height: 18px; }
+
+#panel.collapsed {
+  width: 44px; max-height: 44px;
+  padding: 0; border-radius: 50%;
+}
+#panel.collapsed > :not(#search-row) { display: none; }
+#panel.collapsed .field { display: none; }
+#panel.collapsed #panel-toggle {
+  border-radius: 50%;
+  border-color: transparent;
+  box-shadow: none;
+}
+#q {
+  display: block; width: 100%; min-width: 0; box-sizing: border-box; height: 44px; padding: 0 40px 0 38px; margin: 0;
+  -webkit-appearance: none; appearance: none;
+  background: var(--field); color: var(--ink); border: 1px solid var(--panel-line); border-radius: 12px;
+  font: 500 16px var(--font-ui);
+}
+#q::-webkit-search-cancel-button, #q::-webkit-search-decoration { -webkit-appearance: none; display: none; }
+#q::placeholder { color: var(--muted); font-weight: 400; }
+#q:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 28%, transparent); }
+#clear { position: absolute; right: 6px; top: 6px; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; cursor: pointer; display: none; }
+#clear:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+#results { list-style: none; margin: 8px 0 0; padding: 0; max-height: min(42vh, 360px); overflow: auto; }
+#results li button {
+  width: 100%; box-sizing: border-box; min-width: 0; display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  padding: 10px 10px; border: 0; background: transparent; border-radius: 10px; text-align: left; cursor: pointer;
+}
+#results li button:hover, #results li button.active { background: color-mix(in srgb, var(--gold) 16%, transparent); }
+#results .who { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 5px; }
+#results .tgs { display: flex; flex-wrap: wrap; gap: 4px; }
+#results .n { font-size: 16px; font-weight: 500; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#results .n mark { background: var(--gold-soft); color: inherit; border-radius: 3px; padding: 0 1px; }
+#results .loc { font-size: 12.5px; color: var(--muted); white-space: nowrap; flex: none; }
+#results .none { padding: 10px; font-size: 14px; color: var(--muted); }
+details { margin-top: 6px; border-top: 1px solid var(--panel-line); }
+summary { list-style: none; cursor: pointer; padding: 10px 2px; font-size: 13px; color: var(--muted); }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "＋"; float: right; }
+details[open] summary::after { content: "－"; }
+.notes { padding: 0 2px 10px; font-size: 13px; line-height: 1.7; }
+.notes b { display: block; margin-top: 6px; font-weight: 700; }
+.notes p { margin: 0; color: var(--muted); }
+.key { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-bottom: 4px; color: var(--muted); }
+.key i { display: inline-block; width: 22px; height: 12px; border-radius: 4px; margin-right: 6px; vertical-align: -1px; border: 1px solid var(--chip-line); background: var(--chip); }
+.key i.c { background: var(--couple); border-color: var(--couple-line); }
+.key i.h { background: var(--hit); border-color: var(--hit-line); }
+.key + .key { margin-top: 8px; }
+
+.tg { --c: var(--gold); display: inline-block; flex: none; font: 500 11.5px/1 var(--font-ui); padding: 3px 8px; border-radius: 99px; white-space: nowrap;
+  color: var(--ink); background: color-mix(in srgb, var(--c) 28%, transparent); border: 1px solid color-mix(in srgb, var(--c) 62%, transparent); }
+#info .tg { font-size: 12.5px; padding: 4px 10px; }
+
+#controls { right: var(--ui-right); bottom: var(--ui-bottom); transition: bottom .3s; display: flex; flex-direction: column; border-radius: 14px; overflow: hidden; }
+#controls button { width: 44px; height: 44px; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; font-size: 22px; }
+#controls button + button { border-top: 1px solid var(--panel-line); }
+#controls button:hover { background: color-mix(in srgb, var(--gold) 16%, transparent); }
+
+#info {
+  left: var(--ui-left); right: var(--ui-right); bottom: var(--ui-bottom);
+  width: auto; max-width: var(--ui-w); box-sizing: border-box;
+  border-radius: 18px; padding: 14px 44px 14px 18px;
+  transform: translateY(24px);
+  opacity: 0; pointer-events: none; transition: opacity .3s, transform .3s;
+}
+#info.show { opacity: 1; transform: none; pointer-events: auto; }
+#info .guest-summary { min-width: 0; }
+#info .name { font-family: var(--font-serif); font-weight: 700; font-size: 24px; }
+#info .guest-row { display: flex; align-items: center; gap: 12px; min-width: 0; margin-top: 2px; }
+#info .where { min-width: 0; font-size: 14px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#info .tags { margin: 0 0 0 auto; display: flex; justify-content: flex-end; align-items: center; gap: 6px; flex-wrap: nowrap; max-width: 58%; overflow-x: auto; scrollbar-width: none; }
+#info .tags::-webkit-scrollbar { display: none; }
+#info .tags:empty { display: none; }
+#info .tag { font-size: 12px; padding: 2px 9px; border-radius: 99px; background: color-mix(in srgb, var(--gold) 20%, transparent); }
+#info .x { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); font-size: 20px; cursor: pointer; }
+#info .x:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+
+@media (max-width: 640px) {
+  body.has-info #controls { bottom: calc(var(--ui-bottom) + var(--info-h, 96px) + 10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .halo { animation: none; stroke-opacity: .8; stroke-width: 5; }
+  .chip, #info, #controls { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div id="view">
+  <svg id="map" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="婚禮座位平面圖">
+    <g id="vp">
+      <g id="env"></g>
+      <g id="tables"></g>
+      <g id="main"></g>
+      <g id="overlay"></g>
+    </g>
+  </svg>
+</div>
+
+<section id="panel" class="ui" aria-label="搜尋賓客">
+  <div id="search-row">
+    <div class="field">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" autocomplete="off" enterkeyhint="search" placeholder="搜尋賓客姓名或桌號" aria-label="搜尋賓客姓名或桌號">
+      <button id="clear" type="button" aria-label="清除搜尋">×</button>
+    </div>
+    <button id="panel-toggle" type="button" aria-label="縮小搜尋面板" title="縮小搜尋面板">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg>
+    </button>
+  </div>
+  <ul id="results" role="listbox"></ul>
+  <details>
+    <summary>圖例與備註</summary>
+    <div class="notes">
+      <div class="key"><span><i></i>賓客</span><span><i class="c"></i>新郎新娘</span><span><i class="h"></i>搜尋結果</span></div>
+      <div class="key" id="tagkey"></div>
+      <div id="notes"></div>
+    </div>
+  </details>
+</section>
+
+<div id="controls" class="ui" aria-label="縮放控制">
+  <button id="zin" type="button" aria-label="放大">＋</button>
+  <button id="zout" type="button" aria-label="縮小">－</button>
+  <button id="zfit" type="button" aria-label="顯示全場">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+  </button>
+</div>
+
+<div id="info" class="ui" role="status" aria-live="polite">
+  <div class="guest-summary">
+    <div class="name" id="i-name"></div>
+    <div class="guest-row">
+      <div class="where" id="i-where"></div>
+      <div class="tags" id="i-tags"></div>
+    </div>
+  </div>
+  <button class="x" id="i-x" type="button" aria-label="關閉">×</button>
+</div>
+
+<script id="seating-data" type="application/json">{
+ "version": 1,
+ "event": {
+  "title": "婚禮主餐座位圖"
+ },
+ "layout": {
+  "breakAfter": [
+   "2-5",
+   "3-5"
+  ]
+ },
+ "notes": [],
+ "mainTable": {
+  "label": "主桌",
+  "seats": [
+   {
+    "name": "賈子瑭",
+    "role": "bride"
+   },
+   {
+    "name": "賈景陽",
+    "pork": true
+   },
+   {
+    "name": "翁美玲",
+    "pork": true,
+    "fish": true
+   },
+   {
+    "name": "翁瑢琇"
+   },
+   {
+    "name": "王在昶"
+   },
+   {
+    "name": "李元榜"
+   },
+   {
+    "name": "張炎妹"
+   },
+   {
+    "name": "李旭芳"
+   },
+   {
+    "name": "王勝批"
+   },
+   {
+    "name": "王偉至",
+    "role": "groom"
+   }
+  ]
+ },
+ "tables": [
+  {
+   "id": "1-1",
+   "group": "1",
+   "left": [
+    {
+     "name": "汪淳竹"
+    },
+    {
+     "name": "李為毅"
+    },
+    {
+     "name": "王銍品",
+      "fish": true
+    }
+   ],
+   "right": [
+    {
+     "name": "Sandy"
+    },
+    {
+     "name": "李妍希"
+    },
+    {
+     "name": "李肇芳"
+    }
+   ]
+  },
+  {
+   "id": "1-2",
+   "group": "1",
+   "left": [
+    {
+     "name": "袁雅柔"
+    },
+    {
+     "name": "張群"
+    },
+    {
+     "name": "游超惟"
+    }
+   ],
+   "right": [
+    {
+     "name": "邱宥銓"
+    },
+    {
+     "name": "楊蕙瑄"
+    },
+    {
+     "name": "龔蕎浠"
+    }
+   ]
+  },
+  {
+   "id": "1-3",
+   "group": "1",
+   "left": [
+    {
+     "name": "金暐皓",
+     "veg": true
+    },
+    {
+     "name": "林佳瑩",
+     "veg": true
+    },
+    {
+     "name": "佳瑩媽媽",
+     "veg": true
+    }
+   ],
+   "right": [
+    {
+     "name": "趙小瑩"
+    },
+    {
+     "name": "江芷靚"
+    },
+    {
+     "name": "林師緯"
+    }
+   ]
+  },
+  {
+   "id": "2-1",
+   "group": "2",
+   "left": [
+    {
+     "name": "李定芳",
+      "pork": true
+    },
+    {
+     "name": "王鈺萱"
+    },
+    {
+     "name": "王俐文"
+    }
+   ],
+   "right": [
+    {
+     "name": "李柏霆",
+      "fish": true
+    },
+    {
+     "name": "李東旭",
+     "child": true
+    },
+    {
+     "name": "王芊文"
+    }
+   ]
+  },
+  {
+   "id": "2-2",
+   "group": "2",
+   "left": [
+    {
+     "name": "林心瑜"
+    },
+    {
+     "name": "趙力緯"
+    },
+    {
+     "name": "佘柏賢"
+    }
+   ],
+   "right": [
+    {
+     "name": "Cookie"
+    },
+    {
+     "name": "Daoz"
+    },
+    {
+     "name": "劉得生"
+    }
+   ]
+  },
+  {
+   "id": "2-3",
+   "group": "2",
+   "left": [
+    {
+     "name": "陳峻弘"
+    },
+    {
+     "name": "陳璿仁"
+    },
+    {
+     "name": "黃尹伶"
+    }
+   ],
+   "right": [
+    {
+     "name": "郭子軒"
+    },
+    {
+     "name": "Nickson"
+    },
+    {
+     "name": "Alice"
+    }
+   ]
+  },
+  {
+   "id": "2-5",
+   "group": "2",
+   "left": [
+    {
+     "name": "吳佳凌"
+    },
+    {
+     "name": "翁榕甫"
+    },
+    null
+   ],
+   "right": [
+    {
+     "name": "Super"
+    },
+    {
+     "name": "Daphne",
+     "child": true
+    },
+    {
+     "name": "Wolf",
+      "fish": true
+    }
+   ]
+  },
+  {
+   "id": "2-6",
+   "group": "2",
+   "left": [
+    {
+     "name": "Lenny",
+      "pork": true
+    },
+    {
+     "name": "何宜瑄",
+      "pork": true
+    },
+    {
+     "name": "劉潞葳"
+    }
+   ],
+   "right": [
+    {
+     "name": "沈恩祈"
+    },
+    {
+     "name": "趙逸"
+    },
+    {
+     "name": "Richie Lo"
+    }
+   ]
+  },
+  {
+   "id": "2-7",
+   "group": "2",
+   "left": [
+    {
+     "name": "Miya"
+    },
+    {
+     "name": "Lilian Chou"
+    },
+    {
+     "name": "劉華宣"
+    }
+   ],
+   "right": [
+    {
+     "name": "黃仕明"
+    },
+    {
+     "name": "王安妮"
+    },
+    {
+     "name": "羅仕明"
+    }
+   ]
+  },
+  {
+   "id": "2-8",
+   "group": "2",
+   "left": [
+    {
+     "name": "William Lin"
+    },
+    {
+     "name": "Evelyn Tsai"
+    },
+    {
+     "name": "William Gerard"
+    }
+   ],
+   "right": [
+    {
+     "name": "Judy 辜"
+    },
+    {
+     "name": "魏曦姸",
+      "fish": true
+    },
+    {
+     "name": "盧奕心",
+      "pork": true
+    }
+   ]
+  },
+  {
+   "id": "3-1",
+   "group": "3",
+   "left": [
+    {
+     "name": "賈蕙瑄"
+    },
+    {
+     "name": "韋屏"
+    },
+    {
+     "name": "黃靚瑄"
+    }
+   ],
+   "right": [
+    {
+     "name": "翁維廷"
+    },
+    {
+     "name": "林倢伃"
+    },
+    {
+     "name": "黃鈺玲"
+    }
+   ]
+  },
+  {
+   "id": "3-2",
+   "group": "3",
+   "left": [
+    {
+     "name": "陳維欣"
+    },
+    {
+     "name": "Ollie Hsu"
+    },
+    {
+     "name": "Tina Wu"
+    }
+   ],
+   "right": [
+    {
+     "name": "王奕中"
+    },
+    {
+     "name": "張家曦"
+    },
+    {
+     "name": "李眉蓁"
+    }
+   ]
+  },
+  {
+   "id": "3-3",
+   "group": "3",
+   "left": [
+    {
+     "name": "劉彥祺"
+    },
+    {
+     "name": "Kenneth Chau"
+    },
+    {
+     "name": "周暐喆"
+    }
+   ],
+   "right": [
+    {
+     "name": "于季唐"
+    },
+    {
+     "name": "周愷元"
+    },
+    {
+     "name": "陳佳惠"
+    }
+   ]
+  },
+  {
+   "id": "3-5",
+   "group": "3",
+   "left": [
+    {
+     "name": "施瑀柔"
+    },
+    {
+     "name": "游駿"
+    },
+    {
+     "name": "陳佳君"
+    }
+   ],
+   "right": [
+    {
+     "name": "Arisa Hsu"
+    },
+    {
+     "name": "陳泳瑄"
+    },
+    {
+     "name": "吳欣穎"
+    }
+   ]
+  },
+  {
+   "id": "3-6",
+   "group": "3",
+   "left": [
+    {
+     "name": "林嘉櫻"
+    },
+    {
+     "name": "張耕瑋"
+    },
+    {
+     "name": "孫靖媛",
+      "pork": true
+    }
+   ],
+   "right": [
+    {
+     "name": "呂翊嘉",
+      "pork": true
+    },
+    {
+     "name": "謝旻軒"
+    },
+    {
+     "name": "黃俊嘉"
+    }
+   ]
+  },
+  {
+   "id": "3-7",
+   "group": "3",
+   "left": [
+    {
+     "name": "陳俊佑"
+    },
+    {
+     "name": "陳季業"
+    },
+    {
+     "name": "徐安萱"
+    }
+   ],
+   "right": [
+    {
+     "name": "施柏寬"
+    },
+    {
+     "name": "張禕潔"
+    },
+    {
+     "name": "吳若瑄"
+    }
+   ]
+  },
+  {
+   "id": "3-8",
+   "group": "3",
+   "left": [
+    {
+     "name": "徐以倩",
+      "fish": true
+    },
+    {
+     "name": "陳妤禎"
+    },
+    {
+     "name": "張維"
+    }
+   ],
+   "right": [
+    {
+     "name": "王紹宇"
+    },
+    {
+     "name": "陳文濤",
+      "fish": true
+    },
+    {
+     "name": "林彥志"
+    }
+   ]
+  },
+  {
+   "id": "5-1",
+   "group": "5",
+   "left": [
+    {
+     "name": "郝鴻翔"
+    },
+    {
+     "name": "何敏華"
+    },
+    {
+     "name": "郝于靚"
+    }
+   ],
+   "right": [
+    {
+     "name": "何人濬"
+    },
+    {
+     "name": "何海華"
+    },
+    {
+     "name": "何道剛"
+    }
+   ]
+  },
+  {
+   "id": "5-2",
+   "group": "5",
+   "left": [
+    {
+     "name": "郝于舜"
+    },
+    {
+     "name": "許卉琳"
+    },
+    {
+     "name": "陳亭因"
+    }
+   ],
+   "right": [
+    {
+     "name": "Chloe"
+    },
+    {
+     "name": "Henry"
+    },
+    {
+     "name": "邱昕芸",
+      "fish": true
+    }
+   ]
+  },
+  {
+   "id": "5-3",
+   "group": "5",
+   "left": [
+    {
+     "name": "張妤瑄"
+    },
+    {
+     "name": "曾家譽",
+     "child": true
+    },
+    {
+     "name": "曾貴郁"
+    }
+   ],
+   "right": [
+    {
+     "name": "蔡佩珊",
+     "veg": true
+    },
+    {
+     "name": "蘇兆翎"
+    },
+    {
+     "name": "黃俞容",
+      "pork": true
+    }
+   ]
+  }
+ ]
+}</script>
+
+<script>
+/* =====================================================================
+   設定
+   ===================================================================== */
+const CONFIG = {
+  API_URL: null,
+  FETCH_OPTIONS: {},
+};
+
+
+/* =====================================================================
+   場地文字
+   ===================================================================== */
+const LABELS = {
+  outdoor: "OUTDOOR 戶外",  indoor: "INDOOR 室內",
+  stage: "舞台",            stageCapacity: "130 位",
+  outdoorStage: ["戶外", "舞台"],
+  lightBoard: "燈板",       floorFlower: "地花",
+  sendOff: "送客區",
+  cloudMirror: "雲朵鏡",    outdoorBar: "戶外酒吧",   indoorBar: "室內酒吧",
+  entrance: ["入", "口"],
+  buffet: "自助吧",         gift: "收禮桌",
+  kitchen: "廚房",          restroom: "洗手間",       lounge: "休息室",  subStage: "次舞台",
+  photoTable: "相片桌",     photoTableSub: "（橡木桶）",
+  column: (g) => `${g} 區`,
+  emptySeat: "空位",
+  roles: { groom: "新郎", bride: "新娘", couple: "新人" },
+  leftSide: "左側", rightSide: "右側",
+  mainTableSeat: (n) => `主桌・第 ${n} 位`,
+  seatOf: (tid, side, n) => `${tid} 桌・${side}第 ${n} 位`,
+};
+
+/* =====================================================================
+   賓客標籤
+   ===================================================================== */
+const TAGS = [
+  { key: "child", label: "兒童椅", color: "#6fa3c7" },
+  { key: "fish",  label: "蝦換魚", color: "#e0a15f" },
+  { key: "pork",  label: "豬肉",   color: "#cf8b8b" },
+  { key: "veg",   label: "素套",   color: "#86a872" },
+];
+const guestTags = (g) => g ? TAGS.filter((t) => g[t.key] === true || g[t.key] === "true") : [];
+function tagEl(t) {
+  const el = document.createElement("span");
+  el.className = "tg"; el.style.setProperty("--c", t.color); el.textContent = t.label;
+  return el;
+}
+
+/* =====================================================================
+   版面常數
+   ===================================================================== */
+const W = 2290, H = 1800;
+const CHIP = { w: 100, h: 27, pitch: 31, gap: 8, tableW: 44 };
+const TABLE = { w: CHIP.tableW, h: 3 * CHIP.pitch + 4 };
+const TABLE_GAP = 8;
+const CENTER_X = 1367;
+const COL_X_4 = [927, 1207, 1527, 1807];
+const TABLE_SPAN = 2 * (CHIP.tableW / 2 + CHIP.gap + CHIP.w) + 20;
+const START_OUTER = 470;
+const START_INNER = START_OUTER + TABLE.h + TABLE_GAP;
+const MAIN = { cy: 416, chipW: 76 };
+const BREAK_GAP = 56;
+const COL_BOTTOM = START_INNER + 6 * (TABLE.h + TABLE_GAP) + BREAK_GAP + TABLE.h;
+
+/* =====================================================================
+   場地物件位置
+   ===================================================================== */
+const OUTDOOR_CX = 380;
+const OUT_STAGE = { x: OUTDOOR_CX, y: 420 };
+const COCKTAIL = [[-80, 830], [80, 830], [-80, 960], [80, 960]].map(([dx, y]) => [OUTDOOR_CX + dx, y]);
+
+const PROP_T = 84;
+const PROP_BOTTOM = 1688;
+const PROP_Y = PROP_BOTTOM - PROP_T;
+
+const BUFFET = { x: 717, top: START_OUTER, bottom: COL_BOTTOM, pattern: [1, 1, 1, 0, 1, 1, 1, 1] };
+const BUFFET_WALK = (() => {
+  const p = BUFFET.pattern, n = p.filter(Boolean).length, walks = p.length - n;
+  const links = p.filter((has, i) => has && p[i + 1]).length;
+  return (BUFFET.bottom - BUFFET.top - n * TABLE.h - links * TABLE_GAP) / walks;
+})();
+const bfPos = (() => {
+  let y = BUFFET.top;
+  return BUFFET.pattern.map((has, i) => {
+    const t = y;
+    y += (has ? TABLE.h : BUFFET_WALK) + (has && BUFFET.pattern[i + 1] ? TABLE_GAP : 0);
+    return t;
+  });
+})();
+const bfTop = (i) => bfPos[i];
+const GIFT = { x: COL_X_4[0] - TABLE.w / 2, y: START_INNER + 5 * (TABLE.h + TABLE_GAP) + BREAK_GAP };
+const SENDOFF = { w: PROP_T, x: 692 - 9 - PROP_T, y: bfTop(5), h: bfTop(7) + TABLE.h - bfTop(5) };
+const ROOMS = { kitchenBottom: START_INNER + 3 * (TABLE.h + TABLE_GAP) + TABLE.h, loungeTop: BUFFET.bottom, bottom: 1694 };
+const SUBSTAGE = { x0: 1690, x1: 2050, top: BUFFET.bottom, bottom: 1694 };
+
+const NS = "http://www.w3.org/2000/svg";
+const $ = (id) => document.getElementById(id);
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function el(tag, attrs, parent) {
+  const n = document.createElementNS(NS, tag);
+  if (attrs) for (const k in attrs) n.setAttribute(k, attrs[k]);
+  if (parent) parent.appendChild(n);
+  return n;
+}
+
+/* =====================================================================
+   資料
+   ===================================================================== */
+function normGuest(g) {
+  if (g == null || g === "") return null;
+  if (typeof g === "string") return { name: g };
+  if (!g.name) return null;
+  return g;
+}
+function normalize(d) {
+  const tables = (d.tables || []).map((t) => ({
+    ...t,
+    group: String(t.group ?? String(t.id).split("-")[0]),
+    left: (t.left || []).map(normGuest),
+    right: (t.right || []).map(normGuest),
+  }));
+  const main = d.mainTable || { seats: [] };
+  return {
+    event: d.event || {},
+    layout: d.layout || {},
+    notes: d.notes || [],
+    mainTable: { id: "main", label: main.label || "主桌", seats: (main.seats || []).map(normGuest) },
+    tables,
+  };
+}
+async function loadData() {
+  if (CONFIG.API_URL) {
+    try {
+      const r = await fetch(CONFIG.API_URL, CONFIG.FETCH_OPTIONS);
+      if (!r.ok) throw new Error(r.status);
+      return normalize(await r.json());
+    } catch (e) {
+      console.warn("座位 API 讀取失敗，改用內建資料：", e);
+    }
+  }
+  return normalize(JSON.parse($("seating-data").textContent));
+}
+
+/* =====================================================================
+   場地
+   ===================================================================== */
+function vtext(x, cy, str, size, cls) {
+  const chars = [...str], pitch = size * 1.3, top = cy - (chars.length - 1) * pitch / 2;
+  return chars.map((c, i) =>
+    `<text class="${cls}" x="${x}" y="${(top + i * pitch).toFixed(1)}" text-anchor="middle" dominant-baseline="central" style="font-size:${size}px">${c}</text>`
+  ).join("");
+}
+function propBox(x, len, label, sub) {
+  const cx = x + len / 2, cy = PROP_Y + PROP_T / 2;
+  let out = `<rect x="${x}" y="${PROP_Y}" width="${len}" height="${PROP_T}" rx="12" class="prop"/>`;
+  if (sub) {
+    out += `<text class="prop-t" x="${cx}" y="${cy - 3}" text-anchor="middle" style="font-size:30px">${label}</text>`;
+    out += `<text class="prop-s" x="${cx}" y="${cy + 24}" text-anchor="middle">${sub}</text>`;
+  } else {
+    out += `<text class="prop-t" x="${cx}" y="${cy + 9}" text-anchor="middle">${label}</text>`;
+  }
+  return out;
+}
+
+function buildEnvironment() {
+  const g = $("env"), L = LABELS;
+  g.innerHTML = `
+  <defs>
+    <clipPath id="bldg"><rect x="60" y="100" width="2170" height="1600" rx="22"/></clipPath>
+    <pattern id="mow" width="160" height="160" patternUnits="userSpaceOnUse">
+      <rect width="160" height="80" style="fill:var(--lawn)"/><rect y="80" width="160" height="80" style="fill:var(--lawn-2)"/>
+    </pattern>
+    <pattern id="plank" width="120" height="70" patternUnits="userSpaceOnUse">
+      <rect width="120" height="70" style="fill:var(--floor)"/>
+      <path d="M0 .75H120M0 35.75H120M40 .75V35.75M100 35.75V70.75" style="stroke:var(--floor-line);stroke-width:1.5;fill:none"/>
+    </pattern>
+    <pattern id="hatch" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="22" height="22" style="fill:var(--hatch-bg)"/><rect width="6" height="22" style="fill:var(--hatch)"/>
+    </pattern>
+  </defs>
+  <rect width="${W}" height="${H}" style="fill:var(--bg)"/>
+  <g clip-path="url(#bldg)">
+    <rect x="60" y="100" width="640" height="1600" fill="url(#mow)"/>
+    <rect x="700" y="100" width="1530" height="1600" fill="url(#plank)"/>
+    <g id="trees"></g>
+  </g>
+
+  <!-- 戶外 -->
+  <text class="zone" x="380" y="146" text-anchor="middle">${L.outdoor}</text>
+  <g id="lights-out"></g>
+  <g id="bloom-ring"></g>
+  <circle cx="${OUT_STAGE.x}" cy="${OUT_STAGE.y}" r="70" class="prop"/>
+  <text class="prop-s" x="${OUT_STAGE.x}" y="${OUT_STAGE.y - 4}" text-anchor="middle" style="font-size:19px;font-weight:700">${L.outdoorStage[0]}</text>
+  <text class="prop-s" x="${OUT_STAGE.x}" y="${OUT_STAGE.y + 20}" text-anchor="middle" style="font-size:19px;font-weight:700">${L.outdoorStage[1]}</text>
+  <text class="soft-t" x="${OUT_STAGE.x}" y="${OUT_STAGE.y - 102}" text-anchor="middle" style="font-size:24px;letter-spacing:.2em">${L.lightBoard}</text>
+  <text class="soft-t" x="${OUT_STAGE.x}" y="${OUT_STAGE.y + 118}" text-anchor="middle" style="font-size:24px;letter-spacing:.2em">${L.floorFlower}</text>
+  <g id="cocktail"></g>
+
+  <!-- 送客區 -->
+  <rect x="${SENDOFF.x}" y="${SENDOFF.y}" width="${SENDOFF.w}" height="${SENDOFF.h}" rx="12" style="fill:var(--path);opacity:.7;stroke:var(--gold);stroke-width:2;stroke-dasharray:10 8"/>
+  ${vtext(SENDOFF.x + SENDOFF.w / 2, SENDOFF.y + SENDOFF.h / 2, L.sendOff, 30, "soft-t")}
+
+  <path d="M145 1700 C 150 1540 420 1580 690 1480" style="fill:none;stroke:var(--path);stroke-width:50;stroke-linecap:round;opacity:.85"/>
+  <path d="M145 1700 C 150 1540 420 1580 690 1480" style="fill:none;stroke:var(--gold);stroke-width:2;stroke-dasharray:2 14;stroke-linecap:round;opacity:.6"/>
+  <path d="M92 1700 V1622 A54 54 0 0 1 200 1622 V1700" style="fill:none;stroke:var(--wood-line);stroke-width:9"/>
+  <path d="M92 1700 V1622 A54 54 0 0 1 200 1622 V1700" style="fill:none;stroke:var(--bloom-c);stroke-width:4;stroke-dasharray:1 10;stroke-linecap:round"/>
+
+  ${propBox(277, 120, L.cloudMirror)}
+  ${propBox(470, 200, L.outdoorBar)}
+
+  <!-- 牆與入口 -->
+  <rect x="692" y="100" width="16" height="1300" style="fill:var(--wall)"/>
+  <rect x="692" y="1560" width="16" height="140" style="fill:var(--wall)"/>
+  <rect x="672" y="1440" width="56" height="100" rx="10" class="door"/>
+  <text class="door-t" x="700" y="1483" text-anchor="middle">${L.entrance[0]}</text>
+  <text class="door-t" x="700" y="1519" text-anchor="middle">${L.entrance[1]}</text>
+
+  <!-- 室內 -->
+  <text class="zone" x="726" y="300">${L.indoor}</text>
+  <rect x="700" y="100" width="1322" height="140" style="fill:var(--stage)"/>
+  <rect x="700" y="228" width="1322" height="12" style="fill:var(--stage-2)"/>
+  <text class="stage-t" x="1361" y="188" text-anchor="middle">${L.stage}</text>
+  <text class="stage-sub" x="1990" y="212" text-anchor="end">${L.stageCapacity}</text>
+  <g id="lights-in"></g>
+
+  <!-- 自助吧 / 收禮桌 -->
+  <g id="buffet"></g>
+  ${vtext(BUFFET.x + TABLE.w / 2, bfTop(3) + BUFFET_WALK / 2, L.buffet, 24, "soft-t")}
+  <g id="gift">${vtext(GIFT.x - 28, GIFT.y + TABLE.h + TABLE_GAP / 2, L.gift, 24, "soft-t")}</g>
+
+  <!-- 廚房 / 休息室 / 次舞台 -->
+  <rect id="k-fill" x="2050" y="100" width="180" height="${ROOMS.kitchenBottom - 100}" style="fill:url(#hatch)"/>
+  <rect id="k-box" x="2085" y="${(100 + ROOMS.kitchenBottom) / 2 - 24}" width="110" height="48" rx="10" style="fill:var(--room);opacity:.92"/>
+  <text id="k-text" class="room-t" x="2140" y="${(100 + ROOMS.kitchenBottom) / 2 + 9}" text-anchor="middle">${L.kitchen}</text>
+  <rect class="room" x="${SUBSTAGE.x1}" y="${ROOMS.loungeTop}" width="180" height="${ROOMS.bottom - ROOMS.loungeTop}"/>
+  <text class="room-t" x="2140" y="${(ROOMS.loungeTop + ROOMS.bottom) / 2 + 9}" text-anchor="middle">${L.lounge}</text>
+
+  <polygon points="${SUBSTAGE.x0},${SUBSTAGE.bottom} ${SUBSTAGE.x1},${SUBSTAGE.top} ${SUBSTAGE.x1},${SUBSTAGE.bottom}" style="fill:var(--stage-2);opacity:.9"/>
+  <text class="stage-sub" x="${SUBSTAGE.x1 - 76}" y="${SUBSTAGE.bottom - 58}" text-anchor="middle" style="font-family:var(--font-serif);font-weight:700;font-size:26px;opacity:1;letter-spacing:0">${L.subStage}</text>
+
+  ${propBox(740, 260, L.indoorBar)}
+  ${propBox(CENTER_X - 165, 330, L.photoTable, L.photoTableSub)}
+
+  <rect x="60" y="100" width="2170" height="1600" rx="22" style="fill:none;stroke:var(--wall);stroke-width:12"/>
+  `;
+
+  // 樹叢
+  const trees = $("trees");
+  [[92, 150, 46], [660, 128, 40], [70, 720, 44], [78, 1010, 50], [66, 1330, 42]].forEach(([x, y, r]) => {
+    el("ellipse", { cx: x + 8, cy: y + r * .85, rx: r, ry: r * .3, style: "fill:var(--tree-shadow)" }, trees);
+    el("circle", { cx: x, cy: y, r, style: "fill:var(--tree)" }, trees);
+    el("circle", { cx: x - r * .28, cy: y - r * .3, r: r * .62, style: "fill:var(--tree-hi)" }, trees);
+  });
+
+  // 地花
+  const ring = $("bloom-ring"), bloom = ["--bloom-a", "--bloom-b", "--bloom-c"];
+  for (let i = 0; i < 44; i++) {
+    const a = (i / 44) * Math.PI * 2;
+    el("circle", { cx: OUT_STAGE.x + Math.cos(a) * 150, cy: OUT_STAGE.y + Math.sin(a) * 150, r: i % 3 === 2 ? 5 : 8, style: `fill:var(${bloom[i % 3]});opacity:.95` }, ring);
+    if (i % 2 === 0) el("circle", { cx: OUT_STAGE.x + Math.cos(a + .07) * 132, cy: OUT_STAGE.y + Math.sin(a + .07) * 132, r: 4, style: "fill:var(--bloom-c);opacity:.8" }, ring);
+  }
+
+  // 高吧桌
+  const ck = $("cocktail");
+  COCKTAIL.forEach(([x, y]) => {
+    el("circle", { cx: x, cy: y, r: 26, style: "fill:var(--linen);stroke:var(--gold);stroke-width:3" }, ck);
+    el("circle", { cx: x, cy: y, r: 8, style: "fill:var(--bloom-a)" }, ck);
+  });
+
+  // 自助吧
+  const bf = $("buffet");
+  BUFFET.pattern.forEach((has, i) => {
+    if (has) el("rect", { class: "gift", x: BUFFET.x, y: bfTop(i), width: TABLE.w, height: TABLE.h, rx: 6 }, bf);
+  });
+
+  // 收禮桌
+  const gf = $("gift");
+  [0, 1].forEach((i) => {
+    const y = GIFT.y + i * (TABLE.h + TABLE_GAP);
+    el("rect", { class: "gift", x: GIFT.x, y, width: TABLE.w, height: TABLE.h, rx: 8 }, gf);
+    el("rect", { x: GIFT.x + 5, y: y + 8, width: 4, height: TABLE.h - 16, rx: 2, style: "fill:var(--gold);opacity:.7" }, gf);
+  });
+
+  // 串燈
+  const bulbs = (parent, pts) => pts.forEach(([x, y]) => {
+    el("circle", { cx: x, cy: y, r: 9, style: "fill:var(--gold-soft);opacity:.35" }, parent);
+    el("circle", { cx: x, cy: y, r: 4, style: "fill:var(--gold)" }, parent);
+  });
+  const arc = [];
+  for (let i = 0; i <= 14; i++) {
+    const t = i / 14, x = (1 - t) * (1 - t) * 100 + 2 * (1 - t) * t * 380 + t * t * 660;
+    const y = (1 - t) * (1 - t) * 170 + 2 * (1 - t) * t * 250 + t * t * 170;
+    arc.push([x, y]);
+  }
+  el("path", { d: "M100 170 Q380 250 660 170", style: "fill:none;stroke:var(--wall-dark);stroke-width:1.5;opacity:.5" }, $("lights-out"));
+  bulbs($("lights-out"), arc);
+  const row = [];
+  for (let x = 745; x <= 1990; x += 42) row.push([x, 256]);
+  bulbs($("lights-in"), row);
+}
+
+/* =====================================================================
+   座位圖繪製
+   ===================================================================== */
+const people = [];
+let active = null;
+
+function estWidth(s) {
+  let w = 0;
+  for (const ch of s) w += /[\u3000-\u9fff\uff00-\uffef]/.test(ch) ? 1 : /[A-Z]/.test(ch) ? .68 : .56;
+  return w;
+}
+
+function drawChip(parent, x, y, guest, meta, w = CHIP.w) {
+  const cls = ["chip"];
+  if (!guest) cls.push("empty");
+  else if (guest.role in LABELS.roles) cls.push("couple");
+  const g = el("g", { class: cls.join(" "), transform: `translate(${x} ${y})` }, parent);
+  el("rect", { width: w, height: CHIP.h, rx: 6 }, g);
+  const label = guest ? guest.name : LABELS.emptySeat;
+  const t = el("text", { x: w / 2, y: CHIP.h / 2 + .5, "text-anchor": "middle", "dominant-baseline": "central" }, g);
+  t.textContent = label;
+  t.style.fontSize = Math.min(14.5, (w - 12) / Math.max(estWidth(label), 1)).toFixed(2) + "px";
+  if (guest) {
+    const p = { ...meta, guest, name: guest.name, cx: x + w / 2, cy: y + CHIP.h / 2, x, y, w, el: g };
+    people.push(p);
+    g.addEventListener("click", (e) => { if (dragMoved > 6) return; e.stopPropagation(); select(p); });
+  }
+  return g;
+}
+
+function naturalSort(a, b) { return String(a).localeCompare(String(b), undefined, { numeric: true }); }
+
+function buildSeating(data) {
+  people.length = 0;
+  for (const k in tablePos) delete tablePos[k];
+  $("tables").replaceChildren();
+  $("main").replaceChildren();
+
+  const mg = $("main"), seats = data.mainTable.seats, n = Math.max(seats.length, 1);
+  const cw = MAIN.chipW, cx = CENTER_X, cy = MAIN.cy;
+  const R = n < 4 ? 90 : Math.max(90, Math.ceil((cw + 5) / (2 * Math.sin(Math.PI / n))));
+  const cloth = R - cw / 2 - 14;
+  el("circle", { cx, cy: cy + 6, r: cloth + 6, style: "fill:var(--tree-shadow)" }, mg);
+  el("circle", { cx, cy, r: cloth, class: "main-cloth" }, mg);
+  el("circle", { cx, cy, r: cloth - 11, style: "fill:none;stroke:var(--gold);stroke-width:1.5;opacity:.55;stroke-dasharray:3 8" }, mg);
+  const wreathR = cloth * .56;
+  for (let i = 0; i < 12; i++) {
+    const a = (i / 12) * Math.PI * 2;
+    el("circle", { cx: cx + Math.cos(a) * wreathR, cy: cy + Math.sin(a) * wreathR, r: 6.5, style: `fill:var(${["--bloom-a", "--bloom-b", "--bloom-c"][i % 3]})` }, mg);
+  }
+  const mt = el("text", { class: "main-t", x: cx, y: cy - 5, "text-anchor": "middle", "dominant-baseline": "central", style: "font-size:22px" }, mg);
+  mt.textContent = data.mainTable.label;
+  const mc = el("text", { class: "main-t", x: cx, y: cy + 15, "text-anchor": "middle", "dominant-baseline": "central", style: "font-size:13px;opacity:.6;font-weight:500" }, mg);
+  mc.textContent = `${seats.length} 位`;
+  seats.forEach((guest, i) => {
+    const a = (-90 + 180 / n + i * 360 / n) * Math.PI / 180;
+    drawChip(mg, cx + Math.cos(a) * R - cw / 2, cy + Math.sin(a) * R - CHIP.h / 2, guest,
+      { tableId: "main", side: "main", idx: i }, cw);
+  });
+  mainGeom = { cx, cy, R };
+
+  /* --- 長桌 --- */
+  const tg = $("tables");
+  const groups = [...new Set(data.tables.map((t) => t.group))].sort(naturalSort);
+  const xs = groups.length === 4 ? COL_X_4 : groups.map((_, i) => CENTER_X + (i - (groups.length - 1) / 2) * 290);
+  const breaks = new Set(data.layout.breakAfter || []);
+
+  groups.forEach((gr, gi) => {
+    const cxCol = xs[gi];
+    const isOuter = gi === 0 || gi === groups.length - 1;
+    let y = isOuter ? START_OUTER : START_INNER;
+    const label = el("text", { class: "col-label", x: cxCol, y: y - 20, "text-anchor": "middle" }, tg);
+    label.textContent = LABELS.column(gr);
+
+    data.tables.filter((t) => t.group === gr).sort((a, b) => naturalSort(a.id, b.id)).forEach((t) => {
+      const rows = Math.max(t.left.length, t.right.length, 3);
+      const th = rows * CHIP.pitch + 4;
+      const g = el("g", { class: "tbl" }, tg);
+      const tx = cxCol - CHIP.tableW / 2;
+      const body = el("rect", { class: "tbl-body", x: tx, y, width: CHIP.tableW, height: th, rx: 8 }, g);
+      el("rect", { class: "tbl-runner", x: cxCol - 6, y: y + 6, width: 12, height: th - 12, rx: 6 }, g);
+      for (let i = 0; i < rows; i++) el("circle", { cx: cxCol, cy: y + 4 + i * CHIP.pitch + CHIP.pitch / 2 + 2, r: 3, style: "fill:var(--gold-soft)" }, g);
+      el("rect", { class: "tbl-pill", x: cxCol - 19, y: y + th / 2 - 13, width: 38, height: 26, rx: 13 }, g);
+      const lt = el("text", { class: "tbl-label", x: cxCol, y: y + th / 2, "text-anchor": "middle", "dominant-baseline": "central" }, g);
+      lt.textContent = t.id;
+      body.addEventListener("click", () => { if (dragMoved <= 6) focusTable(cxCol, y + th / 2); });
+      lt.addEventListener("click", () => { if (dragMoved <= 6) focusTable(cxCol, y + th / 2); });
+
+      const lx = tx - CHIP.gap - CHIP.w, rx = tx + CHIP.tableW + CHIP.gap;
+      for (let i = 0; i < rows; i++) {
+        const cy2 = y + 4 + i * CHIP.pitch;
+        drawChip(g, lx, cy2, t.left[i] ?? null, { tableId: t.id, side: "left", idx: i, tableEl: g, tcx: cxCol });
+        drawChip(g, rx, cy2, t.right[i] ?? null, { tableId: t.id, side: "right", idx: i, tableEl: g, tcx: cxCol });
+      }
+      tablePos[t.id] = { x: tx, y, h: th, cx: cxCol };
+      y += th + TABLE_GAP;
+      if (breaks.has(t.id)) y += BREAK_GAP;
+    });
+  });
+
+  /* --- 廚房 --- */
+  const t35 = tablePos["3-5"];
+  if (t35) {
+    const kb = t35.y + t35.h;
+    $("k-fill").setAttribute("height", kb - 100);
+    $("k-box").setAttribute("y", (100 + kb) / 2 - 24);
+    $("k-text").setAttribute("y", (100 + kb) / 2 + 9);
+  }
+
+  /* --- 收禮桌 --- */
+  const t27 = tablePos["2-7"];
+  $("gift").setAttribute("transform", `translate(0 ${t27 ? t27.y - GIFT.y : 0})`);
+
+  /* --- 面板文字 --- */
+  const tk = $("tagkey"); tk.replaceChildren();
+  TAGS.forEach((t) => tk.appendChild(tagEl(t)));
+  const nb = $("notes"); nb.replaceChildren();
+  (data.notes || []).forEach((n) => {
+    const b = document.createElement("b"); b.textContent = n.title; nb.appendChild(b);
+    (n.lines || []).forEach((l) => { const p = document.createElement("p"); p.textContent = l; nb.appendChild(p); });
+  });
+}
+let mainGeom = null;
+const tablePos = {};
+
+/* =====================================================================
+   縮放 / 平移
+   ===================================================================== */
+const view = $("view"), vp = $("vp"), map = $("map");
+const cam = { k: 1, x: 0, y: 0 };
+let minK = .3, maxK = 6, dragMoved = 0, anim = null, atFit = true;
+
+function apply() { vp.setAttribute("transform", `translate(${cam.x} ${cam.y}) scale(${cam.k})`); }
+function size() { return { cw: view.clientWidth, ch: view.clientHeight }; }
+function fitK() {
+  const { cw, ch } = size();
+  return Math.min(cw / W, ch / H);
+}
+function fitCam() {
+  const { cw, ch } = size(), k = fitK();
+  return { k, x: (cw - W * k) / 2, y: (ch - H * k) / 2 };
+}
+function updateLimits() { minK = fitK() * .85; }
+function zoomAt(px, py, nk) {
+  nk = clamp(nk, minK, maxK);
+  const r = nk / cam.k;
+  cam.x = px - (px - cam.x) * r; cam.y = py - (py - cam.y) * r; cam.k = nk;
+  atFit = false; apply();
+}
+function cancelAnim() { if (anim) { cancelAnimationFrame(anim); anim = null; } }
+
+function flyTo(wx, wy, k, sx, sy, dur = 1100) {
+  cancelAnim();
+  k = clamp(k, minK, maxK);
+  const cur = { ...cam };
+  const w0x = (sx - cur.x) / cur.k, w0y = (sy - cur.y) / cur.k;
+  const dist = Math.hypot(wx - w0x, wy - w0y);
+  const bump = clamp(dist / 1800, 0, .7) * (Math.abs(Math.log(k / cur.k)) < 2.2 ? 1 : .4);
+  const t0 = performance.now();
+  if (reduceMotion) dur = 0;
+  atFit = false;
+  const step = (now) => {
+    const u = dur ? Math.min(1, (now - t0) / dur) : 1;
+    const e = u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
+    const kk = Math.exp(Math.log(cur.k) + (Math.log(k) - Math.log(cur.k)) * e) * Math.exp(-bump * Math.sin(Math.PI * u));
+    const cx = w0x + (wx - w0x) * e, cy = w0y + (wy - w0y) * e;
+    cam.k = kk; cam.x = sx - cx * kk; cam.y = sy - cy * kk; apply();
+    if (u < 1) anim = requestAnimationFrame(step); else anim = null;
+  };
+  anim = requestAnimationFrame(step);
+}
+function fitAll(instant) {
+  const { cw, ch } = size(), f = fitCam();
+  if (instant) { cancelAnim(); Object.assign(cam, f); apply(); atFit = true; return; }
+  flyTo(W / 2, H / 2, f.k, cw / 2, ch / 2, 900);
+  atFit = true;
+}
+
+function focusScreenPoint() {
+  const { cw, ch } = size();
+  return cw >= 900 ? { sx: (390 + cw) / 2, sy: ch / 2 } : { sx: cw / 2, sy: ch * .5 };
+}
+function focusSeat(p) {
+  const { cw, ch } = size(), s = focusScreenPoint();
+  let k;
+  if (p.tableId === "main") k = Math.min(3, cw * .9 / ((mainGeom.R + 80) * 2), ch * .72 / ((mainGeom.R + 30) * 2));
+  else k = Math.min(2.6, cw * .92 / TABLE_SPAN);
+  if (p.tableId === "main") { flyTo(mainGeom.cx, mainGeom.cy, k, s.sx, s.sy); return; }
+  flyTo(p.tcx != null ? (p.cx + p.tcx) / 2 : p.cx, p.cy, k, s.sx, s.sy);
+}
+function focusTable(wx, wy) {
+  const { cw } = size(), s = focusScreenPoint();
+  flyTo(wx, wy, Math.min(2.8, cw * .92 / TABLE_SPAN), s.sx, s.sy, 900);
+}
+
+/* --- 手勢 --- */
+const ptrs = new Map();
+view.addEventListener("wheel", (e) => {
+  e.preventDefault(); cancelAnim();
+  zoomAt(e.clientX, e.clientY, cam.k * Math.exp(-e.deltaY * (e.ctrlKey ? .01 : .0018)));
+}, { passive: false });
+view.addEventListener("pointerdown", (e) => {
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (ptrs.size === 1) dragMoved = 0;
+  cancelAnim(); view.classList.add("grabbing");
+});
+window.addEventListener("pointermove", (e) => {
+  const p = ptrs.get(e.pointerId); if (!p) return;
+  if (ptrs.size === 1) {
+    const dx = e.clientX - p.x, dy = e.clientY - p.y;
+    dragMoved += Math.abs(dx) + Math.abs(dy);
+    if (dragMoved > 6) { cam.x += dx; cam.y += dy; atFit = false; apply(); }
+  } else if (ptrs.size === 2) {
+    const other = [...ptrs.entries()].find(([id]) => id !== e.pointerId)[1];
+    const d0 = Math.hypot(p.x - other.x, p.y - other.y), d1 = Math.hypot(e.clientX - other.x, e.clientY - other.y);
+    const m0x = (p.x + other.x) / 2, m0y = (p.y + other.y) / 2, m1x = (e.clientX + other.x) / 2, m1y = (e.clientY + other.y) / 2;
+    dragMoved += 20;
+    cam.x += m1x - m0x; cam.y += m1y - m0y;
+    if (d0 > 0) zoomAt(m1x, m1y, cam.k * d1 / d0); else apply();
+  }
+  p.x = e.clientX; p.y = e.clientY;
+});
+const endPtr = (e) => { ptrs.delete(e.pointerId); if (!ptrs.size) view.classList.remove("grabbing"); };
+window.addEventListener("pointerup", endPtr);
+window.addEventListener("pointercancel", endPtr);
+view.addEventListener("click", (e) => {
+  if (dragMoved > 6) return;
+  if (!e.target.closest(".chip, .tbl")) clearSelection();
+});
+
+$("zin").onclick = () => { const { cw, ch } = size(); cancelAnim(); flyTo((cw / 2 - cam.x) / cam.k, (ch / 2 - cam.y) / cam.k, cam.k * 1.5, cw / 2, ch / 2, 350); };
+$("zout").onclick = () => { const { cw, ch } = size(); cancelAnim(); flyTo((cw / 2 - cam.x) / cam.k, (ch / 2 - cam.y) / cam.k, cam.k / 1.5, cw / 2, ch / 2, 350); };
+$("zfit").onclick = () => { clearSelection(); fitAll(false); };
+addEventListener("resize", () => { updateLimits(); if (atFit) fitAll(true); });
+
+/* =====================================================================
+   選取 / 資訊卡
+   ===================================================================== */
+function locText(p) {
+  if (p.tableId === "main") return LABELS.mainTableSeat(p.idx + 1);
+  return LABELS.seatOf(p.tableId, p.side === "left" ? LABELS.leftSide : LABELS.rightSide, p.idx + 1);
+}
+function clearSelection() {
+  if (!active) return;
+  active.el.classList.remove("hit");
+  if (active.tableEl) active.tableEl.classList.remove("hit");
+  $("overlay").replaceChildren();
+  map.classList.remove("has-focus");
+  $("info").classList.remove("show");
+  document.body.classList.remove("has-info");
+  active = null;
+}
+function select(p) {
+  clearSelection();
+  active = p;
+  p.el.classList.add("hit");
+  if (p.tableEl) p.tableEl.classList.add("hit");
+  map.classList.add("has-focus");
+  el("rect", { class: "halo", x: p.x - 4, y: p.y - 4, width: p.w + 8, height: CHIP.h + 8, rx: 9 }, $("overlay"));
+
+  $("i-name").textContent = p.name;
+  $("i-where").textContent = locText(p);
+  const tags = $("i-tags"); tags.replaceChildren();
+  const addTag = (t) => { const s = document.createElement("span"); s.className = "tag"; s.textContent = t; tags.appendChild(s); };
+  if (LABELS.roles[p.guest.role]) addTag(LABELS.roles[p.guest.role]);
+  guestTags(p.guest).forEach((t) => tags.appendChild(tagEl(t)));
+  if (p.guest.meal) addTag(p.guest.meal);
+  if (p.guest.note) addTag(p.guest.note);
+  $("info").classList.add("show");
+  document.documentElement.style.setProperty("--info-h", $("info").offsetHeight + "px");
+  document.body.classList.add("has-info");
+
+  focusSeat(p);
+}
+$("i-x").onclick = clearSelection;
+
+const panel = $("panel"), panelToggle = $("panel-toggle");
+panelToggle.onclick = () => {
+  const collapsed = panel.classList.toggle("collapsed");
+  panelToggle.setAttribute("aria-label", collapsed ? "展開搜尋面板" : "縮小搜尋面板");
+  panelToggle.setAttribute("title", collapsed ? "展開搜尋面板" : "縮小搜尋面板");
+  panelToggle.innerHTML = collapsed
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg>';
+};
+
+/* =====================================================================
+   搜尋
+   ===================================================================== */
+const qEl = $("q"), resEl = $("results");
+let hits = [], cursor = -1;
+const norm = (s) => String(s).toLowerCase().replace(/[\s()（）]/g, "");
+
+function runSearch(raw) {
+  const q = norm(raw);
+  if (!q) return [];
+  if (/^\d+-\d+$/.test(q)) return people.filter((p) => p.tableId === q);
+  if (q === "主桌") return people.filter((p) => p.tableId === "main");
+  const tg = q.length >= 2 && TAGS.find((t) => norm(t.label).includes(q));
+  if (tg) return people.filter((p) => guestTags(p.guest).includes(tg));
+  return people
+    .filter((p) => norm(p.name).includes(q))
+    .sort((a, b) => (norm(b.name).startsWith(q) - norm(a.name).startsWith(q)) || a.name.length - b.name.length);
+}
+function highlight(name, raw) {
+  const q = norm(raw), span = document.createElement("span");
+  const i = norm(name) === name.toLowerCase() ? name.toLowerCase().indexOf(q) : -1;
+  if (i < 0 || !q) { span.textContent = name; return span; }
+  span.append(name.slice(0, i));
+  const m = document.createElement("mark"); m.textContent = name.slice(i, i + q.length); span.append(m, name.slice(i + q.length));
+  return span;
+}
+function renderResults() {
+  const raw = qEl.value;
+  $("clear").style.display = raw ? "block" : "none";
+  hits = runSearch(raw); cursor = hits.length ? 0 : -1;
+  resEl.replaceChildren();
+  if (!raw.trim()) return;
+  if (!hits.length) {
+    const li = document.createElement("li"); li.className = "none"; li.textContent = `找不到「${raw.trim()}」，試試其他關鍵字`; resEl.appendChild(li); return;
+  }
+  hits.slice(0, 80).forEach((p, i) => {
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.type = "button"; if (i === cursor) b.className = "active";
+    const n = document.createElement("span"); n.className = "n"; n.appendChild(highlight(p.name, raw));
+    const l = document.createElement("span"); l.className = "loc"; l.textContent = locText(p);
+    const who = document.createElement("span"); who.className = "who"; who.appendChild(n);
+    const gt = guestTags(p.guest);
+    if (gt.length) { const w = document.createElement("span"); w.className = "tgs"; gt.forEach((t) => w.appendChild(tagEl(t))); who.appendChild(w); }
+    b.append(who, l);
+    b.addEventListener("click", () => choose(p));
+    li.appendChild(b); resEl.appendChild(li);
+  });
+}
+function choose(p) {
+  resEl.replaceChildren();
+  qEl.value = p.name; $("clear").style.display = "block";
+  qEl.blur();
+  select(p);
+}
+function moveCursor(d) {
+  const btns = resEl.querySelectorAll("button"); if (!btns.length) return;
+  btns[cursor]?.classList.remove("active");
+  cursor = (cursor + d + btns.length) % btns.length;
+  btns[cursor].classList.add("active"); btns[cursor].scrollIntoView({ block: "nearest" });
+}
+qEl.addEventListener("input", renderResults);
+qEl.addEventListener("focus", () => { if (qEl.value && !resEl.children.length) renderResults(); });
+qEl.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowDown") { e.preventDefault(); moveCursor(1); }
+  else if (e.key === "ArrowUp") { e.preventDefault(); moveCursor(-1); }
+  else if (e.key === "Enter") { e.preventDefault(); if (hits[cursor]) choose(hits[cursor]); }
+  else if (e.key === "Escape") { qEl.value = ""; renderResults(); clearSelection(); }
+});
+$("clear").onclick = () => { qEl.value = ""; renderResults(); clearSelection(); qEl.focus(); };
+addEventListener("keydown", (e) => {
+  if (e.key === "/" && document.activeElement !== qEl) { e.preventDefault(); qEl.focus(); }
+});
+
+/* =====================================================================
+   啟動
+   ===================================================================== */
+async function render(data) {
+  clearSelection();
+  buildSeating(normalize(data));
+}
+window.SeatingChart = {
+  load(json) { render(json); },
+  find(name) { const p = runSearch(name)[0]; if (p) select(p); return !!p; },
+};
+
+(async function init() {
+  buildEnvironment();
+  const data = await loadData();
+  buildSeating(data);
+  updateLimits(); fitAll(true);
+})();
+</script>
+</body>
+</html>
