@@ -319,6 +319,7 @@ details[open] summary::after { content: "－"; }
   <button id="zfit" type="button" aria-label="顯示全場">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
   </button>
+  <button id="zprint" type="button" aria-label="列印座位圖" title="列印座位圖">🖨</button>
 </div>
 
 <div id="info" class="ui" role="status" aria-live="polite">
@@ -428,13 +429,13 @@ details[open] summary::after { content: "－"; }
    ],
    "right": [
     {
-     "name": "邱宥銓"
-    },
-    {
      "name": "楊蕙瑄"
     },
     {
      "name": "龔蕎浠"
+    },
+    {
+     "name": "趙小瑩"
     }
    ]
   },
@@ -457,14 +458,12 @@ details[open] summary::after { content: "－"; }
    ],
    "right": [
     {
-     "name": "趙小瑩"
-    },
-    {
      "name": "江芷靚"
     },
     {
      "name": "林師緯"
-    }
+    },
+    null
    ]
   },
   {
@@ -1588,6 +1587,398 @@ $("clear").onclick = () => { qEl.value = ""; renderResults(); clearSelection(); 
 addEventListener("keydown", (e) => {
   if (e.key === "/" && document.activeElement !== qEl) { e.preventDefault(); qEl.focus(); }
 });
+
+
+/* =====================================================================
+   列印 / PDF
+   ===================================================================== */
+function openPrintView() {
+  const main = $("main"), tables = $("tables");
+  if (!main || !tables) return;
+  const printData = JSON.parse($("seating-data").textContent);
+  const breakAfterSet = new Set((printData.layout && printData.layout.breakAfter) || []);
+  const printMain = main.cloneNode(true);
+  const printTables = tables.cloneNode(true);
+  const temp = document.createElementNS(NS, "svg");
+  temp.setAttribute("width", "1");
+  temp.setAttribute("height", "1");
+  temp.style.position = "absolute";
+  temp.style.left = "-10000px";
+  temp.append(printMain, printTables);
+  document.body.appendChild(temp);
+
+  // ---------- 列印版尺寸 ----------
+  const PRINT = {
+    chipW: 128,
+    chipH: 38,
+    pitch: 44,
+    gap: 10,
+    tableW: 52,
+    colGap: 310,
+    outerY: 600,
+    innerY: 600 + (3 * 44 + 4 + 10),
+    breakGap: 48,
+    mainScale: 1.28,
+    nameMax: 30,
+    nameMin: 20,
+    mainSeatPush: 20,
+  };
+
+  const groups = [...new Set(
+    [...printTables.querySelectorAll(".tbl")].map((g) => {
+      const label = g.querySelector(".tbl-label")?.textContent?.trim() || "";
+      return label.split("-")[0];
+    })
+  )];
+
+  const colCenters = {
+    "1": 790,
+    "2": 1135,
+    "3": 1570,
+    "5": 1915,
+  };
+
+  [...printTables.querySelectorAll(".col-label")].forEach((label) => {
+    const group = (label.textContent || "").trim().split(/\s+/)[0];
+    const cx = colCenters[group];
+    if (cx == null) return;
+    const startY = (group === "1" || group === "5") ? PRINT.outerY : PRINT.innerY;
+    label.setAttribute("x", cx);
+    label.setAttribute("y", startY - 14);
+    label.setAttribute("text-anchor", "middle");
+    label.style.fontSize = "27px";
+  });
+
+  const tableMeta = {};
+  {
+    const byGroup = {};
+    [...printTables.querySelectorAll(".tbl")].forEach((g) => {
+      const label = g.querySelector(".tbl-label")?.textContent?.trim() || "";
+      const group = label.split("-")[0];
+      (byGroup[group] ??= []).push(label);
+    });
+    Object.keys(byGroup).forEach((group) => {
+      const ids = byGroup[group].sort(naturalSort);
+      let breaksBefore = 0;
+      ids.forEach((id) => {
+        tableMeta[id] = { order: ids.indexOf(id), breaksBefore };
+        if (breakAfterSet.has(id)) breaksBefore += 1;
+      });
+    });
+  }
+
+  [...printTables.querySelectorAll(".tbl")].forEach((g) => {
+    const label = g.querySelector(".tbl-label")?.textContent?.trim() || "";
+    const group = label.split("-")[0];
+    const cx = colCenters[group] ?? 1350;
+    const originalBody = g.querySelector(".tbl-body");
+    if (!originalBody) return;
+
+    const oldX = parseFloat(originalBody.getAttribute("x"));
+    const oldY = parseFloat(originalBody.getAttribute("y"));
+    const oldW = parseFloat(originalBody.getAttribute("width"));
+    const oldH = parseFloat(originalBody.getAttribute("height"));
+    const oldCx = oldX + oldW / 2;
+
+    const isOuter = group === "1" || group === "5";
+    const startY = isOuter ? PRINT.outerY : PRINT.innerY;
+    const meta = tableMeta[label] || { order: 0, breaksBefore: 0 };
+    const y = startY + meta.order * ((3 * PRINT.pitch + 4) + PRINT.gap) +
+      meta.breaksBefore * PRINT.breakGap;
+
+    const dx = cx - oldCx;
+    const dy = y - oldY;
+
+    g.setAttribute("transform", `translate(${dx} ${dy})`);
+
+    const body = g.querySelector(".tbl-body");
+    body.setAttribute("x", oldX);
+    body.setAttribute("y", oldY);
+    body.setAttribute("width", PRINT.tableW);
+    body.setAttribute("height", 3 * PRINT.pitch + 4);
+
+    const runner = g.querySelector(".tbl-runner");
+    if (runner) {
+      runner.setAttribute("x", oldCx - 6);
+      runner.setAttribute("y", oldY + 6);
+      runner.setAttribute("width", 12);
+      runner.setAttribute("height", 3 * PRINT.pitch - 8);
+    }
+
+    // 桌號 pill
+    const pill = g.querySelector(".tbl-pill");
+    if (pill) {
+      pill.setAttribute("x", oldCx - 23);
+      pill.setAttribute("y", oldY + (3 * PRINT.pitch + 4) / 2 - 15);
+      pill.setAttribute("width", 46);
+      pill.setAttribute("height", 30);
+    }
+
+    const lt = g.querySelector(".tbl-label");
+    if (lt) {
+      lt.setAttribute("x", oldCx);
+      lt.setAttribute("y", oldY + (3 * PRINT.pitch + 4) / 2);
+      lt.style.fontSize = "19px";
+      lt.style.fontWeight = "700";
+    }
+
+    // 中央 runner 上的裝飾點
+    g.querySelectorAll("circle").forEach((c, i) => {
+      const cy = oldY + 4 + i * PRINT.pitch + PRINT.pitch / 2 + 2;
+      c.setAttribute("cx", oldCx);
+      c.setAttribute("cy", cy);
+      c.setAttribute("r", 3.5);
+    });
+
+    // 兩側賓客
+    const chips = [...g.querySelectorAll(":scope > .chip")];
+    chips.forEach((chip) => {
+      const oldRect = chip.querySelector("rect");
+      const text = chip.querySelector("text");
+      if (!oldRect || !text) return;
+
+      const oldTx = parseFloat(chip.getAttribute("transform")?.match(/translate\(([-.\d]+)\s+([-.\d]+)\)/)?.[1] || 0);
+      const oldTy = parseFloat(chip.getAttribute("transform")?.match(/translate\(([-.\d]+)\s+([-.\d]+)\)/)?.[2] || 0);
+      const side = oldTx < oldCx ? "left" : "right";
+      const row = Math.max(0, Math.round((oldTy - oldY - 4) / 31));
+      const newX = side === "left"
+        ? oldCx - PRINT.tableW / 2 - 10 - PRINT.chipW
+        : oldCx + PRINT.tableW / 2 + 10;
+      const newY = oldY + 4 + row * PRINT.pitch;
+
+      chip.setAttribute("transform", `translate(${newX} ${newY})`);
+      oldRect.setAttribute("width", PRINT.chipW);
+      oldRect.setAttribute("height", PRINT.chipH);
+      oldRect.setAttribute("rx", 7);
+
+      text.setAttribute("x", PRINT.chipW / 2);
+      text.setAttribute("y", PRINT.chipH / 2 + .5);
+      text.style.fontSize = `${Math.min(
+        PRINT.nameMax,
+        Math.max(PRINT.nameMin, (PRINT.chipW - 14) / Math.max(estWidth(text.textContent || ""), 1))
+      ).toFixed(2)}px`;
+      text.style.fontWeight = chip.classList.contains("couple") ? "700" : "600";
+    });
+  });
+
+  {
+    const cloth = printMain.querySelector(".main-cloth");
+    if (cloth) {
+      const cx = parseFloat(cloth.getAttribute("cx"));
+      const cy = parseFloat(cloth.getAttribute("cy"));
+      printMain.querySelectorAll(":scope > .chip").forEach((chip) => {
+        const m = chip.getAttribute("transform")?.match(/translate\(([-.\d]+)\s+([-.\d]+)\)/);
+        if (!m) return;
+        const x = parseFloat(m[1]);
+        const y = parseFloat(m[2]);
+        const w = parseFloat(chip.querySelector("rect")?.getAttribute("width") || "0");
+        const h = parseFloat(chip.querySelector("rect")?.getAttribute("height") || "0");
+        const sx = x + w / 2;
+        const sy = y + h / 2;
+        const dx = sx - cx;
+        const dy = sy - cy;
+        const len = Math.hypot(dx, dy);
+        if (!len) return;
+        const push = PRINT.mainSeatPush;
+        chip.setAttribute("transform", `translate(${(x + dx / len * push).toFixed(2)} ${(y + dy / len * push).toFixed(2)})`);
+      });
+    }
+  }
+
+  printMain.querySelectorAll(".chip").forEach((chip) => {
+    const rect = chip.querySelector("rect"), text = chip.querySelector("text");
+    if (!rect || !text) return;
+    rect.setAttribute("width", 88);
+    rect.setAttribute("height", 38);
+    text.setAttribute("x", 44);
+    text.setAttribute("y", 19.5);
+    text.style.fontSize = `${Math.min(
+      28,
+      Math.max(20, (88 - 12) / Math.max(estWidth(text.textContent || ""), 1))
+    ).toFixed(2)}px`;
+  });
+
+  printMain.querySelectorAll("text.main-t").forEach((t) => {
+    const style = t.getAttribute("style") || "";
+    const m = /font-size:\s*([\d.]+)px/.exec(style);
+    if (!m) return;
+    const newSize = (parseFloat(m[1]) * 1.18).toFixed(2);
+    t.setAttribute("style", style.replace(/font-size:\s*[\d.]+px/, `font-size:${newSize}px`));
+  });
+
+  let mainDX = 0, mainDY = 0;
+  {
+    const mainBox = printMain.getBBox();
+    const tablesBox = printTables.getBBox();
+    const tablesCenterX = tablesBox.x + tablesBox.width / 2;
+    const mainCenterX = mainBox.x + mainBox.width / 2;
+    const horizontalShift = tablesCenterX - mainCenterX * PRINT.mainScale;
+    printMain.setAttribute("transform", `translate(${horizontalShift.toFixed(2)} 0) scale(${PRINT.mainScale})`);
+
+    const shiftedMainBox = printMain.getBBox();
+    const latestTablesBox = printTables.getBBox();
+    const innerColLabelTops = [...printTables.querySelectorAll(".col-label")]
+      .filter((label) => {
+        const group = (label.textContent || "").trim().split(/\s+/)[0];
+        return group !== "1" && group !== "5";
+      })
+      .map((label) => label.getBBox().y);
+    const clearanceTopY = innerColLabelTops.length ? Math.min(...innerColLabelTops) : latestTablesBox.y;
+
+    const requiredGap = 40;
+    const mainBottomAfterScale = (shiftedMainBox.y + shiftedMainBox.height) * PRINT.mainScale;
+    const verticalShift = (clearanceTopY - requiredGap) - mainBottomAfterScale;
+    printMain.setAttribute(
+      "transform",
+      `translate(${horizontalShift.toFixed(2)} ${verticalShift.toFixed(2)}) scale(${PRINT.mainScale})`
+    );
+    mainDX = horizontalShift;
+    mainDY = verticalShift;
+  }
+
+  const rawMainBox = printMain.getBBox();
+  const a = {
+    x: rawMainBox.x * PRINT.mainScale + mainDX,
+    y: rawMainBox.y * PRINT.mainScale + mainDY,
+    width: rawMainBox.width * PRINT.mainScale,
+    height: rawMainBox.height * PRINT.mainScale,
+  };
+  const b = printTables.getBBox();
+  const pad = 16;
+  const x = Math.min(a.x, b.x) - pad;
+  const y = Math.min(a.y, b.y) - pad;
+  const right = Math.max(a.x + a.width, b.x + b.width) + pad;
+  const bottom = Math.max(a.y + a.height, b.y + b.height) + pad;
+  const vb = `${x} ${y} ${right - x} ${bottom - y}`;
+
+  const mainSvg = printMain.outerHTML;
+  const tablesSvg = printTables.outerHTML;
+  temp.remove();
+
+  const styles = [...document.querySelectorAll("style")]
+    .map((s) => s.textContent)
+    .join("\n");
+  const links = [...document.querySelectorAll('link[rel="stylesheet"]')]
+    .map((l) => `<link rel="stylesheet" href="${l.href}">`)
+    .join("\n");
+
+  const printWindow = window.open("", "_blank", "width=1200,height=900");
+  if (!printWindow) {
+    alert("瀏覽器阻擋了新視窗，請允許此網站開啟彈出視窗後再試一次。");
+    return;
+  }
+
+  const title = (printData.event?.title || "婚禮座位圖");
+  const printQrDataUri = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQgAAAEICAIAAAAslP2oAAAEXElEQVR42u3dwarbMBCG0ar4/V85XXR1oaEIZph/knP2jR3HH7pYlXVer9cv4KffLgEIA4QBwgBhgDBAGCAMEAYIA4QBwgBhgDAAYcB7z+0/OOes+GLv1pncnv/t53Qft+p3qVqHs/1+MGKAMEAYIAwQBggDhAHRnqoPmno/Vfe8xO3nd89vTM2H3H7OlvvBiAHCAGGAMEAYIAwQBkR7ug9Q9Vy5e/1A1TxD1XGnrn/a+UydpxEDhAHCAGGAMEAYIAyI8HzbF+6er6ha71H1nH5qPYYRA4QBwgBhAMIAYYAwoMDjEmSqmk+4/Zxvm68wYoAwQBggDBAGCAOEAdHa5zHSnot3zw90r2fYsq/2lvvBiAHCAGGAMEAYIAwQBkQrm8fY/nz99nt179tdta/21Plsvx+MGCAMEAYIA4QBwgBhQITjPUL/uUBL1lf4HY0YIAwQBggDhAHCAGHAB7pej1G1PmFqHiDtuGnrHKb25Ui734wYIAwQBggDhAHCAGFAhLN9PqHsQgyti6i6bt3vv6qy5X4zYoAwQBggDBAGCAOEARHG9vnufn5/+zndx52aZ+ier5haT9J93YwYIAwQBggDhAHCAGFAhLj1GFP7THdfh+3rNKZ+r6l1O0YMEAYIA4QBwgBhgDAgwjN14Kr1DO9smffolrZvSdU+IVXHNWKAMEAYIAwQBggDhAHRxuYxuucBpva7uD2f7etApnSfpxEDhAHCAGGAMEAYIAyIcKbWFaTtj7Hl+f3t97q9/tvfB2U9BvhTCoQBwgBhgDBAGPBRrtdjdD+3ntqHO+39S1XS1mmk3T9GDBAGCAOEAcIAYYAwIFr7e6XS5gHS1iGkvfepap/vqXUa1mOAP6VAGCAMEAYIA4QBH+V6HiPtOXTVeozu9Qa317N7fsY+GEYMEAYIA4QBwgBhgDBggbL3SqV9Tvf6iqr5ilvd80hp+5BMrVcxYoAwQBggDBAGCAOEARHG9vm+PtGieYbt+2lUXbcqW66DEQOEAcIAYYAwQBggDFjpTP1/96n3HXXvyzH13q2069z9e3VffyMGCAOEAcIAYYAwQBgQYc16jLIv3Lyuo/s83+lelzK1L3v39zVigDBAGCAMEAYIA4QB0cb2x+jWvT9G9+dMXYeq++H2uGnzaUYMEAYIA4QBwgBhgDAgwlP1QVv2f0h7z1L3Ph5b3tNlxABhgDBAGCAMEAYgDPiHp/sA3e8RmtI9n5C2D0n3fEja+6+MGCAMEAYIA4QBwgBhQITHJfir6nl/2j4SU9+36vyn5jeMGCAMEAYIA4QBwgBhQISvm8fofk6fNu8xtU9F9zxD9zyPEQOEAcIAYYAwQBggDIhwtu9jnbY/d/f16V6fMLX+Ie2+MmKAMEAYIAwQBggDhAERytZjTO2TXXWeW96zdCvtfNJ+XyMGCAOEAcIAYYAwQBgQ7aTtnw1GDBAGCAOEAcIAYYAwAGGAMEAYIAwQBggDhAHCgHB/ALOSGF7bpREmAAAAAElFTkSuQmCC';
+
+  printWindow.document.write(`<!doctype html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+<meta charset="utf-8">
+<title>${title}｜列印版</title>
+${links}
+<style>
+${styles}
+
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100%;
+  height: 100%;
+  background: #fff !important;
+}
+body {
+  overflow: hidden !important;
+  color: #34302a !important;
+  font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif !important;
+}
+.print-page, .print-map, .print-map * , .print-qr {
+  font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif !important;
+}
+.print-page {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 4mm 6mm;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #fff;
+  overflow: hidden;
+}
+.print-map {
+  display: block;
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  background: #fff;
+}
+.print-map .chip rect { fill: #fffdf8; stroke: #cfc3ad; stroke-width: 1.3; }
+.print-map .chip.couple rect { fill: #f7dcd5; stroke: #c99188; }
+.print-map .chip text { fill: #34302a !important; font-weight: 600 !important; }
+.print-map .tbl-body { fill: #d6b78f; stroke: #b3915f; }
+.print-map .tbl-runner { fill: #a9bc93; }
+.print-map .tbl-pill { fill: #fffaf1; stroke: #b48d4c; }
+.print-map .tbl-label, .print-map .col-label, .print-map .main-t { fill: #34302a; }
+.print-map .main-cloth { fill: #fffaf1; stroke: #b48d4c; }
+
+.print-qr {
+  position: absolute;
+  right: 4mm;
+  bottom: 3mm;
+  width: 31mm;
+  text-align: center;
+  font-size: 9pt;
+  line-height: 1.2;
+  font-weight: 600;
+  color: #34302a;
+  background: #fff;
+  padding: 1.5mm;
+  box-sizing: border-box;
+  border-radius: 2mm;
+  box-shadow: 0 0 0 4mm #fff;
+}
+.print-qr img {
+  display: block;
+  width: 26mm;
+  height: 26mm;
+  margin: 0 auto 1.2mm;
+  image-rendering: pixelated;
+}
+@page { size: auto landscape; margin: 0; }
+@media print {
+  html, body { width: 100%; height: 100%; overflow: hidden !important; }
+  .print-page { padding: 4mm 6mm; page-break-after: avoid; break-after: avoid-page; }
+  .print-map { height: 100%; flex-basis: 100%; }
+}
+</style>
+</head>
+<body>
+<div class="print-page">
+  <svg class="print-map" xmlns="http://www.w3.org/2000/svg"
+       viewBox="${vb}" preserveAspectRatio="xMidYMid meet"
+       role="img" aria-label="${title}">
+    ${mainSvg}
+    ${tablesSvg}
+  </svg>
+  <div class="print-qr">
+    <img src="${printQrDataUri}" alt="網頁版座位圖 QR Code">
+    <div>網頁版座位圖</div>
+  </div>
+</div>
+<script>
+window.addEventListener("load", () => {
+  setTimeout(() => window.print(), 250);
+});
+<\/script>
+</body>
+</html>`);
+  printWindow.document.close();
+}
+
+$("zprint").onclick = openPrintView;
 
 /* =====================================================================
    啟動
