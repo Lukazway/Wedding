@@ -3,7 +3,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generated widgets</title>
+    <title>Heart Packing</title>
     <!-- 1. External Libraries -->    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;350;400;500;700&family=Google+Sans+Flex:wght@300;350;400;500;700&family=Google+Sans+Code:wght@300;400;500;700&family=Google+Code:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
@@ -306,126 +306,105 @@ Object.defineProperties(window,{vizTop:{get(){var a=document.getElementById("viz
 (function(a){window._hasWidgetStateListener||(window._hasWidgetStateListener=!0,window.addEventListener("widget-state-update",b=>{var c=a();c&&b.detail&&(b.detail.key!==void 0&&b.detail.value!==void 0?c[b.detail.key]=b.detail.value:Object.assign(c,b.detail))}))})(()=>L);(function(){Mb();ba()&&window.parent&&window.parent.postMessage({type:"shellStyleLuminous"},"*");var a=()=>{setTimeout(()=>{Lb(!0)},150)};document.readyState==="complete"?a():window.addEventListener("load",a)})();
 (function(){var a=()=>{var c=document.getElementById("mermaid-src");if(c){var d=document.getElementById("viz-top")!==null,e=document.querySelectorAll(".viz-pane");d=d?"vizTop":e.length>0?e[0]:"viz";e=bc(d);e&&e._hasSub||(c=c.getAttribute("title")||"Interactive Process Flow",(e=D)||(e=window.WH.createApp({title:c})),Xc(d,()=>Yc()))}},b=()=>{a();setTimeout(a,150)};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",b):(a(),setTimeout(a,150))})();}).call(this);
 </script>
-    <!-- Design layer: display serif + UI sans -->
+    <!-- Design layer: system (SF) font first, Inter as the cross-platform stand-in -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style id="hx-design">
 /* ==========================================================================
-   Heart Token Packing Simulator — design layer
-   Loaded after the framework stylesheet; selectors are intentionally a notch
-   more specific than the framework's so nothing needs !important.
+   Heart Packing — design layer (Apple-style)
+   Loaded after the framework stylesheet; selectors are a notch more specific
+   than the framework's so nothing needs !important.
    ========================================================================== */
 
 body.spark-widget-shell {
-  --hx-bg: #f6f1ea;
-  --hx-glow: rgba(255, 205, 216, 0.55);
-  --hx-ink: #2b1d22;
-  --hx-ink-2: #5d4d53;
-  --hx-muted: #8d7d82;
-  --hx-line: rgba(70, 40, 52, 0.11);
-  --hx-line-strong: rgba(70, 40, 52, 0.2);
-  --hx-card: rgba(255, 255, 255, 0.62);
-  --hx-card-solid: #fffdfa;
-  --hx-card-hover: #ffffff;
-  --hx-accent: #c9184a;
-  --hx-accent-2: #ff4d6d;
-  --hx-accent-soft: rgba(201, 24, 74, 0.09);
-  --hx-accent-glow: rgba(201, 24, 74, 0.55);
-  --hx-shadow: 0 1px 2px rgba(60, 30, 40, 0.05), 0 12px 28px -14px rgba(100, 30, 52, 0.18);
-  --hx-shadow-lift: 0 2px 4px rgba(60, 30, 40, 0.06), 0 16px 30px -14px rgba(100, 30, 52, 0.3);
-  --hx-stage-top: #fffaf5;
-  --hx-stage-bottom: #f0e7db;
-  --hx-stage-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 1px 2px rgba(60, 30, 40, 0.05),
-    0 30px 56px -28px rgba(130, 40, 68, 0.32);
-  --hx-dot: rgba(120, 70, 86, 0.16);
-  --hx-serif: "Instrument Serif", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
-  --hx-sans: "DM Sans", "Google Sans", system-ui, -apple-system, "Segoe UI", "Noto Sans TC", sans-serif;
+  --hx-bg: #f5f5f7;
+  --hx-card: #ffffff;
+  --hx-glass: rgba(255, 255, 255, 0.72);
+  --hx-fill: rgba(120, 120, 128, 0.12);
+  --hx-fill-2: rgba(120, 120, 128, 0.22);
+  --hx-ink: #1d1d1f;
+  --hx-ink-2: #6e6e73;
+  --hx-muted: #86868b;
+  --hx-line: rgba(0, 0, 0, 0.08);
+  --hx-blue: #0071e3;
+  --hx-blue-hover: #0077ed;
+  --hx-green: #34c759;
+  --hx-orange: #ff9f0a;
+  --hx-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.05), 0 8px 28px rgba(0, 0, 0, 0.05);
+  --hx-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", Inter, "Helvetica Neue",
+    "PingFang TC", "Noto Sans TC", system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) body.spark-widget-shell:not([data-theme]) {
+    --hx-bg: #000000;
+    --hx-card: #1c1c1e;
+    --hx-glass: rgba(44, 44, 46, 0.72);
+    --hx-fill: rgba(120, 120, 128, 0.24);
+    --hx-fill-2: rgba(120, 120, 128, 0.36);
+    --hx-ink: #f5f5f7;
+    --hx-ink-2: #a1a1a6;
+    --hx-muted: #8e8e93;
+    --hx-line: rgba(255, 255, 255, 0.1);
+    --hx-blue: #0a84ff;
+    --hx-blue-hover: #409cff;
+    --hx-green: #30d158;
+    --hx-orange: #ff9f0a;
+    --hx-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.5);
+  }
 }
 
 :root[data-theme="dark"] body.spark-widget-shell,
 body.spark-widget-shell[data-theme="dark"] {
-  --hx-bg: #150f11;
-  --hx-glow: rgba(190, 40, 84, 0.22);
-  --hx-ink: #f6ecea;
-  --hx-ink-2: #cdbcc0;
-  --hx-muted: #9c8c91;
-  --hx-line: rgba(255, 255, 255, 0.09);
-  --hx-line-strong: rgba(255, 255, 255, 0.18);
-  --hx-card: rgba(255, 255, 255, 0.045);
-  --hx-card-solid: #211a1d;
-  --hx-card-hover: #2a2124;
-  --hx-accent: #ff5c7f;
-  --hx-accent-2: #ff7d96;
-  --hx-accent-soft: rgba(255, 92, 127, 0.14);
-  --hx-accent-glow: rgba(255, 92, 127, 0.45);
-  --hx-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 14px 30px -14px rgba(0, 0, 0, 0.6);
-  --hx-shadow-lift: 0 2px 4px rgba(0, 0, 0, 0.35), 0 18px 34px -14px rgba(0, 0, 0, 0.7);
-  --hx-stage-top: #241a1e;
-  --hx-stage-bottom: #171012;
-  --hx-stage-shadow: 0 1px 0 rgba(255, 255, 255, 0.06) inset, 0 30px 56px -28px rgba(0, 0, 0, 0.8);
-  --hx-dot: rgba(255, 255, 255, 0.08);
+  --hx-bg: #000000;
+  --hx-card: #1c1c1e;
+  --hx-glass: rgba(44, 44, 46, 0.72);
+  --hx-fill: rgba(120, 120, 128, 0.24);
+  --hx-fill-2: rgba(120, 120, 128, 0.36);
+  --hx-ink: #f5f5f7;
+  --hx-ink-2: #a1a1a6;
+  --hx-muted: #8e8e93;
+  --hx-line: rgba(255, 255, 255, 0.1);
+  --hx-blue: #0a84ff;
+  --hx-blue-hover: #409cff;
+  --hx-green: #30d158;
+  --hx-orange: #ff9f0a;
+  --hx-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.06), 0 8px 28px rgba(0, 0, 0, 0.5);
 }
 
 /* ---------- page + container ------------------------------------------- */
 body.spark-widget-shell.app-layout {
-  background: radial-gradient(900px 420px at 50% -60px, var(--hx-glow), transparent 70%), var(--hx-bg);
+  background: var(--hx-bg);
   color: var(--hx-ink);
-  font-family: var(--hx-sans);
+  font-family: var(--hx-font);
   -webkit-font-smoothing: antialiased;
 }
 
 body.spark-widget-shell .widget-container {
-  max-width: 800px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 0 clamp(14px, 4vw, 32px) clamp(24px, 5vw, 40px);
+  padding: 0 clamp(14px, 4vw, 28px) clamp(24px, 5vw, 44px);
   box-sizing: border-box;
 }
 
 /* ---------- header ------------------------------------------------------ */
 body.spark-widget-shell .widget-header {
-  padding: clamp(22px, 5vw, 40px) 0 clamp(16px, 3vw, 24px);
+  padding: clamp(24px, 6vw, 48px) 0 clamp(14px, 3vw, 20px);
   background: transparent;
   gap: 0;
 }
 
-body.spark-widget-shell .hx-kicker {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 14px;
-  font: 600 11px/1 var(--hx-sans);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--hx-accent);
-}
-body.spark-widget-shell .hx-kicker::before {
-  content: "";
-  width: 24px;
-  height: 1px;
-  background: currentColor;
-}
-
 body.spark-widget-shell .widget-title,
 body.spark-widget-shell h3.widget-title {
-  font-family: var(--hx-serif);
-  font-size: clamp(34px, 7vw, 52px);
-  line-height: 1;
-  font-weight: 400;
-  letter-spacing: -0.015em;
+  font: 700 clamp(30px, 6.5vw, 40px) / 1.08 var(--hx-font);
+  letter-spacing: -0.035em;
   color: var(--hx-ink);
-}
-
-body.spark-widget-shell .hx-lede {
-  margin: 14px 0 0;
-  max-width: 48ch;
-  font: 400 15px/1.6 var(--hx-sans);
-  color: var(--hx-ink-2);
 }
 
 /* ---------- layout column ---------------------------------------------- */
 body.spark-widget-shell .editorial-layout {
-  gap: 14px;
+  gap: 12px;
   overflow: visible;
   background: transparent;
 }
@@ -434,36 +413,10 @@ body.spark-widget-shell .editorial-layout {
 body.spark-widget-shell .editorial-viz-panel {
   position: relative;
   overflow: hidden;
-  border-radius: 32px;
-  border: 1px solid var(--hx-line);
-  background: radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, 0.55), transparent 62%),
-    linear-gradient(180deg, var(--hx-stage-top), var(--hx-stage-bottom));
-  box-shadow: var(--hx-stage-shadow);
-}
-:root[data-theme="dark"] body.spark-widget-shell .editorial-viz-panel {
-  background: radial-gradient(120% 70% at 50% 0%, rgba(255, 92, 127, 0.1), transparent 62%),
-    linear-gradient(180deg, var(--hx-stage-top), var(--hx-stage-bottom));
-}
-body.spark-widget-shell .editorial-viz-panel::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle, var(--hx-dot) 1.1px, transparent 1.5px);
-  background-size: 24px 24px;
-  -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 78%);
-  mask-image: radial-gradient(ellipse at 50% 50%, #000 0%, transparent 78%);
-  pointer-events: none;
-}
-body.spark-widget-shell .editorial-viz-panel::after {
-  content: "FIG. 01 — FRONT VIEW";
-  position: absolute;
-  top: 18px;
-  left: 22px;
-  z-index: 2;
-  font: 600 10px/1 var(--hx-sans);
-  letter-spacing: 0.18em;
-  color: var(--hx-muted);
-  pointer-events: none;
+  border: 0;
+  border-radius: 28px;
+  background: var(--hx-card);
+  box-shadow: var(--hx-shadow);
 }
 body.spark-widget-shell .editorial-viz-panel .viz-container {
   position: relative;
@@ -474,41 +427,27 @@ body.spark-widget-shell .editorial-viz-panel canvas {
   max-width: none;
 }
 
-/* ---------- action dock (unified controls) ----------------------------- */
-.hx-actions {
-  padding: 14px;
-  border-radius: 28px;
-  border: 1px solid var(--hx-line);
-  background: var(--hx-card);
-  box-shadow: var(--hx-shadow);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-}
-
-.hx-actions-head,
-.hx-controls-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 2px 6px 12px;
-}
-
-.hx-eyebrow {
-  font: 600 10.5px/1 var(--hx-sans);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--hx-muted);
-}
-
+/* status pill floating on the stage */
 .hx-status {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 3;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-width: 0;
-  font: 500 12.5px/1.2 var(--hx-sans);
-  color: var(--hx-ink-2);
-  text-align: right;
+  gap: 7px;
+  padding: 7px 12px 7px 10px;
+  border-radius: 999px;
+  font: 500 12.5px/1 var(--hx-font);
+  color: var(--hx-ink);
+  background: var(--hx-glass);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  box-shadow: 0 0 0 0.5px var(--hx-line);
+  pointer-events: none;
+}
+.hx-status[hidden] {
+  display: none;
 }
 .hx-status .hx-dot {
   flex: none;
@@ -516,170 +455,25 @@ body.spark-widget-shell .editorial-viz-panel canvas {
   height: 7px;
   border-radius: 50%;
   background: var(--hx-muted);
-  transition: background 0.25s;
 }
 .hx-status[data-tone="live"] .hx-dot {
-  background: var(--hx-accent);
+  background: var(--hx-blue);
   animation: hxPulse 1.4s ease-out infinite;
 }
 .hx-status[data-tone="ok"] .hx-dot {
-  background: #2f9e6b;
+  background: var(--hx-green);
 }
 .hx-status[data-tone="warn"] .hx-dot {
-  background: #e08a00;
+  background: var(--hx-orange);
 }
-
 @keyframes hxPulse {
   0% {
-    box-shadow: 0 0 0 0 var(--hx-accent-glow);
+    box-shadow: 0 0 0 0 rgba(0, 113, 227, 0.5);
   }
   80%,
   100% {
-    box-shadow: 0 0 0 8px rgba(201, 24, 74, 0);
+    box-shadow: 0 0 0 7px rgba(0, 113, 227, 0);
   }
-}
-
-.hx-actions-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.hx-btn {
-  appearance: none;
-  -webkit-appearance: none;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  min-height: 96px;
-  padding: 14px 8px 13px;
-  border: 1px solid var(--hx-line);
-  border-radius: 22px;
-  background: var(--hx-card-solid);
-  color: var(--hx-ink);
-  font-family: var(--hx-sans);
-  text-align: center;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.22s, background 0.2s,
-    border-color 0.2s, opacity 0.2s;
-}
-.hx-btn .hx-ico {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  margin-bottom: 7px;
-  border-radius: 50%;
-  background: var(--hx-accent-soft);
-  color: var(--hx-accent);
-  transition: background 0.2s, color 0.2s, transform 0.25s;
-}
-.hx-btn .hx-ico svg {
-  width: 18px;
-  height: 18px;
-  display: block;
-}
-.hx-btn .hx-lbl {
-  font-size: 13.5px;
-  font-weight: 600;
-  line-height: 1.2;
-  letter-spacing: -0.005em;
-}
-.hx-btn .hx-cap {
-  font-size: 11.5px;
-  font-weight: 400;
-  line-height: 1.25;
-  color: var(--hx-muted);
-}
-
-.hx-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background: var(--hx-card-hover);
-  border-color: var(--hx-line-strong);
-  box-shadow: var(--hx-shadow-lift);
-}
-.hx-btn:hover:not(:disabled) .hx-ico {
-  transform: scale(1.06);
-}
-.hx-btn:active:not(:disabled) {
-  transform: translateY(0) scale(0.975);
-  box-shadow: none;
-}
-.hx-btn:focus-visible,
-.hx-seg-btn:focus-visible,
-.hx-step:focus-visible {
-  outline: 2px solid var(--hx-accent);
-  outline-offset: 2px;
-}
-.hx-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-/* primary: Sequential Drop */
-.hx-btn--primary {
-  border-color: transparent;
-  background: linear-gradient(158deg, var(--hx-accent-2), var(--hx-accent));
-  color: #fff;
-  box-shadow: 0 14px 26px -14px var(--hx-accent-glow), 0 1px 0 rgba(255, 255, 255, 0.28) inset;
-}
-.hx-btn--primary:hover:not(:disabled) {
-  background: linear-gradient(158deg, var(--hx-accent-2), var(--hx-accent));
-  border-color: transparent;
-  box-shadow: 0 18px 30px -14px var(--hx-accent-glow), 0 1px 0 rgba(255, 255, 255, 0.28) inset;
-}
-.hx-btn--primary .hx-ico {
-  background: rgba(255, 255, 255, 0.2);
-  color: #fff;
-}
-.hx-btn--primary .hx-cap {
-  color: rgba(255, 255, 255, 0.82);
-}
-.hx-btn--primary[aria-pressed="true"]::after {
-  content: "";
-  position: absolute;
-  inset: -4px;
-  border-radius: 26px;
-  border: 2px solid var(--hx-accent);
-  opacity: 0;
-  animation: hxRing 1.6s ease-out infinite;
-  pointer-events: none;
-}
-@keyframes hxRing {
-  0% {
-    opacity: 0.55;
-    transform: scale(0.985);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.04);
-  }
-}
-
-/* quiet: Reset Box */
-.hx-btn--quiet:hover:not(:disabled) .hx-ico {
-  background: var(--hx-accent);
-  color: #fff;
-}
-
-.hx-progress {
-  height: 4px;
-  margin: 14px 6px 2px;
-  border-radius: 99px;
-  background: var(--hx-line);
-  overflow: hidden;
-}
-.hx-progress > i {
-  display: block;
-  height: 100%;
-  width: 0;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--hx-accent-2), var(--hx-accent));
-  transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* ---------- HUD (inside #editorial-text-panel) ------------------------- */
@@ -689,156 +483,238 @@ body.spark-widget-shell #editorial-text-panel {
   border: 0;
   display: block;
   min-height: 0;
+  text-align: left;
 }
 body.spark-widget-shell #editorial-text-panel .editorial-hud {
   display: grid;
-  grid-template-columns: repeat(3, minmax(100px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  height: auto;
   margin: 0;
   padding: 0;
-}
-body.spark-widget-shell #editorial-text-panel .editorial-hud-item {
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 8px;
-  min-width: 0;
-  padding: 15px 18px 14px;
-  border-radius: 22px;
-  border: 1px solid var(--hx-line);
+  overflow: visible;
+  border-radius: 24px;
   background: var(--hx-card);
   box-shadow: var(--hx-shadow);
 }
-body.spark-widget-shell #editorial-text-panel .editorial-hud-item::before {
-  display: none;
+body.spark-widget-shell #editorial-text-panel .editorial-hud-item {
+  position: relative;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 6px;
+  flex: none;
+  min-width: 0;
+  padding: 18px 20px 17px;
+  border: 0;
+  background: transparent;
+}
+body.spark-widget-shell #editorial-text-panel .editorial-hud-item:not(:first-child)::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 24%;
+  height: 52%;
+  width: 1px;
+  transform: none;
+  background: var(--hx-line);
 }
 body.spark-widget-shell #editorial-text-panel .editorial-hud-label {
   margin: 0;
-  font: 600 10.5px/1 var(--hx-sans);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
+  font: 500 12px/1.2 var(--hx-font);
+  letter-spacing: 0;
+  text-transform: none;
   text-align: left;
   color: var(--hx-muted);
 }
 body.spark-widget-shell #editorial-text-panel .editorial-hud-value {
   max-width: none;
-  font-family: var(--hx-serif);
-  font-size: clamp(22px, 4.8vw, 30px);
-  font-weight: 400;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  font: 600 clamp(19px, 5.2vw, 28px) / 1.1 var(--hx-font);
+  letter-spacing: -0.02em;
   text-align: left;
   color: var(--hx-ink);
   font-variant-numeric: tabular-nums;
 }
 
+/* ---------- action dock ------------------------------------------------ */
+.hx-actions {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 10px 16px;
+  border-radius: 24px;
+  background: var(--hx-card);
+  box-shadow: var(--hx-shadow);
+}
+
+.hx-progress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--hx-fill);
+}
+.hx-progress > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--hx-blue);
+  transition: width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.hx-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.hx-btn {
+  appearance: none;
+  -webkit-appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 9px;
+  padding: 2px 0;
+  border: 0;
+  background: transparent;
+  color: var(--hx-ink-2);
+  font: 500 12px/1.2 var(--hx-font);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.hx-btn .hx-ico {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--hx-fill);
+  color: var(--hx-ink);
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s, color 0.2s;
+}
+.hx-btn .hx-ico svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+}
+.hx-btn:hover:not(:disabled) .hx-ico {
+  background: var(--hx-fill-2);
+}
+.hx-btn:active:not(:disabled) .hx-ico {
+  transform: scale(0.92);
+}
+.hx-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.hx-btn:focus-visible {
+  outline: none;
+}
+.hx-btn:focus-visible .hx-ico,
+.hx-step:focus-visible {
+  outline: 2px solid var(--hx-blue);
+  outline-offset: 3px;
+}
+
+.hx-btn--primary .hx-ico {
+  background: var(--hx-blue);
+  color: #fff;
+}
+.hx-btn--primary:hover:not(:disabled) .hx-ico {
+  background: var(--hx-blue-hover);
+}
+.hx-btn.is-hot .hx-ico {
+  background: var(--hx-orange);
+  color: #fff;
+}
+
 /* ---------- controls-root (parameters) --------------------------------- */
 body.spark-widget-shell #controls-root {
   display: block;
-  margin-top: 14px;
-  padding: 14px;
-  border: 1px solid var(--hx-line);
-  border-radius: 28px;
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
   background: var(--hx-card);
   box-shadow: var(--hx-shadow);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  overflow: visible;
+  overflow: hidden;
 }
 body.spark-widget-shell #controls-root::before {
   display: none;
-}
-.hx-hint {
-  font: 400 12px/1.3 var(--hx-sans);
-  color: var(--hx-muted);
-  text-align: right;
 }
 
 .hx-controls-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: 1px;
+  background: var(--hx-line);
 }
 
 .hx-field {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 8px;
   min-width: 0;
-  padding: 16px 18px 15px;
-  border: 1px solid var(--hx-line);
-  border-radius: 22px;
-  background: var(--hx-card-solid);
+  padding: 16px 20px 12px;
+  background: var(--hx-card);
 }
 .hx-field-top {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
+  min-height: 28px;
 }
 .hx-field-label {
-  font: 600 13.5px/1.2 var(--hx-sans);
+  font: 500 14px/1.2 var(--hx-font);
   color: var(--hx-ink);
 }
-.hx-field-value {
-  font-family: var(--hx-serif);
-  font-size: 24px;
-  line-height: 1;
-  color: var(--hx-accent);
-  font-variant-numeric: tabular-nums;
+.hx-value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
 }
-.hx-field-note {
-  margin: auto 0 0;
-  font: 400 12px/1.4 var(--hx-sans);
+.hx-unit {
+  font: 500 13px/1 var(--hx-font);
   color: var(--hx-muted);
 }
 
-/* segmented control (Border Width) */
-.hx-seg {
-  --i: 0;
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  padding: 4px;
-  border-radius: 16px;
-  background: var(--hx-line);
-  isolation: isolate;
-}
-.hx-seg-thumb {
-  position: absolute;
-  z-index: 0;
-  top: 4px;
-  bottom: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  border-radius: 12px;
-  background: var(--hx-card-hover);
-  box-shadow: 0 1px 2px rgba(60, 30, 40, 0.14), 0 6px 14px -6px rgba(100, 30, 52, 0.3);
-  transform: translateX(calc(var(--i) * 100%));
-  transition: transform 0.3s cubic-bezier(0.3, 1.2, 0.4, 1);
-}
-.hx-seg-btn {
-  appearance: none;
-  -webkit-appearance: none;
-  position: relative;
-  z-index: 1;
-  height: 40px;
+.hx-num {
+  -moz-appearance: textfield;
+  appearance: textfield;
+  width: 4.6ch;
+  min-width: 0;
+  margin: 0;
+  padding: 4px 6px;
   border: 0;
-  border-radius: 12px;
+  border-radius: 8px;
   background: transparent;
-  color: var(--hx-muted);
-  font: 600 14px/1 var(--hx-sans);
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-.hx-seg-btn[aria-checked="true"] {
   color: var(--hx-ink);
+  font: 600 17px/1.1 var(--hx-font);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  outline: none;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+.hx-num:last-child {
+  margin-right: -6px; /* no unit after it: line the digits up with the other rows */
+}
+.hx-num::-webkit-inner-spin-button,
+.hx-num::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.hx-num:hover {
+  background: var(--hx-fill);
+}
+.hx-num:focus {
+  background: var(--hx-fill);
+  box-shadow: 0 0 0 2px var(--hx-blue);
 }
 
-/* count control */
-.hx-count-row {
+.hx-row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: 28px minmax(0, 1fr) 28px;
   align-items: center;
   gap: 10px;
 }
@@ -847,28 +723,31 @@ body.spark-widget-shell #controls-root::before {
   -webkit-appearance: none;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: 28px;
+  height: 28px;
   padding: 0;
-  border: 1px solid var(--hx-line-strong);
+  border: 0;
   border-radius: 50%;
-  background: transparent;
-  color: var(--hx-ink);
+  background: var(--hx-fill);
+  color: var(--hx-ink-2);
   cursor: pointer;
-  transition: background 0.18s, border-color 0.18s, transform 0.15s;
+  transition: background 0.15s, transform 0.15s, opacity 0.15s;
 }
 .hx-step svg {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   display: block;
 }
-.hx-step:hover {
-  background: var(--hx-accent-soft);
-  border-color: var(--hx-accent);
-  color: var(--hx-accent);
+.hx-step:hover:not(:disabled) {
+  background: var(--hx-fill-2);
+  color: var(--hx-ink);
 }
-.hx-step:active {
-  transform: scale(0.92);
+.hx-step:active:not(:disabled) {
+  transform: scale(0.9);
+}
+.hx-step:disabled {
+  opacity: 0.35;
+  cursor: default;
 }
 
 .hx-range {
@@ -876,128 +755,80 @@ body.spark-widget-shell #controls-root::before {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 28px;
+  height: 32px;
   margin: 0;
   background: transparent;
   cursor: pointer;
 }
 .hx-range::-webkit-slider-runnable-track {
-  height: 6px;
+  height: 4px;
   border-radius: 99px;
-  background: linear-gradient(90deg, var(--hx-accent) 0, var(--hx-accent) var(--p), var(--hx-line-strong) var(--p));
+  background: linear-gradient(90deg, var(--hx-blue) var(--p), var(--hx-fill-2) var(--p));
 }
 .hx-range::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  margin-top: -8px;
-  border: 2px solid var(--hx-accent);
+  width: 24px;
+  height: 24px;
+  margin-top: -10px;
+  border: 0;
   border-radius: 50%;
-  background: var(--hx-card-hover);
-  box-shadow: 0 2px 8px rgba(100, 20, 44, 0.32);
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.28);
   transition: transform 0.15s;
 }
 .hx-range:active::-webkit-slider-thumb {
-  transform: scale(1.15);
+  transform: scale(1.08);
 }
 .hx-range::-moz-range-track {
-  height: 6px;
+  height: 4px;
   border-radius: 99px;
-  background: var(--hx-line-strong);
+  background: var(--hx-fill-2);
 }
 .hx-range::-moz-range-progress {
-  height: 6px;
+  height: 4px;
   border-radius: 99px;
-  background: var(--hx-accent);
+  background: var(--hx-blue);
 }
 .hx-range::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--hx-accent);
+  width: 24px;
+  height: 24px;
+  border: 0;
   border-radius: 50%;
-  background: var(--hx-card-hover);
-  box-shadow: 0 2px 8px rgba(100, 20, 44, 0.32);
+  background: #fff;
+  box-shadow: 0 0 0 0.5px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.28);
 }
 .hx-range:focus-visible {
-  outline: 2px solid var(--hx-accent);
-  outline-offset: 4px;
-  border-radius: 8px;
-}
-
-.hx-num {
-  -moz-appearance: textfield;
-  appearance: textfield;
-  width: 4.2ch;
-  min-width: 0;
-  padding: 0 0 2px;
-  border: 0;
-  border-bottom: 1px dashed var(--hx-line-strong);
-  border-radius: 0;
-  background: transparent;
-  color: var(--hx-accent);
-  font-family: var(--hx-serif);
-  font-size: 24px;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  text-align: right;
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
 }
-.hx-num::-webkit-inner-spin-button,
-.hx-num::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.hx-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px var(--hx-blue), 0 2px 8px rgba(0, 0, 0, 0.28);
 }
-.hx-num:hover {
-  border-bottom-color: var(--hx-accent);
-}
-.hx-num:focus {
-  border-bottom-style: solid;
-  border-bottom-color: var(--hx-accent);
-  box-shadow: 0 2px 0 -1px var(--hx-accent);
-}
-.hx-count-scale {
-  display: flex;
-  justify-content: space-between;
-  margin: -8px 48px 0;
-  font: 500 11px/1 var(--hx-sans);
-  color: var(--hx-muted);
-  font-variant-numeric: tabular-nums;
+.hx-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 3px var(--hx-blue), 0 2px 8px rgba(0, 0, 0, 0.28);
 }
 
 /* ---------- responsive -------------------------------------------------- */
 @media (max-width: 620px) {
-  .hx-actions-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
   .hx-controls-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .hx-hint {
-    display: none;
-  }
-  .hx-lbl{
-    display: none;
-  }
-  .hx-cap{
-    display: none;
+  .hx-btn .hx-ico {
+    width: 52px;
+    height: 52px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hx-btn,
   .hx-btn .hx-ico,
-  .hx-seg-thumb,
   .hx-progress > i,
-  .hx-step {
+  .hx-step,
+  .hx-num {
     transition: none;
   }
-  .hx-status[data-tone="live"] .hx-dot,
-  .hx-btn--primary[aria-pressed="true"]::after {
+  .hx-status[data-tone="live"] .hx-dot {
     animation: none;
   }
 }
-
     </style>
 </head>
 <body class="spark-widget-shell">
@@ -1011,20 +842,19 @@ body.spark-widget-shell #controls-root::before {
   const CM_TO_PX = 10.5;
   const VIEW_W = 720;
   const VIEW_H = 806;
-  const BORDER_OPTIONS = ["1 cm", "2 cm"];
+  const FRAME_W_CM = 45; // acrylic frame, outer size
+  const FRAME_H_CM = 56;
   const MIN_HEARTS = 1;
   const MAX_HEARTS = 250;
 
-  const TOKEN_W = 4.5 * CM_TO_PX; // real token size
-  const TOKEN_H = 4.1 * CM_TO_PX;
-  const BODY_SCALE = 0.78; // collision body vs. token (same as before)
-  const DRAW_SCALE = 0.92; // drawn heart vs. token (same as before)
+  const BODY_SCALE = 0.78; // collision body vs. token
+  const DRAW_SCALE = 0.92; // drawn heart vs. token
 
   const SLOT_HALF_W = 30; // entry slot is 60 px (~5.7 cm): tokens go in single file
   const CHUTE_H = 74;
   const CHUTE_WALL = 10;
+  const WALL_MIN = 24; // physics walls are never thinner than this (a 0 cm border still needs a solid wall)
   const SPAWN_ABOVE = 34; // spawn point above the frame top edge
-  const SPAWN_GAP = 46; // min vertical spacing between two freshly spawned hearts
   const SEQ_INTERVAL = 10; // frames between sequential drops
   const FF_SUBSTEPS = 3; // extra physics steps per frame while fast-forwarding
   const STEP_MS = 1000 / 60;
@@ -1035,39 +865,55 @@ body.spark-widget-shell #controls-root::before {
     "#ff7a6b", "#ffa69e", "#ff5c8a", "#e4405f", "#a4306f",
   ];
 
-  const geomOf = (border) => {
-    const is2 = border === "2 cm";
-    const t = (is2 ? 2 : 1) * CM_TO_PX;
-    const outerW = 45 * CM_TO_PX;
-    const outerH = 56 * CM_TO_PX;
+  /* Adjustable parameters. Heart size and border are in cm. */
+  const FIELDS = {
+    heartW: { label: "Heart Width", unit: "cm", min: 2, max: 6, step: 0.1 },
+    heartH: { label: "Heart Height", unit: "cm", min: 2, max: 6, step: 0.1 },
+    border: { label: "Border", unit: "cm", min: 0, max: 10, step: 0.5 },
+    target: { label: "Count", unit: "", min: MIN_HEARTS, max: MAX_HEARTS, step: 1 },
+  };
+  const FIELD_ORDER = ["heartW", "heartH", "border", "target"];
+
+  const r1 = (v) => Math.round(v * 10) / 10;
+  const cm = (v) => String(+v.toFixed(1)); // 43 -> "43", 43.5 -> "43.5"
+
+  const geomOf = (borderCm) => {
+    const t = borderCm * CM_TO_PX;
+    const outerW = FRAME_W_CM * CM_TO_PX;
+    const outerH = FRAME_H_CM * CM_TO_PX;
     const cx = VIEW_W / 2;
     const outerTop = 128;
     const outerLeft = cx - outerW / 2;
     const outerRight = cx + outerW / 2;
     const outerBottom = outerTop + outerH;
     return {
-      is2, t, cx, outerW, outerH, outerTop, outerLeft, outerRight, outerBottom,
+      t, cx, outerW, outerH, outerTop, outerLeft, outerRight, outerBottom,
       cy: outerTop + outerH / 2,
       innerLeft: outerLeft + t,
       innerRight: outerRight - t,
       innerTop: outerTop + t,
       innerBottom: outerBottom - t,
-      innerWcm: is2 ? 41 : 43,
-      innerHcm: is2 ? 52 : 54,
+      innerWcm: r1(FRAME_W_CM - 2 * borderCm),
+      innerHcm: r1(FRAME_H_CM - 2 * borderCm),
     };
   };
 
-  const isDark = () =>
-    document.documentElement.getAttribute("data-theme") === "dark" ||
-    document.body.getAttribute("data-theme") === "dark";
+  const darkMQ = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  const isDark = () => {
+    const t = document.documentElement.getAttribute("data-theme") || document.body.getAttribute("data-theme");
+    if (t) return t === "dark";
+    return !!(darkMQ && darkMQ.matches);
+  };
 
   /* ======================================================================
      App shell / state
      ====================================================================== */
   const { state } = WH.createApp({
-    title: "Heart Token Packing Simulator",
+    title: "Heart Packing",
     internal_state: {
-      border: "1 cm",
+      heartW: 4.5,
+      heartH: 4.1,
+      border: 2,
       target: 130,
       play: false,
       ff: false,
@@ -1081,7 +927,7 @@ body.spark-widget-shell #controls-root::before {
     editorial: {
       hud: [
         { label: "Dropped", value: "0 / 130" },
-        { label: "Peak Height", value: "0 / 54 cm" },
+        { label: "Peak", value: "0.0 cm" },
         { label: "Density", value: "0%" },
       ],
     },
@@ -1103,9 +949,9 @@ body.spark-widget-shell #controls-root::before {
       hud: [
         { label: "Dropped", value: `${dropped} / ${target}` },
         {
-          label: overflow ? "Peak Height · Overflow" : "Peak Height",
-          value: `${peak.toFixed(1)} / ${g.innerHcm} cm`,
-          color: overflow ? (isDark() ? "#ff6b81" : "#c9184a") : undefined,
+          label: overflow ? "Overflow" : "Peak",
+          value: `${peak.toFixed(1)} cm`,
+          color: overflow ? (isDark() ? "#ff453a" : "#ff3b30") : undefined,
         },
         { label: "Density", value: `${(state.densityPct || 0).toFixed(1)}%` },
       ],
@@ -1114,6 +960,8 @@ body.spark-widget-shell #controls-root::before {
   ["droppedCount", "peakHeightCm", "densityPct", "target", "border"].forEach((k) =>
     state._subscribe(k, updateHUD)
   );
+  window.addEventListener("themeChanged", updateHUD);
+  if (darkMQ && darkMQ.addEventListener) darkMQ.addEventListener("change", updateHUD);
   updateHUD();
 
   /* ======================================================================
@@ -1148,8 +996,8 @@ body.spark-widget-shell #controls-root::before {
       { d: "M4.2 12a7.8 7.8 0 1 0 2.3-5.5", w: 1.9 },
       { d: "M4 4.4v4.3h4.3", w: 1.9 },
     ],
-    minus: [{ d: "M5 12h14", w: 2.2 }],
-    plus: [{ d: "M5 12h14M12 5v14", w: 2.2 }],
+    minus: [{ d: "M5 12h14", w: 2.6 }],
+    plus: [{ d: "M5 12h14M12 5v14", w: 2.6 }],
   };
   const icon = (name) => {
     const svg = document.createElementNS(SVG_NS, "svg");
@@ -1169,59 +1017,43 @@ body.spark-widget-shell #controls-root::before {
     return svg;
   };
 
-  const clampInt = (v, lo, hi) => Math.max(lo, Math.min(hi, Math.round(v)));
-
   /* ======================================================================
-     Header polish
-     ====================================================================== */
-  const header = document.querySelector(".widget-header");
-  if (header) {
-    header.insertBefore(h("p", { class: "hx-kicker", text: "Packing study · Acrylic frame" }), header.firstChild);
-    header.appendChild(
-      h("p", {
-        class: "hx-lede",
-        text: "Drop heart tokens into a 45 × 56 cm acrylic frame and watch how they settle, then read off peak height and fill density.",
-      })
-    );
-  }
-
-  /* ======================================================================
-     Action dock — Sequential Drop / Fast-Forward Drop / Shake Frame / Reset Box
-     Sits directly above #editorial-text-panel.
+     Action dock — Play / Fast / Shake / Reset
+     Sits directly below #editorial-text-panel. The status pill floats on the stage.
      ====================================================================== */
   const statusDot = h("i", { class: "hx-dot" });
-  const statusText = h("span", { text: "Ready to drop" });
+  const statusText = h("span");
   const statusEl = h("div", { class: "hx-status", role: "status", "aria-live": "polite", "data-tone": "idle" }, statusDot, statusText);
+  statusEl.hidden = true;
   const progressFill = h("i");
 
-  const makeAction = ({ id, label, cap, iconName, cls, onClick }) => {
+  const makeAction = ({ id, label, title, iconName, cls, onClick }) => {
     const ico = h("span", { class: "hx-ico" }, icon(iconName));
-    const capEl = h("span", { class: "hx-cap", text: cap });
+    const lbl = h("span", { class: "hx-lbl", text: label });
     const btn = h(
       "button",
-      { type: "button", class: `hx-btn ${cls || ""}`.trim(), "data-act": id, title: label, onClick },
+      { type: "button", class: `hx-btn ${cls || ""}`.trim(), "data-act": id, title, "aria-label": title, onClick },
       ico,
-      h("span", { class: "hx-lbl", text: label }),
-      capEl
+      lbl
     );
-    return { btn, ico, capEl, iconName };
+    return { btn, ico, lbl, iconName };
   };
 
   const A = {
     play: makeAction({
-      id: "play", label: "Sequential Drop", cap: "One at a time", iconName: "play", cls: "hx-btn--primary",
+      id: "play", label: "Play", title: "Drop hearts one at a time", iconName: "play", cls: "hx-btn--primary",
       onClick: () => { if (!state.ff) state.play = !state.play; },
     }),
     ff: makeAction({
-      id: "ff", label: "Fast-Forward Drop", cap: "Drop all remaining", iconName: "ff",
+      id: "ff", label: "Fast", title: "Drop all remaining hearts", iconName: "ff",
       onClick: () => sim.fastForward(),
     }),
     shake: makeAction({
-      id: "shake", label: "Shake Frame", cap: "Settle the pile", iconName: "shake",
+      id: "shake", label: "Shake", title: "Shake the frame to settle the pile", iconName: "shake",
       onClick: () => sim.shake(),
     }),
     reset: makeAction({
-      id: "reset", label: "Reset Box", cap: "Start over", iconName: "reset", cls: "hx-btn--quiet",
+      id: "reset", label: "Reset", title: "Empty the box", iconName: "reset",
       onClick: () => sim.reset(),
     }),
   };
@@ -1230,13 +1062,15 @@ body.spark-widget-shell #controls-root::before {
   const actions = h(
     "section",
     { id: "hx-actions", class: "hx-actions", "aria-label": "Simulation controls" },
-    h("div", { class: "hx-actions-head" }, h("span", { class: "hx-eyebrow", text: "Simulation" }), statusEl),
-    h("div", { class: "hx-actions-grid" }, A.play.btn, A.ff.btn, A.shake.btn, A.reset.btn),
-    h("div", { class: "hx-progress", "aria-hidden": "true" }, progressFill)
+    h("div", { class: "hx-progress", "aria-hidden": "true" }, progressFill),
+    h("div", { class: "hx-actions-grid" }, A.play.btn, A.ff.btn, A.shake.btn, A.reset.btn)
   );
   const textPanel = document.getElementById("editorial-text-panel");
   if (textPanel && textPanel.parentNode) textPanel.after(actions);
   else document.getElementById("editorial-layout")?.appendChild(actions);
+
+  const vizPanel = document.querySelector(".editorial-viz-panel");
+  (vizPanel || actions).appendChild(statusEl);
 
   const setIcon = (a, name) => {
     if (a.iconName === name) return;
@@ -1247,12 +1081,12 @@ body.spark-widget-shell #controls-root::before {
   const statusInfo = () => {
     const d = state.droppedCount || 0;
     const t = state.target || 0;
-    if (state.boxFull) return { tone: "warn", text: "Entry blocked · try Shake Frame" };
-    if (state.ff) return { tone: "live", text: "Fast-forwarding…" };
-    if (state.play) return { tone: "live", text: "Dropping hearts…" };
-    if (d > 0 && d >= t) return { tone: "ok", text: `All ${d} hearts placed` };
-    if (d > 0) return { tone: "idle", text: `Paused · ${d} of ${t} dropped` };
-    return { tone: "idle", text: "Ready to drop" };
+    if (state.boxFull) return { tone: "warn", text: "Blocked" };
+    if (state.ff) return { tone: "live", text: "Dropping fast" };
+    if (state.play) return { tone: "live", text: "Dropping" };
+    if (d > 0 && d >= t) return { tone: "ok", text: "Done" };
+    if (d > 0) return { tone: "idle", text: "Paused" };
+    return { tone: "idle", text: "" };
   };
 
   const refreshActions = () => {
@@ -1263,14 +1097,16 @@ body.spark-widget-shell #controls-root::before {
 
     A.play.btn.setAttribute("aria-pressed", String(playing));
     setIcon(A.play, playing ? "pause" : "play");
-    A.play.capEl.textContent = playing ? "Tap to pause" : "One at a time";
+    A.play.lbl.textContent = playing ? "Pause" : "Play";
     A.play.btn.disabled = state.ff || state.boxFull || (done && !playing);
     A.ff.btn.disabled = state.ff || state.boxFull || done;
     A.shake.btn.disabled = d === 0;
+    A.shake.btn.classList.toggle("is-hot", !!state.boxFull);
     A.reset.btn.disabled = d === 0 && !playing && !state.ff;
 
     const s = statusInfo();
     statusEl.dataset.tone = s.tone;
+    statusEl.hidden = !s.text;
     if (statusText.textContent !== s.text) statusText.textContent = s.text;
 
     progressFill.style.width = `${t > 0 ? Math.min(100, (d / t) * 100) : 0}%`;
@@ -1278,85 +1114,74 @@ body.spark-widget-shell #controls-root::before {
   ["play", "ff", "boxFull", "droppedCount", "target"].forEach((k) => state._subscribe(k, refreshActions));
 
   /* ======================================================================
-     Parameters — lives in #controls-root
+     Parameters — lives in #controls-root (.hx-controls-grid)
+     Every field is: label · editable value · [−] slider [+]
      ====================================================================== */
   const controlsRoot = document.getElementById("controls-root");
 
-  // Border Width (segmented)
-  const borderValue = h("span", { class: "hx-field-value" });
-  const borderNote = h("p", { class: "hx-field-note" });
-  const segThumb = h("span", { class: "hx-seg-thumb", "aria-hidden": "true" });
-  const segBtns = BORDER_OPTIONS.map((opt) =>
-    h("button", {
-      type: "button", role: "radio", class: "hx-seg-btn", "data-val": opt, text: opt,
-      onClick: () => { state.border = opt; },
-    })
-  );
-  const seg = h("div", { class: "hx-seg", role: "radiogroup", "aria-label": "Border Width" }, segThumb, ...segBtns);
-  const borderField = h(
-    "div",
-    { class: "hx-field" },
-    h("div", { class: "hx-field-top" }, h("span", { class: "hx-field-label", id: "hx-border-label", text: "Border Width" }), borderValue),
-    seg,
-    borderNote
-  );
+  const decimals = (step) => (String(step).split(".")[1] || "").length;
+  const snap = (key, v) => {
+    const f = FIELDS[key];
+    const n = Math.round(v / f.step) * f.step;
+    return +Math.min(f.max, Math.max(f.min, n)).toFixed(decimals(f.step));
+  };
+  const show = (key, v) => v.toFixed(decimals(FIELDS[key].step));
 
-  // Heart Count (editable value + slider + steppers)
-  const range = h("input", {
-    type: "range", class: "hx-range", min: MIN_HEARTS, max: MAX_HEARTS, step: 1,
-    "aria-label": "Heart Count slider",
-  });
-  const num = h("input", {
-    type: "number", class: "hx-num", min: MIN_HEARTS, max: MAX_HEARTS, step: 1, inputmode: "numeric",
-    id: "hx-count", "aria-label": "Heart Count",
-  });
-  const stepBy = (delta) => { state.target = clampInt((state.target || 0) + delta, MIN_HEARTS, MAX_HEARTS); };
-  const decBtn = h("button", { type: "button", class: "hx-step", "aria-label": "Decrease heart count", onClick: (e) => stepBy(e.shiftKey ? -10 : -1) }, icon("minus"));
-  const incBtn = h("button", { type: "button", class: "hx-step", "aria-label": "Increase heart count", onClick: (e) => stepBy(e.shiftKey ? 10 : 1) }, icon("plus"));
+  const makeField = (key) => {
+    const f = FIELDS[key];
+    const id = `hx-${key}`;
+    const limits = { min: f.min, max: f.max, step: f.step };
 
-  range.addEventListener("input", () => { state.target = clampInt(+range.value, MIN_HEARTS, MAX_HEARTS); });
-  num.addEventListener("input", () => {
-    if (num.value === "" || Number.isNaN(+num.value)) return;
-    state.target = clampInt(+num.value, MIN_HEARTS, MAX_HEARTS);
-  });
-  num.addEventListener("change", () => { num.value = String(state.target); });
+    const range = h("input", { type: "range", class: "hx-range", ...limits, "aria-label": f.label });
+    const num = h("input", {
+      type: "number", class: "hx-num", id, ...limits, inputmode: f.step < 1 ? "decimal" : "numeric",
+    });
 
-  const countField = h(
-    "div",
-    { class: "hx-field" },
-    h("div", { class: "hx-field-top" }, h("label", { class: "hx-field-label", for: "hx-count", text: "Heart Count" }), num),
-    h("div", { class: "hx-count-row" }, decBtn, range, incBtn),
-    h("div", { class: "hx-count-scale" }, h("span", { text: String(MIN_HEARTS) }), h("span", { text: String(MAX_HEARTS) })),
-    h("p", { class: "hx-field-note", text: "Type a number, drag the slider, or hold Shift on − / + to jump by 10." })
-  );
+    const set = (v) => {
+      const s = snap(key, v);
+      if (state[key] !== s) state[key] = s;
+    };
+    const bump = (dir, e) => set((state[key] ?? f.min) + dir * f.step * (e.shiftKey ? 10 : 1));
 
-  if (controlsRoot) {
-    controlsRoot.replaceChildren(
+    const dec = h("button", { type: "button", class: "hx-step", "aria-label": `Decrease ${f.label}`, onClick: (e) => bump(-1, e) }, icon("minus"));
+    const inc = h("button", { type: "button", class: "hx-step", "aria-label": `Increase ${f.label}`, onClick: (e) => bump(1, e) }, icon("plus"));
+
+    range.addEventListener("input", () => set(+range.value));
+    num.addEventListener("input", () => {
+      if (num.value === "" || Number.isNaN(+num.value)) return;
+      set(+num.value);
+    });
+    num.addEventListener("change", () => { num.value = show(key, state[key]); });
+
+    const el = h(
+      "div",
+      { class: "hx-field" },
       h(
         "div",
-        { class: "hx-controls-head" },
-        h("span", { class: "hx-eyebrow", text: "Parameters" }),
-        h("span", { class: "hx-hint", text: "Changing the border empties the box" })
+        { class: "hx-field-top" },
+        h("label", { class: "hx-field-label", for: id, text: f.label }),
+        h("span", { class: "hx-value" }, num, f.unit ? h("span", { class: "hx-unit", text: f.unit }) : null)
       ),
-      h("div", { class: "hx-controls-grid" }, borderField, countField)
+      h("div", { class: "hx-row" }, dec, range, inc)
     );
-  }
 
-  const syncControls = () => {
-    const g = geomOf(state.border);
-    const idx = Math.max(0, BORDER_OPTIONS.indexOf(state.border));
-    seg.style.setProperty("--i", String(idx));
-    segBtns.forEach((b, i) => b.setAttribute("aria-checked", String(i === idx)));
-    borderValue.textContent = state.border;
-    borderNote.textContent = `Inner storage space ${g.innerWcm} × ${g.innerHcm} cm`;
-
-    const t = state.target || MIN_HEARTS;
-    if (+range.value !== t) range.value = String(t);
-    range.style.setProperty("--p", `${((t - MIN_HEARTS) / (MAX_HEARTS - MIN_HEARTS)) * 100}%`);
-    if (document.activeElement !== num && num.value !== String(t)) num.value = String(t);
+    const sync = () => {
+      const v = state[key];
+      if (+range.value !== v) range.value = String(v);
+      range.style.setProperty("--p", `${((v - f.min) / (f.max - f.min)) * 100}%`);
+      const txt = show(key, v);
+      if (document.activeElement !== num && num.value !== txt) num.value = txt;
+      dec.disabled = v <= f.min;
+      inc.disabled = v >= f.max;
+    };
+    state._subscribe(key, sync);
+    sync();
+    return el;
   };
-  ["border", "target"].forEach((k) => state._subscribe(k, syncControls));
-  syncControls();
+
+  if (controlsRoot) {
+    controlsRoot.replaceChildren(h("div", { class: "hx-controls-grid" }, ...FIELD_ORDER.map(makeField)));
+  }
   refreshActions();
 
   /* ======================================================================
@@ -1377,6 +1202,8 @@ body.spark-widget-shell #controls-root::before {
       let spawnedSinceShake = 0;
 
       const G = () => geomOf(state.border);
+      const tokW = () => state.heartW * CM_TO_PX; // real token size, from the sliders
+      const tokH = () => state.heartH * CM_TO_PX;
 
       /* ---------- crisp canvas: render at device pixel ratio ------------ */
       const ensureRes = () => {
@@ -1400,21 +1227,28 @@ body.spark-widget-shell #controls-root::before {
           walls = [];
         }
         const g = G();
+        // Walls keep their inner face on the cavity edge and grow outward,
+        // so even a 0 cm border has a solid, tunnel-proof wall.
+        const wt = Math.max(g.t, WALL_MIN);
+        const innerW = g.innerRight - g.innerLeft;
+        const innerH = g.innerBottom - g.innerTop;
         const opts = { isStatic: true, friction: 0.5, restitution: 0.2, label: "hx-wall", render: { visible: false } };
         const R = Matter.Bodies.rectangle;
 
-        const floor = R(g.cx, g.innerBottom + g.t / 2, g.outerW, g.t, opts);
-        const leftWall = R(g.innerLeft - g.t / 2, g.cy, g.t, g.outerH, opts);
-        const rightWall = R(g.innerRight + g.t / 2, g.cy, g.t, g.outerH, opts);
+        const floor = R(g.cx, g.innerBottom + wt / 2, innerW + wt * 2, wt, opts);
+        const leftWall = R(g.innerLeft - wt / 2, g.cy, wt, innerH + wt * 2, opts);
+        const rightWall = R(g.innerRight + wt / 2, g.cy, wt, innerH + wt * 2, opts);
 
         const leftCeilW = g.cx - SLOT_HALF_W - g.innerLeft;
         const rightCeilW = g.innerRight - (g.cx + SLOT_HALF_W);
-        const ceilLeft = R(g.innerLeft + leftCeilW / 2, g.innerTop - g.t / 2, leftCeilW, g.t, opts);
-        const ceilRight = R(g.cx + SLOT_HALF_W + rightCeilW / 2, g.innerTop - g.t / 2, rightCeilW, g.t, opts);
+        const ceilLeft = R(g.innerLeft + leftCeilW / 2, g.innerTop - wt / 2, leftCeilW, wt, opts);
+        const ceilRight = R(g.cx + SLOT_HALF_W + rightCeilW / 2, g.innerTop - wt / 2, rightCeilW, wt, opts);
 
-        const chuteY = g.outerTop - CHUTE_H / 2 + 12;
-        const chuteL = R(g.cx - SLOT_HALF_W - CHUTE_WALL / 2, chuteY, CHUTE_WALL, CHUTE_H, opts);
-        const chuteR = R(g.cx + SLOT_HALF_W + CHUTE_WALL / 2, chuteY, CHUTE_WALL, CHUTE_H, opts);
+        const chuteTop = g.outerTop - CHUTE_H + 12;
+        const chuteHt = CHUTE_H - 12 + 2; // same box the renderer draws
+        const chuteY = chuteTop + chuteHt / 2;
+        const chuteL = R(g.cx - SLOT_HALF_W - CHUTE_WALL / 2, chuteY, CHUTE_WALL, chuteHt, opts);
+        const chuteR = R(g.cx + SLOT_HALF_W + CHUTE_WALL / 2, chuteY, CHUTE_WALL, chuteHt, opts);
 
         walls = [floor, leftWall, rightWall, ceilLeft, ceilRight, chuteL, chuteR];
         Matter.World.add(world, walls);
@@ -1445,11 +1279,12 @@ body.spark-widget-shell #controls-root::before {
       const gateState = () => {
         const g = G();
         const spawnY = g.outerTop - SPAWN_ABOVE;
+        const gap = Math.round(tokH() * BODY_SCALE + 12); // min vertical spacing between two fresh hearts
         let result = 0;
         for (const b of hearts) {
           if (Math.abs(b.position.x - g.cx) > SLOT_HALF_W + 24) continue;
           const dy = b.position.y - spawnY;
-          if (dy > -SPAWN_GAP && dy < SPAWN_GAP) {
+          if (dy > -gap && dy < gap) {
             if (Math.hypot(b.velocity.x, b.velocity.y) < 0.4) return 2;
             result = 1;
           }
@@ -1459,13 +1294,19 @@ body.spark-widget-shell #controls-root::before {
 
       const spawnHeart = (vy) => {
         const g = G();
+        const tw = tokW();
+        const th = tokH();
+        const bw = tw * BODY_SCALE;
+        const bh = th * BODY_SCALE;
+        const room = Math.max(0, SLOT_HALF_W - bw / 2 - 3); // keep wide hearts inside the slot
+        const jitter = (Math.random() - 0.5) * 2 * Math.min(6, room);
         const body = Matter.Bodies.rectangle(
-          g.cx + (Math.random() - 0.5) * 12,
+          g.cx + jitter,
           g.outerTop - SPAWN_ABOVE,
-          TOKEN_W * BODY_SCALE,
-          TOKEN_H * BODY_SCALE,
+          bw,
+          bh,
           {
-            chamfer: { radius: 7 },
+            chamfer: { radius: Math.min(7, Math.min(bw, bh) * 0.25) },
             restitution: 0.12,
             friction: 0.35,
             frictionStatic: 0.55,
@@ -1476,8 +1317,8 @@ body.spark-widget-shell #controls-root::before {
           }
         );
         body.isHeart = true;
-        body.heartW = TOKEN_W;
-        body.heartH = TOKEN_H;
+        body.heartW = tw;
+        body.heartH = th;
         body.colorIdx = pickColor();
         Matter.Body.setVelocity(body, { x: 0, y: vy });
         Matter.World.add(world, body);
@@ -1554,7 +1395,8 @@ body.spark-widget-shell #controls-root::before {
       sim.shake = applyShake;
       sim.fastForward = startFastForward;
 
-      state._subscribe("border", resetWorld);
+      // a different border or heart size means a different box: start over
+      ["border", "heartW", "heartH"].forEach((k) => state._subscribe(k, resetWorld));
       resetWorld();
 
       /* ---------- per-frame update ------------------------------------- */
@@ -1572,7 +1414,7 @@ body.spark-widget-shell #controls-root::before {
         }
         state.peakHeightCm = Math.max(0, (g.innerBottom - highestY) / CM_TO_PX);
         state.insideCount = inCount;
-        const heartAreaCm2 = 4.5 * 4.1 * 0.785;
+        const heartAreaCm2 = state.heartW * state.heartH * 0.785;
         state.densityPct = Math.min(100, (hearts.length * heartAreaCm2) / (g.innerWcm * g.innerHcm) * 100);
       };
 
@@ -1629,7 +1471,7 @@ body.spark-widget-shell #controls-root::before {
         if (frameCount % 8 === 0) measure();
       };
 
-      /* ---------- heart sprites (pre-rendered once per colour/theme/DPR) - */
+      /* ---------- heart sprites (pre-rendered once per colour/theme/DPR/size) - */
       const spriteCache = new Map();
       const mix = (hex, other, amt) => {
         const p = (s) => [1, 3, 5].map((i) => parseInt(s.slice(i, i + 2), 16));
@@ -1646,11 +1488,12 @@ body.spark-widget-shell #controls-root::before {
         c.closePath();
       };
       const getSprite = (idx, ratio, dark) => {
-        const key = `${idx}|${ratio}|${dark ? 1 : 0}`;
+        const key = `${idx}|${ratio}|${dark ? 1 : 0}|${state.heartW}|${state.heartH}`;
         let s = spriteCache.get(key);
         if (s) return s;
-        const w = TOKEN_W * DRAW_SCALE;
-        const hh = TOKEN_H * DRAW_SCALE;
+        if (spriteCache.size > 80) spriteCache.clear(); // sizes changed a lot: drop stale sprites
+        const w = tokW() * DRAW_SCALE;
+        const hh = tokH() * DRAW_SCALE;
         const pad = 9;
         const lw = w + pad * 2;
         const lh = hh + pad * 2;
@@ -1717,7 +1560,7 @@ body.spark-widget-shell #controls-root::before {
         c.closePath();
       };
 
-      const FONT = '"DM Sans","Google Sans","Noto Sans TC",system-ui,sans-serif';
+      const FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "PingFang TC", "Noto Sans TC", system-ui, sans-serif';
       const text = (c, str, x, y, o = {}) => {
         c.font = `${o.weight || 500} ${o.size || 12}px ${FONT}`;
         c.textAlign = o.align || "left";
@@ -1730,20 +1573,20 @@ body.spark-widget-shell #controls-root::before {
 
       const PAL = {
         light: {
-          cavity: "rgba(255,255,255,0.6)", grid: "rgba(90,50,64,0.075)",
-          glassA: "rgba(255,255,255,0.95)", glassB: "rgba(206,220,236,0.5)",
-          edge: "rgba(74,46,58,0.36)", edgeIn: "rgba(74,46,58,0.2)",
-          floorShadow: "rgba(90,30,50,0.26)", frameShadow: "rgba(90,30,50,0.2)",
-          ink: "#2b1d22", muted: "#8d7d82", tick: "rgba(74,46,58,0.42)",
-          accent: "#c9184a", warn: "#d62839",
+          cavity: "rgba(0,0,0,0.028)", grid: "rgba(0,0,0,0.06)",
+          glassA: "rgba(228,238,252,0.96)", glassB: "rgba(184,206,238,0.72)",
+          edge: "rgba(52,84,140,0.42)", edgeIn: "rgba(52,84,140,0.24)",
+          floorShadow: "rgba(0,0,0,0.16)", frameShadow: "rgba(20,40,80,0.16)",
+          ink: "#1d1d1f", muted: "#86868b", tick: "rgba(0,0,0,0.3)",
+          accent: "#0071e3", warn: "#ff3b30",
         },
         dark: {
-          cavity: "rgba(255,255,255,0.035)", grid: "rgba(255,255,255,0.06)",
-          glassA: "rgba(255,255,255,0.2)", glassB: "rgba(255,255,255,0.06)",
-          edge: "rgba(255,255,255,0.36)", edgeIn: "rgba(255,255,255,0.16)",
-          floorShadow: "rgba(0,0,0,0.6)", frameShadow: "rgba(0,0,0,0.5)",
-          ink: "#f6ecea", muted: "#a89a9e", tick: "rgba(255,255,255,0.4)",
-          accent: "#ff5c7f", warn: "#ff6b7a",
+          cavity: "rgba(255,255,255,0.04)", grid: "rgba(255,255,255,0.07)",
+          glassA: "rgba(255,255,255,0.22)", glassB: "rgba(255,255,255,0.07)",
+          edge: "rgba(255,255,255,0.38)", edgeIn: "rgba(255,255,255,0.18)",
+          floorShadow: "rgba(0,0,0,0.6)", frameShadow: "rgba(0,0,0,0.55)",
+          ink: "#f5f5f7", muted: "#8e8e93", tick: "rgba(255,255,255,0.35)",
+          accent: "#0a84ff", warn: "#ff453a",
         },
       };
 
@@ -1755,6 +1598,8 @@ body.spark-widget-shell #controls-root::before {
         const dark = isDark();
         const C = dark ? PAL.dark : PAL.light;
         const g = G();
+        // the canvas is scaled down on narrow screens: grow the labels back up a little
+        const k = Math.min(1.5, Math.max(1, VIEW_W / (proxyCtx.canvas.clientWidth || VIEW_W)));
 
         g2.setTransform(ratio, 0, 0, ratio, 0, 0);
         g2.globalAlpha = 1;
@@ -1795,8 +1640,8 @@ body.spark-widget-shell #controls-root::before {
         g2.clip();
         g2.strokeStyle = C.grid;
         g2.lineWidth = 1;
-        for (let cm = 5; cm < g.innerHcm; cm += 5) {
-          const y = Math.round(g.innerBottom - cm * CM_TO_PX) + 0.5;
+        for (let mark = 5; mark < g.innerHcm; mark += 5) {
+          const y = Math.round(g.innerBottom - mark * CM_TO_PX) + 0.5;
           g2.beginPath();
           g2.moveTo(g.innerLeft, y);
           g2.lineTo(g.innerRight, y);
@@ -1875,15 +1720,18 @@ body.spark-widget-shell #controls-root::before {
         // ---- height ruler (left) ---------------------------------------
         g2.lineWidth = 1;
         g2.strokeStyle = C.tick;
-        for (let cm = 0; cm <= g.innerHcm; cm += 5) {
-          const y = Math.round(g.innerBottom - cm * CM_TO_PX) + 0.5;
+        for (let mark = 0; mark <= g.innerHcm; mark += 5) {
+          const y = Math.round(g.innerBottom - mark * CM_TO_PX) + 0.5;
           if (y < g.innerTop - 1) continue;
-          const major = cm % 10 === 0;
+          const major = mark % 10 === 0;
           g2.beginPath();
           g2.moveTo(g.outerLeft - 5, y);
           g2.lineTo(g.outerLeft - (major ? 14 : 8), y);
           g2.stroke();
-          if (major) text(g2, `${cm} cm`, g.outerLeft - 20, y + 4, { size: 12, color: C.muted, align: "right" });
+          // skip a label that would sit on top of the MAX label
+          if (major && g.innerHcm - mark >= 2.2) {
+            text(g2, String(mark), g.outerLeft - 20, y + 4, { size: 12 * k, color: C.muted, align: "right" });
+          }
         }
 
         // ---- max inner line ---------------------------------------------
@@ -1897,8 +1745,8 @@ body.spark-widget-shell #controls-root::before {
         g2.lineTo(g.innerRight, g.innerTop + 0.5);
         g2.stroke();
         g2.restore();
-        text(g2, `MAX ${g.innerHcm} cm`, g.outerLeft - 20, g.innerTop + 4, {
-          size: 11, weight: 700, color: C.warn, align: "right", spacing: "0.8px",
+        text(g2, `Max ${cm(g.innerHcm)} cm`, g.outerLeft - 20, g.innerTop + 4, {
+          size: 11.5 * k, weight: 600, color: C.warn, align: "right",
         });
 
         // ---- peak marker -------------------------------------------------
@@ -1915,22 +1763,30 @@ body.spark-widget-shell #controls-root::before {
           g2.stroke();
           g2.restore();
 
-          const label = `Peak ${dispPeak.toFixed(1)} cm`;
-          g2.font = `700 12px ${FONT}`;
-          const tw = g2.measureText(label).width;
+          const label = `${dispPeak.toFixed(1)} cm`;
           const px = g.outerRight + 10;
+          let fs = 12 * k;
+          g2.font = `600 ${fs}px ${FONT}`;
+          let tw = g2.measureText(label).width;
+          const room = VIEW_W - 6 - px - 20; // never run off the right edge
+          if (tw > room) {
+            fs *= room / tw;
+            g2.font = `600 ${fs}px ${FONT}`;
+            tw = g2.measureText(label).width;
+          }
           const pw = tw + 20;
+          const ph = fs * 2;
           g2.beginPath();
-          rr(g2, px, py - 12, pw, 24, 12);
+          rr(g2, px, py - ph / 2, pw, ph, ph / 2);
           g2.fillStyle = C.accent;
           g2.fill();
-          text(g2, label, px + pw / 2, py + 4.2, { size: 12, weight: 700, color: "#ffffff", align: "center" });
+          text(g2, label, px + pw / 2, py + 0.5, { size: fs, weight: 600, color: "#ffffff", align: "center", base: "middle" });
         }
 
-        // ---- bottom dimension line + captions -----------------------------
+        // ---- bottom dimension line + inner size --------------------------
         const dy = g.outerBottom + 24;
-        const label45 = "45 cm";
-        g2.font = `600 11.5px ${FONT}`;
+        const label45 = `${FRAME_W_CM} cm`;
+        g2.font = `500 ${11.5 * k}px ${FONT}`;
         const lw45 = g2.measureText(label45).width + 16;
         g2.strokeStyle = C.tick;
         g2.lineWidth = 1;
@@ -1944,20 +1800,17 @@ body.spark-widget-shell #controls-root::before {
         g2.moveTo(g.outerRight - 0.5, dy - 5);
         g2.lineTo(g.outerRight - 0.5, dy + 5);
         g2.stroke();
-        text(g2, label45, g.cx, dy + 4, { size: 11.5, weight: 600, color: C.muted, align: "center" });
+        text(g2, label45, g.cx, dy + 4 * k, { size: 11.5 * k, weight: 500, color: C.muted, align: "center" });
 
-        text(g2, `Acrylic frame 45 × 56 cm · ${state.border} border`, g.cx, g.outerBottom + 54, {
-          size: 13, weight: 600, color: C.ink, align: "center",
-        });
-        text(g2, `Inner storage space ${g.innerWcm} × ${g.innerHcm} cm`, g.cx, g.outerBottom + 73, {
-          size: 12.5, weight: 400, color: C.muted, align: "center",
+        text(g2, `Inner ${cm(g.innerWcm)} × ${cm(g.innerHcm)} cm`, g.cx, g.outerBottom + 56, {
+          size: 14 * k, weight: 600, color: C.ink, align: "center",
         });
 
-        // ---- entry slot label -----------------------------------------------
+        // ---- entry arrow ----------------------------------------------------
         const bob = state.play || state.ff ? Math.sin(performance.now() / 220) * 2.5 : 0;
         const ay = chuteTop - 12 + bob;
         g2.strokeStyle = C.accent;
-        g2.lineWidth = 1.6;
+        g2.lineWidth = 1.8;
         g2.lineCap = "round";
         g2.lineJoin = "round";
         g2.beginPath();
@@ -1967,18 +1820,16 @@ body.spark-widget-shell #controls-root::before {
         g2.lineTo(g.cx, ay + 2);
         g2.lineTo(g.cx + 5, ay - 4);
         g2.stroke();
+
+        // ---- heart size reference (top right, same scale as the frame) -------
         {
-          const a = "ENTRY SLOT";
-          const b = "   x: 22.5 cm";
-          g2.font = `700 11px ${FONT}`;
-          if ("letterSpacing" in g2) g2.letterSpacing = "1.6px";
-          const wa = g2.measureText(a).width;
-          if ("letterSpacing" in g2) g2.letterSpacing = "0px";
-          g2.font = `400 11px ${FONT}`;
-          const wb = g2.measureText(b).width;
-          const x0 = g.cx - (wa + wb) / 2;
-          text(g2, a, x0, chuteTop - 28, { size: 11, weight: 700, color: C.ink, spacing: "1.6px" });
-          text(g2, b, x0 + wa, chuteTop - 28, { size: 11, weight: 400, color: C.muted });
+          const sp = getSprite(0, ratio, dark);
+          const px = g.outerRight - 36;
+          const py = 62;
+          g2.drawImage(sp.cv, px - sp.lw / 2, py - sp.lh / 2, sp.lw, sp.lh);
+          text(g2, `${cm(state.heartW)} × ${cm(state.heartH)} cm`, px, py + sp.lh / 2 + 14, {
+            size: 12 * k, weight: 500, color: C.muted, align: "center",
+          });
         }
       };
     },
@@ -1987,7 +1838,6 @@ body.spark-widget-shell #controls-root::before {
     onRender: ({ ctx }) => { if (sim.render) sim.render(ctx); },
   });
 })();
-
 </script>
 
 </body>
